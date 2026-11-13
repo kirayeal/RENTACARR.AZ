@@ -2,5 +2,14 @@ Photographic assets: codewithsadee/ridex, assets/images.
 Repository: https://github.com/codewithsadee/ridex
 Source README: https://github.com/codewithsadee/ridex#license
 The source author states: "This project is free to use and does not contains any license."
-Files retained unmodified: car-1.jpg through car-6.jpg; hero-banner.jpg renamed hero-bmw.jpg.
+Files retained unmodified: car-1.jpg through car-6.jpg.
 These are presentation photographs, not photos of actual rental offers. Vehicle year, pricing and conditions are demo data.
+
+Additional presentation photography retained from devmuhib/React-Car-Rental-Website:
+https://github.com/devmuhib/React-Car-Rental-Website
+src/assets/all-images/slider-img/slider-1.jpg -> porsche-road.jpg
+src/assets/all-images/slider-img/slider-2.jpg -> mercedes-coast.jpg
+src/assets/all-images/slider-img/slider-3.jpg -> bmw-blue.jpg
+src/assets/all-images/blog-img/blog-2.jpg -> volkswagen-city.jpg
+src/assets/all-images/blog-img/blog-3.jpg -> journey.jpg
+These photos do not depict an actual RENTACARR-owned fleet or confirmed rental inventory.

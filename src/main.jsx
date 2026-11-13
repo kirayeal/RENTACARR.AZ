@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { prepareListing, loadWorkspace } from "./ownership";
+import { SessionBoundary, GoogleLogin, request } from "./session";
 import { createRoot } from "react-dom/client";
 import {
   ArrowUpRight,
-  ArrowRight,
   Search,
   MapPin,
   ChevronDown,
   Heart,
-  SlidersHorizontal,
   ShieldCheck,
   Fuel,
   Users,
@@ -17,31 +15,35 @@ import {
   Check,
   Plus,
   Car,
-  Menu,
+  Crown,
+  Sparkles,
+  LayoutDashboard,
+  ClipboardList,
+  Building2,
+  CircleHelp,
+  Download,
+  Pencil,
+  Pause,
+  Play,
+  Trash2,
+  ArrowLeft,
+  UserRound,
+  Camera,
+  Clock3,
   Phone,
 } from "lucide-react";
 import "./style.css";
-import "./responsive.css";
+import "@fontsource-variable/inter";
 import ListingEditor from "./ListingEditor";
-import {
-  initial,
-  demoOwners,
-  brands,
-  categories,
-  cities,
-  promotionRank,
-  upgradeDemoWorkspace,
-  upgradeDemoPhotos,
-} from "./catalog";
-function App() {
-  const [workspace] = useState(() =>
-    upgradeDemoPhotos(
-      upgradeDemoWorkspace(loadWorkspace(initial, localStorage, demoOwners)),
-    ),
-  );
+import { initial, brands, categories, cities, promotionRank } from "./catalog";
+function App({ user, onAuthenticated, onLogout, authError }) {
+  const [adminView, setAdminView] = useState("overview");
+  const workspace = { cars: [], pending: [], owners: [] };
+  const [publicCars, setPublicCars] = useState(initial),
+    [serviceError, setServiceError] = useState(""),
+    [saving, setSaving] = useState(false);
   const [owners, setOwners] = useState(workspace.owners),
-    [ownerQuery, setOwnerQuery] = useState(""),
-    [storageError, setStorageError] = useState(false);
+    [ownerQuery, setOwnerQuery] = useState("");
   const [cars, setCars] = useState(workspace.cars),
     [city, setCity] = useState("Bütün şəhərlər"),
     [brand, setBrand] = useState("Bütün markalar"),
@@ -56,7 +58,7 @@ function App() {
     [favorites, setFavorites] = useState(false),
     [selected, setSelected] = useState(null),
     [modal, setModal] = useState(null),
-    [admin, setAdmin] = useState(false),
+    [adminMode, setAdmin] = useState(false),
     [pending, setPending] = useState(workspace.pending),
     [sort, setSort] = useState("Seçilmiş elanlar"),
     [toast, setToast] = useState(""),
@@ -64,31 +66,94 @@ function App() {
     [adminSearch, setAdminSearch] = useState(""),
     [adminStatus, setAdminStatus] = useState("all"),
     [deleteId, setDeleteId] = useState(null);
+  const admin = Boolean(user?.isAdmin && adminMode);
   const editing = modal?.startsWith("edit:")
-    ? cars.find((c) => String(c.id) === modal.slice(5))
+    ? [...cars, ...pending].find((c) => String(c.id) === modal.slice(5))
     : null;
-  useEffect(() => {
-    try {
-      localStorage.setItem(
-        "rentacarr.workspace.v1",
-        JSON.stringify({
-          version: 1,
-          catalogVersion: 2,
-          cars,
-          pending,
-          owners,
-        }),
-      );
-      setStorageError(false);
-    } catch {
-      setStorageError(true);
+  async function refreshWorkspace() {
+    const [publicData, privateData] = await Promise.all([
+      request("/api/listings"),
+      user ? request("/api/workspace") : Promise.resolve(null),
+    ]);
+    setPublicCars(publicData.listings?.length ? publicData.listings : initial);
+    if (privateData) {
+      setCars(privateData.cars);
+      setOwners(privateData.owners);
+      setPending(privateData.pending);
     }
-  }, [cars, pending, owners]);
+    setServiceError("");
+  }
+  useEffect(() => {
+    refreshWorkspace().catch((e) => setServiceError(e.message));
+  }, [user?.id]);
+  async function mutateListing(id, patch) {
+    try {
+      await request("/api/listings", {
+        method: "PATCH",
+        body: { id, ...patch },
+      });
+      await refreshWorkspace();
+      note("Dəyişiklik saxlanıldı.");
+    } catch (e) {
+      note(e.message);
+    }
+  }
+  async function removeListing(id) {
+    try {
+      await request("/api/listings", { method: "DELETE", body: { id } });
+      await refreshWorkspace();
+      setDeleteId(null);
+      note("Elan silindi.");
+    } catch (e) {
+      note(e.message);
+    }
+  }
+  useEffect(() => {
+    if (!selected && !modal && deleteId === null) return;
+    const previous = document.activeElement;
+    const oldOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const timer = setTimeout(
+      () => document.querySelector(".overlay button, .overlay input")?.focus(),
+      0,
+    );
+    const keydown = (e) => {
+      if (e.key === "Escape") {
+        setSelected(null);
+        setModal(null);
+        setDeleteId(null);
+      }
+      if (e.key === "Tab") {
+        const dialog = document.querySelector(".overlay");
+        const elements = [
+          ...(dialog?.querySelectorAll(
+            "button,a[href],input,select,textarea",
+          ) || []),
+        ].filter((el) => !el.disabled);
+        const first = elements[0],
+          last = elements.at(-1);
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last?.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first?.focus();
+        }
+      }
+    };
+    document.addEventListener("keydown", keydown);
+    return () => {
+      clearTimeout(timer);
+      document.body.style.overflow = oldOverflow;
+      document.removeEventListener("keydown", keydown);
+      previous?.focus?.();
+    };
+  }, [selected, modal, deleteId]);
   function note(t) {
     setToast(t);
     setTimeout(() => setToast(""), 4000);
   }
-  const filtered = cars
+  const filtered = publicCars
     .filter(
       (c) =>
         !c.paused &&
@@ -111,74 +176,46 @@ function App() {
           ? b.price - a.price
           : promotionRank(b) - promotionRank(a),
     );
-  function submit(e) {
+  async function submit(e) {
     e.preventDefault();
+    if (!user) {
+      setModal("account");
+      note("Elan yerləşdirmək üçün Google ilə daxil olun.");
+      return;
+    }
     const d = new FormData(e.target);
+    setSaving(true);
     try {
-      const ownerId = d.get("ownerId");
-      const existingOwner = owners.find((o) => o.id === ownerId);
-      const details = {
-        brand: d.get("brand"),
-        model: d.get("model").trim(),
-        name: `${d.get("brand")} ${d.get("model").trim()}`,
-        price: Number(d.get("price")),
-        city: d.get("city"),
-        year: Number(d.get("year")),
-        owner: d.get("owner"),
-        ownerKind: d.get("ownerKind"),
-        ownerId,
-        ownerEmail: d.get("ownerEmail"),
-        phone: d.get("phone"),
-        type: d.get("type"),
-        image: d.get("image") || editing?.image || "/photos/car-6.jpg",
-        fuel: d.get("fuel"),
-        transmission: d.get("transmission"),
-        seats: Number(d.get("seats")),
-        deposit: Number(d.get("deposit")),
-        mileage: Number(d.get("mileage")),
-        minAge: Number(d.get("minAge")),
-        experience: Number(d.get("experience")),
-        description: d.get("description").trim(),
-        promotion: admin ? d.get("promotion") : "standard",
-      };
-      if (d.get("image") && !/^https:\/\//i.test(d.get("image")))
-        throw new Error("Şəkil ünvanı HTTPS ilə başlamalıdır.");
-      details.vip = details.promotion !== "standard";
-      let owner, listing;
-      if (existingOwner?.demo) {
-        owner = existingOwner;
-        listing = {
-          ...details,
-          id: editing?.id || crypto.randomUUID(),
-          ownerId: owner.id,
-          owner: owner.name,
-          phone: "",
-          company: true,
-          demo: true,
-        };
-      } else {
-        ({ owner, listing } = prepareListing(details, owners));
-      }
-      listing.createdBy =
-        editing?.createdBy || (admin ? "admin-demo" : "visitor-demo");
-      if (!owners.some((x) => x.id === owner.id)) setOwners([...owners, owner]);
+      const details = Object.fromEntries(d.entries());
       if (editing) {
-        setCars(
-          cars.map((c) =>
-            c.id === editing.id ? { ...c, ...listing, id: c.id } : c,
-          ),
-        );
-        note("Elan yeniləndi.");
-      } else if (admin) {
-        setCars([...cars, listing]);
-        note("Elan sahibin profilinə əlavə olundu.");
-      } else {
-        setPending([...pending, listing]);
-        note("Elan yoxlanışa göndərildi.");
-      }
+        if (details.ownerId)
+          await request("/api/owners", {
+            method: "PATCH",
+            body: { ...details, id: details.ownerId },
+          });
+        await request("/api/listings", {
+          method: "PATCH",
+          body: {
+            id: editing.id,
+            ownerId: details.ownerId,
+            details,
+            promotion: admin ? details.promotion : undefined,
+          },
+        });
+      } else await request("/api/listings", { method: "POST", body: details });
+      await refreshWorkspace();
       setModal(null);
+      note(
+        editing
+          ? "Elan yeniləndi."
+          : admin
+            ? "Elan dərc edildi."
+            : "Elan yoxlanışa göndərildi.",
+      );
     } catch (error) {
       note(error.message);
+    } finally {
+      setSaving(false);
     }
   }
   function exportWorkspace() {
@@ -195,19 +232,6 @@ function App() {
     URL.revokeObjectURL(url);
   }
 
-  function addSamples() {
-    const missing = initial.filter(
-      (sample) => !cars.some((c) => c.id === sample.id),
-    );
-    setCars([...cars, ...missing]);
-    if (!owners.some((o) => o.id === "demo-fleet"))
-      setOwners([...owners, ...demoOwners]);
-    note(
-      missing.length
-        ? `${missing.length} çatışmayan nümunə elan əlavə edildi.`
-        : "10 nümunə elanın hamısı artıq mövcuddur.",
-    );
-  }
   const adminCars = cars
     .filter((c) =>
       (c.name + " " + c.owner)
@@ -248,6 +272,17 @@ function App() {
           </a>
           <button onClick={() => setModal("partners")}>Partnyorlar</button>
           <button onClick={() => setModal("how")}>Necə işləyir?</button>
+          <button
+            aria-label="Seçilmiş elanlar"
+            onClick={() => {
+              setFavorites(!favorites);
+              document
+                .getElementById("cars")
+                ?.scrollIntoView({ behavior: "smooth" });
+            }}
+          >
+            <Heart size={16} fill={favorites ? "currentColor" : "none"} />
+          </button>
         </nav>
         <div className="header-right">
           <button
@@ -267,10 +302,18 @@ function App() {
           >
             <Heart size={20} fill={favorites ? "#155e46" : "none"} />
           </button>
-          <button className="login" onClick={() => setModal("account")}>
-            Daxil ol
+          <button
+            className="login"
+            aria-label={user ? "Hesabım" : "Daxil ol"}
+            onClick={() => setModal("account")}
+          >
+            <UserRound size={17} />
+            <span>{user ? "Hesabım" : "Daxil ol"}</span>
           </button>
-          <button className="primary add" onClick={() => setModal("listing")}>
+          <button
+            className="primary add"
+            onClick={() => setModal(user ? "listing" : "account")}
+          >
             <Plus size={17} /> Elan yerləşdir
           </button>
         </div>
@@ -280,24 +323,61 @@ function App() {
           <a href="#cars">Avtomobillər</a>
           <button onClick={() => setModal("partners")}>Partnyorlar</button>
           <button onClick={() => setModal("how")}>Necə işləyir?</button>
+          <button
+            aria-label="Seçilmiş elanlar"
+            onClick={() => {
+              setFavorites(!favorites);
+              document
+                .getElementById("cars")
+                ?.scrollIntoView({ behavior: "smooth" });
+            }}
+          >
+            <Heart size={16} fill={favorites ? "currentColor" : "none"} />
+          </button>
         </nav>
       )}
+      {(authError || serviceError) && (
+        <div className="service-notice" role="status">
+          {authError || serviceError}
+        </div>
+      )}
       {admin ? (
-        <main className="admin">
+        <main className="admin" data-view={adminView}>
           <div className="section-title">
             <div>
-              <span className="eyebrow">DEMO İDARƏETMƏ PANELİ</span>
+              <span className="eyebrow">İDARƏETMƏ PANELİ</span>
               <h1>Hər şey nəzarətində.</h1>
               <p>
-                Lokal idarəetmə prototipi. Məlumatlar bu brauzerdə saxlanır;
-                Google girişi hələ qoşulmayıb. Nəzərdə tutulan admin:
-                rentacarr.az@gmail.com.
+                Elanları, sahibləri və yoxlanışları idarə et. Giriş yalnız
+                təsdiqlənmiş admin hesabına açıqdır.
               </p>
             </div>
             <button className="outline" onClick={() => setAdmin(false)}>
-              Sayta qayıt
+              <ArrowLeft size={16} /> Sayta qayıt
             </button>
           </div>
+          <nav className="admin-nav" aria-label="İdarəetmə bölmələri">
+            {[
+              ["overview", "İcmal", LayoutDashboard],
+              ["listings", "Elanlar", Car],
+              ["owners", "Sahiblər", Users],
+              ["review", "Yoxlanış", ClipboardList],
+              ["help", "Bələdçi", CircleHelp],
+            ].map(([key, label, Icon]) => (
+              <button
+                key={key}
+                aria-pressed={adminView === key}
+                className={adminView === key ? "active" : ""}
+                onClick={() => setAdminView(key)}
+              >
+                <Icon size={17} />
+                {label}
+                {key === "review" && pending.length > 0 && (
+                  <span>{pending.length}</span>
+                )}
+              </button>
+            ))}
+          </nav>
           <div className="stats">
             {[
               ["Aktiv elanlar", cars.filter((c) => !c.paused).length],
@@ -306,39 +386,84 @@ function App() {
                 "Premium elanlar",
                 cars.filter((c) => c.promotion === "premium").length,
               ],
-              ["VIP elanlar", cars.filter((c) => c.vip).length],
+              ["VIP elanlar", cars.filter((c) => c.promotion === "vip").length],
             ].map(([label, n]) => (
               <article key={label}>
+                <div className="stat-icon">
+                  {label.includes("Premium") ? (
+                    <Crown size={19} />
+                  ) : label.includes("VIP") ? (
+                    <Sparkles size={19} />
+                  ) : label.includes("gözləyən") ? (
+                    <Clock3 size={19} />
+                  ) : (
+                    <Car size={19} />
+                  )}
+                </div>
                 <span>{label}</span>
                 <strong>{n}</strong>
               </article>
             ))}
           </div>
           <div className="admin-actions">
-            <button className="primary" onClick={() => setModal("listing")}>
+            <button
+              className="primary"
+              onClick={() => setModal(user ? "listing" : "account")}
+            >
               <Plus size={17} /> Sahibin adından elan yerləşdir
             </button>
-            <button className="outline" onClick={addSamples}>
-              10 nümunə elanı tamamla
+            <button className="outline" onClick={() => setAdmin(false)}>
+              Nümunə kataloquna bax
             </button>
             <button className="outline" onClick={exportWorkspace}>
-              Ehtiyat nüsxəni endir
+              <Download size={16} /> Ehtiyat nüsxəni endir
             </button>
           </div>
-          {storageError && (
-            <p role="alert" className="storage-warning">
-              Brauzer məlumatları saxlaya bilmir. İtirməmək üçün ehtiyat nüsxəni
-              endirin.
-            </p>
-          )}
+          <section className="admin-overview">
+            <div className="overview-heading">
+              <span className="eyebrow">İŞ MƏKANI</span>
+              <h2>Avtoparkına ümumi baxış</h2>
+              <p>Elanları, sahibləri və yoxlanışları bir yerdən idarə et.</p>
+            </div>
+            <div className="overview-grid">
+              <button onClick={() => setAdminView("listings")}>
+                <Car size={23} />
+                <h3>Elanları idarə et</h3>
+                <p>Qiymət, təqdimat və aktivlik statusu.</p>
+                <ArrowUpRight size={18} />
+              </button>
+              <button onClick={() => setAdminView("owners")}>
+                <Building2 size={23} />
+                <h3>Sahib profilləri</h3>
+                <p>{owners.length} profil və onlara aid avtomobillər.</p>
+                <ArrowUpRight size={18} />
+              </button>
+              <button onClick={() => setAdminView("review")}>
+                <ClipboardList size={23} />
+                <h3>Yoxlanış gözləyənlər</h3>
+                <p>{pending.length} elan qərarını gözləyir.</p>
+                <ArrowUpRight size={18} />
+              </button>
+            </div>
+            <div className="workspace-notice">
+              <ShieldCheck size={19} />
+              <div>
+                <h3>Qorunan admin iş məkanı</h3>
+                <p>
+                  Məlumatlar serverdə saxlanır. Sahib profilləri və şəxsi
+                  e-poçtlar yalnız icazəli hesablara göstərilir.
+                </p>
+              </div>
+            </div>
+          </section>
           <section className="owner-management">
             <span className="eyebrow">HESABDAN ƏVVƏL DƏ SAHİB PROFİLİ</span>
             <h2>Avtomobil sahibləri</h2>
             <p>
               Telefon yalnız əlaqə üçündür. Yeni elan üçün mövcud sahibi seçin
-              və ya yeni profil yaradın. Google girişi qoşulduqdan sonra sahibin
-              təsdiqlənmiş hesabına elanları admin bağlayacaq. E-poçt qeyd etmək
-              giriş icazəsi vermir.
+              və ya yeni profil yaradın. Sahib Google ilə təsdiqlənmiş giriş
+              etdikdə adminin qeyd etdiyi uyğun e-poçt onun profilinə bağlanır.
+              Telefon giriş üsulu deyil.
             </p>
             <input
               className="owner-search"
@@ -387,7 +512,9 @@ function App() {
                         yoxlanışda
                       </p>
                     </div>
-                    <span className="claim-status">Hesab açılmayıb</span>
+                    <span className="claim-status">
+                      {o.accountId ? "Hesaba bağlanıb" : "Giriş gözlənilir"}
+                    </span>
                     <button
                       className="outline"
                       onClick={() => {
@@ -401,124 +528,114 @@ function App() {
                 ))
             )}
           </section>
-          <h2>Yoxlanış gözləyən elanlar</h2>
-          {!pending.length ? (
-            <div className="empty">
-              Yeni elan yoxdur. “Elan yerləşdir” vasitəsilə nümunə elan göndərə
-              bilərsiniz.
+          <section className="admin-review">
+            <h2>Yoxlanış gözləyən elanlar</h2>
+            {!pending.length ? (
+              <div className="empty">
+                Yeni elan yoxdur. “Elan yerləşdir” vasitəsilə nümunə elan
+                göndərə bilərsiniz.
+              </div>
+            ) : (
+              pending.map((c) => (
+                <div className="admin-row" key={c.id}>
+                  <div>
+                    <b>{c.name}</b>
+                    <p>
+                      {c.owner} · {c.city} · {c.price} ₼ / gün
+                    </p>
+                  </div>
+                  <button
+                    className="primary"
+                    onClick={() => mutateListing(c.id, { status: "active" })}
+                  >
+                    Təsdiqlə
+                  </button>
+                  <button
+                    className="outline"
+                    onClick={() => removeListing(c.id)}
+                  >
+                    Rədd et
+                  </button>
+                </div>
+              ))
+            )}
+          </section>
+          <section className="admin-listings">
+            <h2>Elanların idarə edilməsi</h2>
+            <div className="admin-filters">
+              <input
+                aria-label="Elan axtar"
+                placeholder="Avtomobil və ya sahib axtar…"
+                value={adminSearch}
+                onChange={(e) => setAdminSearch(e.target.value)}
+              />
+              <select
+                aria-label="Elan statusu"
+                value={adminStatus}
+                onChange={(e) => setAdminStatus(e.target.value)}
+              >
+                <option value="all">Bütün elanlar</option>
+                <option value="active">Aktiv</option>
+                <option value="paused">Dayandırılmış</option>
+                <option value="vip">VIP</option>
+                <option value="premium">Premium</option>
+              </select>
+              <span>{adminCars.length} elan</span>
             </div>
-          ) : (
-            pending.map((c) => (
+            {adminCars.map((c) => (
               <div className="admin-row" key={c.id}>
+                <img className="admin-thumb" src={c.image} alt="" />
                 <div>
                   <b>{c.name}</b>
                   <p>
-                    {c.owner} · {c.city} · {c.price} ₼ / gün
+                    {c.owner} · {c.city}
                   </p>
+                  <span className={"status-pill " + (c.paused ? "paused" : "")}>
+                    {c.paused ? "Dayandırılıb" : "Aktiv"}
+                  </span>
+                  {c.demo && <span className="sample-pill">Nümunə</span>}
                 </div>
-                <button
-                  className="primary"
-                  onClick={() => {
-                    setCars([...cars, c]);
-                    setPending(pending.filter((x) => x.id !== c.id));
-                    note("Elan təsdiqləndi");
-                  }}
+                <span>{c.price} ₼ / gün</span>
+                <select
+                  aria-label={`${c.name} təqdimat`}
+                  value={c.promotion || (c.vip ? "vip" : "standard")}
+                  onChange={(e) =>
+                    mutateListing(c.id, { promotion: e.target.value })
+                  }
                 >
-                  Təsdiqlə
+                  <option value="standard">Standart</option>
+                  <option value="vip">VIP</option>
+                  <option value="premium">Premium</option>
+                </select>
+                <button
+                  className="outline"
+                  onClick={() => setModal("edit:" + c.id)}
+                >
+                  <Pencil size={15} /> Redaktə et
                 </button>
                 <button
                   className="outline"
                   onClick={() =>
-                    setPending(pending.filter((x) => x.id !== c.id))
+                    mutateListing(c.id, {
+                      status: c.paused ? "active" : "paused",
+                    })
                   }
                 >
-                  Rədd et
+                  {c.paused ? <Play size={15} /> : <Pause size={15} />}{" "}
+                  {c.paused ? "Aktivləşdir" : "Dayandır"}
+                </button>
+                <button
+                  className="outline danger"
+                  onClick={() => setDeleteId(c.id)}
+                >
+                  <Trash2 size={15} /> Sil
                 </button>
               </div>
-            ))
-          )}
-          <h2>Elanların idarə edilməsi</h2>
-          <div className="admin-filters">
-            <input
-              aria-label="Elan axtar"
-              placeholder="Avtomobil və ya sahib axtar…"
-              value={adminSearch}
-              onChange={(e) => setAdminSearch(e.target.value)}
-            />
-            <select
-              aria-label="Elan statusu"
-              value={adminStatus}
-              onChange={(e) => setAdminStatus(e.target.value)}
-            >
-              <option value="all">Bütün elanlar</option>
-              <option value="active">Aktiv</option>
-              <option value="paused">Dayandırılmış</option>
-              <option value="vip">VIP</option>
-              <option value="premium">Premium</option>
-            </select>
-            <span>{adminCars.length} elan</span>
-          </div>
-          {adminCars.map((c) => (
-            <div className="admin-row" key={c.id}>
-              <img className="admin-thumb" src={c.image} alt="" />
-              <div>
-                <b>{c.name}</b>
-                <p>
-                  {c.owner} · {c.city}
-                </p>
-                <span className={"status-pill " + (c.paused ? "paused" : "")}>
-                  {c.paused ? "Dayandırılıb" : "Aktiv"}
-                </span>
-                {c.demo && <span className="sample-pill">Nümunə</span>}
-              </div>
-              <span>{c.price} ₼ / gün</span>
-              <select
-                aria-label={`${c.name} təqdimat`}
-                value={c.promotion || (c.vip ? "vip" : "standard")}
-                onChange={(e) => {
-                  const promotion = e.target.value;
-                  setCars(
-                    cars.map((x) =>
-                      x.id === c.id
-                        ? { ...x, promotion, vip: promotion !== "standard" }
-                        : x,
-                    ),
-                  );
-                }}
-              >
-                <option value="standard">Standart</option>
-                <option value="vip">VIP</option>
-                <option value="premium">Premium</option>
-              </select>
-              <button
-                className="outline"
-                onClick={() => setModal("edit:" + c.id)}
-              >
-                Redaktə et
-              </button>
-              <button
-                className="outline"
-                onClick={() =>
-                  setCars(
-                    cars.map((x) =>
-                      x.id === c.id ? { ...x, paused: !x.paused } : x,
-                    ),
-                  )
-                }
-              >
-                {c.paused ? "Aktivləşdir" : "Dayandır"}
-              </button>
-              <button
-                className="outline danger"
-                onClick={() => setDeleteId(c.id)}
-              >
-                Sil
-              </button>
-            </div>
-          ))}
-          {!adminCars.length && (
-            <div className="empty">Bu seçimə uyğun elan yoxdur.</div>
-          )}
+            ))}
+            {!adminCars.length && (
+              <div className="empty">Bu seçimə uyğun elan yoxdur.</div>
+            )}
+          </section>
           <section className="admin-guide">
             <h2>Admin üçün qısa bələdçi</h2>
             <p>
@@ -536,19 +653,18 @@ function App() {
             </p>
             <p>
               <b>Sahiblər:</b> Eyni sahibin yeni avtomobili üçün mövcud profili
-              seçin. Google hesabına bağlama hələ aktiv deyil.
+              seçin. Sahibin təsdiqlənmiş Google hesabı profilə bağlanır.
             </p>
             <p>
-              <b>Məlumatlar:</b> Dəyişikliklər bu brauzerdə qalır. Ehtiyat
-              nüsxəni mütəmadi endirin. Demo paneldə ödəniş və real giriş
-              yoxdur.
+              <b>Məlumatlar:</b> Dəyişikliklər serverdə saxlanır. Şəxsi
+              məlumatlar yalnız icazəli hesablara açıqdır. Ödəniş sistemi hələ
+              aktiv deyil.
             </p>
           </section>
         </main>
       ) : (
         <>
           <section className="hero">
-            <div className="hero-shade" />
             <div className="hero-content">
               <div className="hero-tag">
                 <span /> AZƏRBAYCANIN AVTOMOBİL KİRAYƏSİ PLATFORMASI
@@ -575,11 +691,22 @@ function App() {
                 </span>
               </div>
             </div>
-            <div className="hero-caption">
-              <span>Hər yolun öz hekayəsi var.</span>
-              <b>
-                Öz hekayəni başlat. <ArrowUpRight size={18} />
-              </b>
+            <div className="hero-visual">
+              <img
+                src="/photos/porsche-road.jpg"
+                alt="Yolda hərəkət edən Porsche Panamera"
+                fetchPriority="high"
+              />
+              <div className="hero-caption">
+                <span>
+                  <span className="live-dot" /> YENİ YOLLAR, YENİ TƏƏSSÜRATLAR
+                </span>
+                <b>Səfərin ritmini özün seç.</b>
+                <ArrowUpRight size={22} />
+              </div>
+              <div className="photo-label">
+                <Camera size={13} /> Real avtomobil fotosu
+              </div>
             </div>
           </section>
           <div className="search-wrap">
@@ -704,22 +831,39 @@ function App() {
               <input
                 value={modelQuery}
                 onChange={(e) => setModelQuery(e.target.value)}
-                placeholder="Məsələn: Corolla, Sportage, E 200…"
+                placeholder="Məsələn: RAV4, Panamera, GLS…"
               />
             </label>
             <div className="demo-note">
-              Nümunə elanlar · Real fotolar · Qiymətlər və şərtlər nümunədir.
+              Təqdimat kataloqu · Real fotolar, nümunə qiymətlər
             </div>
             <div className="grid">
               {filtered.map((c) => (
                 <article className="car-card" key={c.id}>
-                  <div className="car-image" onClick={() => setSelected(c)}>
-                    <img src={c.image} alt={c.name} />
+                  <div className="car-image">
+                    <button
+                      className="image-open"
+                      aria-label={c.name + " elanı aç"}
+                      onClick={() => setSelected(c)}
+                    >
+                      <img
+                        src={c.image}
+                        alt={c.name}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </button>
                     <div className="badges">
                       {c.promotion === "premium" ? (
-                        <span className="premium">♛ PREMIUM</span>
+                        <span className="premium">
+                          <Crown size={12} /> Premium
+                        </span>
                       ) : (
-                        c.vip && <span className="vip">✦ VIP</span>
+                        c.vip && (
+                          <span className="vip">
+                            <Sparkles size={12} /> VIP
+                          </span>
+                        )
                       )}
                       <span className="kind">
                         {c.company ? "Şirkət" : "Şəxsi sahib"}
@@ -818,7 +962,7 @@ function App() {
                 <h2>Avtomobilin boş dayanmasın.</h2>
                 <p>İlk elanını pulsuz yerləşdir, yeni müştərilər qazan.</p>
               </div>
-              <button onClick={() => setModal("listing")}>
+              <button onClick={() => setModal(user ? "listing" : "account")}>
                 Pulsuz elan yerləşdir <ArrowUpRight size={18} />
               </button>
             </div>
@@ -862,14 +1006,16 @@ function App() {
           rentacarr<span className="logo-az">.az</span>
         </a>
         <span>Yol səninlə başlayır.</span>
-        <button
-          onClick={() => {
-            setAdmin(true);
-            window.scrollTo(0, 0);
-          }}
-        >
-          Demo idarəetmə paneli <ArrowUpRight size={14} />
-        </button>
+        {user?.isAdmin && (
+          <button
+            onClick={() => {
+              setAdmin(true);
+              window.scrollTo(0, 0);
+            }}
+          >
+            İdarəetmə paneli <ArrowUpRight size={14} />
+          </button>
+        )}
         <small>© {new Date().getFullYear()} RENTACARR.AZ</small>
       </footer>
       {deleteId !== null && (
@@ -882,9 +1028,9 @@ function App() {
           >
             <h2>Elan silinsin?</h2>
             <p>
-              {cars.find((c) => c.id === deleteId)?.name} kataloqdan və bu
-              brauzerin yaddaşından silinəcək. Elanı sadəcə gizlətmək üçün
-              dayandırma funksiyasından istifadə edə bilərsiniz.
+              {cars.find((c) => c.id === deleteId)?.name} kataloqdan və
+              serverdən silinəcək. Elanı sadəcə gizlətmək üçün dayandırma
+              funksiyasından istifadə edə bilərsiniz.
             </p>
             <div className="contact">
               <button className="outline" onClick={() => setDeleteId(null)}>
@@ -892,11 +1038,7 @@ function App() {
               </button>
               <button
                 className="primary danger"
-                onClick={() => {
-                  setCars(cars.filter((c) => c.id !== deleteId));
-                  setDeleteId(null);
-                  note("Elan silindi.");
-                }}
+                onClick={() => removeListing(deleteId)}
               >
                 Bəli, sil
               </button>
@@ -912,7 +1054,13 @@ function App() {
             setModal(null);
           }}
         >
-          <section className="modal" onClick={(e) => e.stopPropagation()}>
+          <section
+            className="modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label={selected?.name || "Məlumat pəncərəsi"}
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               className="close"
               aria-label="Bağla"
@@ -938,6 +1086,21 @@ function App() {
                 <p className="detail-price">
                   {selected.price} ₼ <small>/ gün</small>
                 </p>
+                <div className="detail-specs">
+                  <span>
+                    <Gauge size={16} />
+                    {selected.transmission || "Avtomat"}
+                  </span>
+                  <span>
+                    <Fuel size={16} />
+                    {selected.fuel || "Benzin"}
+                  </span>
+                  <span>
+                    <Users size={16} />
+                    {selected.seats || 5} yer
+                  </span>
+                </div>
+                <h3 className="detail-subtitle">Kirayə şərtləri</h3>
                 <div className="detail-terms">
                   <p>
                     Depozit <b>{selected.deposit ?? 300} ₼</b>
@@ -973,7 +1136,7 @@ function App() {
                   </div>
                 ) : (
                   <div className="empty">
-                    Nümunə elanda əlaqə nömrəsi yoxdur.
+                    <Phone size={19} /> Nümunə elanda əlaqə nömrəsi yoxdur.
                   </div>
                 )}
               </>
@@ -990,14 +1153,15 @@ function App() {
                 <p>
                   {admin
                     ? "Elan seçdiyiniz sahibin profilinə əlavə ediləcək və dərhal kataloqda görünəcək. Telefon qeydiyyat üçün deyil, əlaqə üçündür."
-                    : "Elan yoxlanışdan sonra görünəcək. Məlumatlar yalnız bu cihazın brauzerində saxlanır."}
+                    : "Elan yoxlanışdan sonra görünəcək. Onu şəxsi hesabından izləyə və redaktə edə bilərsən."}
                 </p>
                 <div className="form-hint">
-                  Sahib gələcəkdə Google ilə daxil olacaq. Admin elanları onun
-                  təsdiqlənmiş Google hesabına bağlayacaq. Hazırda Google girişi
-                  aktiv deyil.
+                  Telefon yalnız əlaqə üçündür. Adminin daxil etdiyi sahib
+                  e-poçtu təsdiqlənmiş Google hesabına uyğun gələndə elanlar
+                  həmin hesabda görünür.
                 </div>
                 <ListingEditor
+                  saving={saving}
                   listing={editing}
                   owners={owners}
                   admin={admin}
@@ -1017,11 +1181,12 @@ function App() {
                         ? "Rentakar şirkəti"
                         : "Şəxsi sahib"}
                     </p>
-                    <p>{owner.expectedEmail || "E-poçt qeyd edilməyib"}</p>
+                    {admin && (
+                      <p>{owner.expectedEmail || "E-poçt qeyd edilməyib"}</p>
+                    )}
                     <div className="form-hint">
-                      Bu profilə aid elanlar aşağıdadır. Google girişi aktiv
-                      olduqda admin profili sahibin təsdiqlənmiş Google hesabına
-                      bağlayacaq. Telefonla qeydiyyat yoxdur.
+                      Bu profilə aid elanlar aşağıdadır. Hesab Google tərəfindən
+                      təsdiqlənir. Telefon yalnız əlaqə üçündür.
                     </div>
                     {[...cars, ...pending]
                       .filter((c) => c.ownerId === owner.id)
@@ -1034,7 +1199,9 @@ function App() {
                               {c.price} ₼ / gün ·{" "}
                               {pending.some((p) => p.id === c.id)
                                 ? "Yoxlanışda"
-                                : "Aktiv"}
+                                : c.paused
+                                  ? "Dayandırılıb"
+                                  : "Aktiv"}
                             </p>
                           </div>
                         </div>
@@ -1044,38 +1211,125 @@ function App() {
               })()
             ) : modal === "account" ? (
               <>
-                <span className="eyebrow">XOŞ GƏLMİSİNİZ</span>
-                <h2>Sənin avtomobil məkanın.</h2>
-                <p>
-                  Qeydiyyat və giriş yalnız Google hesabı ilə olacaq. Bu imkan
-                  hələ aktiv deyil; qoşulduqda Google ilə giriş düyməsi burada
-                  görünəcək. Telefon yalnız elan sahibi ilə əlaqə üçündür.
-                </p>
+                <span className="eyebrow">
+                  {user ? "ŞƏXSİ HESAB" : "XOŞ GƏLMİSİNİZ"}
+                </span>
+                <div className="modal-emblem">
+                  <UserRound size={25} />
+                </div>
+                <h2>{user ? user.name : "Sənin avtomobil məkanın."}</h2>
+                {user ? (
+                  <>
+                    <p>{user.email}</p>
+                    <div className="account-role">
+                      {user.isAdmin ? "Admin hesabı" : "Şəxsi hesab"}
+                    </div>
+                    <div className="account-actions">
+                      <button
+                        className="outline"
+                        onClick={() => setModal("my-listings")}
+                      >
+                        <Car size={16} /> Elanlarım
+                      </button>
+                      <button
+                        className="primary"
+                        onClick={() => setModal("listing")}
+                      >
+                        <Plus size={16} /> Elan yerləşdir
+                      </button>
+                      {user.isAdmin && (
+                        <button
+                          className="outline"
+                          onClick={() => {
+                            setModal(null);
+                            setAdmin(true);
+                            window.scrollTo(0, 0);
+                          }}
+                        >
+                          <LayoutDashboard size={16} /> İdarəetmə paneli
+                        </button>
+                      )}
+                      <button
+                        className="outline"
+                        onClick={() => onLogout().catch((e) => note(e.message))}
+                      >
+                        Hesabdan çıx
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <p>
+                      Google hesabınla təhlükəsiz daxil ol. Şəxsi hesabında
+                      yalnız sənə aid məlumatlar və elanlar görünür.
+                    </p>
+                    <GoogleLogin onAuthenticated={onAuthenticated} />
+                  </>
+                )}
+              </>
+            ) : modal === "my-listings" && user ? (
+              <>
+                <span className="eyebrow">ŞƏXSİ HESAB</span>
+                <h2>Elanlarım</h2>
+                <p>Yalnız sənin hesabına bağlı elanlar göstərilir.</p>
+                {[...cars, ...pending]
+                  .filter((c) =>
+                    owners.some(
+                      (o) => o.id === c.ownerId && o.accountId === user.id,
+                    ),
+                  )
+                  .map((c) => (
+                    <article className="my-listing" key={c.id}>
+                      <img src={c.image} alt={c.name} />
+                      <div>
+                        <h3>{c.name}</h3>
+                        <p>
+                          {c.price} ₼ / gün ·{" "}
+                          {c.status === "pending"
+                            ? "Yoxlanışda"
+                            : c.paused
+                              ? "Dayandırılıb"
+                              : "Aktiv"}
+                        </p>
+                        <button
+                          className="outline"
+                          onClick={() => setModal("edit:" + c.id)}
+                        >
+                          <Pencil size={14} /> Redaktə et
+                        </button>
+                      </div>
+                    </article>
+                  ))}
+                {![...cars, ...pending].some((c) =>
+                  owners.some(
+                    (o) => o.id === c.ownerId && o.accountId === user.id,
+                  ),
+                ) && (
+                  <div className="empty">
+                    <Car size={24} /> Hələ hesabına bağlı elan yoxdur.
+                  </div>
+                )}
                 <button className="primary" onClick={() => setModal("listing")}>
-                  Nümunə elan yerləşdir
-                </button>
-                <button
-                  className="outline modal-secondary"
-                  onClick={() => {
-                    setModal(null);
-                    setAdmin(true);
-                    window.scrollTo(0, 0);
-                  }}
-                >
-                  Demo paneli aç
+                  <Plus size={16} /> Elan yerləşdir
                 </button>
               </>
             ) : modal === "partners" ? (
               <>
                 <span className="eyebrow">BİRLİKDƏ BÖYÜYƏK</span>
+                <div className="modal-emblem">
+                  <Building2 size={25} />
+                </div>
                 <h2>Avtoparkını daha çox insan görsün.</h2>
                 <p>
                   Rentakar şirkətləri və şəxsi sahiblər üçün ilk aktiv elan
                   pulsuzdur. 3 və 10 avtomobillik paketlər, VIP yerləşdirmə və
                   şirkət profilləri nəzərdə tutulur.
                 </p>
-                <button className="primary" onClick={() => setModal("listing")}>
-                  İlk elanını yerləşdir
+                <button
+                  className="primary"
+                  onClick={() => setModal(user ? "listing" : "account")}
+                >
+                  <Plus size={17} /> İlk elanını yerləşdir
                 </button>
               </>
             ) : (
@@ -1097,7 +1351,7 @@ function App() {
         </div>
       )}
       {toast && (
-        <div className="toast">
+        <div className="toast" role="status" aria-live="polite">
           <Check size={18} />
           {toast}
         </div>
@@ -1105,4 +1359,8 @@ function App() {
     </>
   );
 }
-createRoot(document.getElementById("root")).render(<App />);
+createRoot(document.getElementById("root")).render(
+  <SessionBoundary>
+    {(props) => <App key={props.user?.id || "public"} {...props} />}
+  </SessionBoundary>,
+);

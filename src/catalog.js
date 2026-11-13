@@ -103,26 +103,26 @@ export const demoOwners = [
 ];
 const models = [
   [
+    "Mercedes-Benz",
+    "GLS",
+    2021,
+    170,
+    "Premium",
+    "Bakı",
+    "premium",
+    "mercedes-coast.jpg",
+    400,
+    250,
+  ],
+  [
     "BMW",
     "6 Series",
     2020,
     120,
     "Biznes",
     "Bakı",
-    "premium",
-    "car-2.jpg",
-    300,
-    250,
-  ],
-  [
-    "BMW",
-    "3 Series",
-    2022,
-    110,
-    "Biznes",
-    "Bakı",
     "vip",
-    "car-6.jpg",
+    "car-2.jpg",
     300,
     250,
   ],
@@ -143,7 +143,7 @@ const models = [
     "Polo GTI",
     2020,
     65,
-    "Sedan",
+    "Ekonom",
     "Gəncə",
     "vip",
     "car-3.jpg",
@@ -176,40 +176,51 @@ const models = [
   ],
   [
     "Volkswagen",
-    "Polo GTI",
+    "Polo",
     2019,
     55,
     "Ekonom",
     "Bakı",
     "standard",
-    "car-3.jpg",
+    "volkswagen-city.jpg",
     100,
     300,
   ],
-  ["Toyota", "RAV4", 2022, 90, "SUV", "Qəbələ", "vip", "car-1.jpg", 200, 300],
+  [
+    "Porsche",
+    "Panamera",
+    2021,
+    250,
+    "Premium",
+    "Qəbələ",
+    "vip",
+    "porsche-road.jpg",
+    600,
+    200,
+  ],
   [
     "BMW",
-    "3 Series",
+    "4 Series",
     2021,
-    95,
+    140,
     "Biznes",
     "Bakı",
     "standard",
-    "car-6.jpg",
-    250,
+    "bmw-blue.jpg",
+    350,
     250,
   ],
   [
-    "Cadillac",
-    "Escalade",
-    2021,
-    280,
-    "Premium",
+    "BMW",
+    "3 Series",
+    2022,
+    110,
+    "Biznes",
     "Bakı",
     "premium",
-    "car-4.jpg",
-    800,
-    200,
+    "car-6.jpg",
+    300,
+    250,
   ],
 ];
 export const initial = models.map(
@@ -273,13 +284,19 @@ export function upgradeDemoWorkspace(workspace) {
   return { ...workspace, cars, owners, catalogVersion: 2 };
 }
 
-// Refresh only the old built-in drawings. Preserve user photos, custom listings and edits.
+// Refresh built-in demo photos once. Preserve custom images and subsequent edits.
 export function upgradeDemoPhotos(workspace) {
+  if (workspace.photoVersion === 2) return workspace;
   return {
     ...workspace,
+    photoVersion: 2,
     cars: workspace.cars.map((car) => {
       const sample = initial.find((s) => s.id === car.id);
-      if (!sample || !/^\/cars\/demo-\d+\.svg$/.test(car.image || ""))
+      if (
+        !sample ||
+        (!/^\/cars\/demo-\d+\.svg$/.test(car.image || "") &&
+          !/^\/photos\/car-[1-6]\.jpg$/.test(car.image || ""))
+      )
         return car;
       return {
         ...car,

@@ -1,72 +1,57 @@
 # RENTACARR.AZ
 
-Azərbaycan dilində React + Vite avtomobil kirayəsi prototipi.
+Azərbaycan dilində avtomobil kirayəsi platforması. React + Vite, Vercel Node API, Google Identity Services və Neon Postgres.
 
-## İşə salma
+## İnterfeys
 
-Node.js 22 və ya 24:
+Vahid yüngül Inter şrifti, Lucide ikonları, 10 fərqli avtomobil fotosu, telefon / planşet / kompüter üçün uyğun görünüş. Şrift və təqdimat fotoları layihə ilə birlikdə saxlanır; xarici foto servisinə ehtiyac yoxdur. Foto mənbələri: public/photos/SOURCES.txt. Nümunə elanlar real kirayə təklifi deyil.
 
-```sh
-npm ci --cache /tmp/rentacarr-npm-cache
-npm run dev -- --port 3000
-npm run build
-```
+İctimai kataloq: şəhər, marka, model, qiymət və kateqoriya üzrə axtarış, qiymət sıralaması, bəyənilənlər və avtomobilin fərdi şərtləri.
 
-## Mövcud imkanlar
+Admin paneli: İcmal, Elanlar, Sahiblər, Yoxlanış və Bələdçi. Sahibin adından elan yaratma, redaktə, VIP/Premium, dayandırma / aktivləşdirmə, silmə təsdiqi, yoxlanış və JSON ehtiyat nüsxəsi.
 
-Adminin sahib adından elan yerləşdirməsi, mövcud sahib seçimi, sahib üzrə elanlar, e-poçt qeydi; şəhər, marka, qiymət və kateqoriya filtrləri; qiymət sıralaması; bəyənilənlər; elan detalları; nümunə elan göndərilməsi; demo panelində təsdiqləmə, rədd, VIP və silmə; mobil görünüş.
+## Hesablar və məxfilik
 
-## Məhdudiyyətlər
+Qeydiyyat yalnız Google ilədir. Telefon və ya e-poçt yazmaq giriş yaratmır. Yalnız serverdə təsdiqlənmiş **rentacarr.az@gmail.com** hesabı admin olur. Adi istifadəçi yalnız öz sahib profillərini və elanlarını görür. Şəxsi e-poçtlar açıq kataloqa verilmir. İcazələr serverdə yoxlanır; açıq demo admin girişi çıxarılıb.
 
-Bu ilkin frontend prototipidir. Elanlar nümunədir. Elanlar, sahib profilləri və gözləyən elanlar həmin brauzerin localStorage yaddaşında saxlanır və yenilənəndə qalır. Başqa cihazlara ötürülmür. Admin panelində JSON ehtiyat nüsxəsi endirilə bilər. Hesab yaratma, təhlükəsiz giriş, şəkil yükləmə, verilənlər bazası, hesab üzrə elan limiti və ödəniş sistemi hələ hazırlanmayıb. Açıq demo panel real idarəetmə üçün istifadə edilməməlidir. Yeni elan üçün göstərilən şəkil də nümunədir. Real istifadə üçün backend, serverdə icazə yoxlanması və şəkil saxlanması əlavə olunmalıdır.
+Admin sahibin Google e-poçtunu əvvəlcədən qeyd edə bilər. Sahib həmin Google hesabı ilə təsdiqlənmiş giriş etdikdə admin tərəfindən yaradılmış, hələ hesaba bağlanmamış profil ona bağlanır. Telefonla avtomatik hesab birləşdirməsi yoxdur.
 
-10 nümunə elan public/photos qovluğundakı real avtomobil fotolarından istifadə edir. 6 fərqli foto, fərqli il və şəhərlər üzrə 10 nümayiş elanında istifadə olunur. Fotolar layihə ilə birlikdə saxlanır; mənbələr public/photos/SOURCES.txt faylındadır. Şriftlər sistemdən istifadə edir; xarici şəkil və şrift xidmətinə ehtiyac yoxdur. Real elan üçün HTTPS şəkil ünvanı daxil edilə bilər.
+**Google və baza parametrləri olmadan qeydiyyat aktiv deyil və admin panelinə giriş yoxdur.** Dəqiq aktivləşdirmə təlimatı: [docs/GOOGLE_SETUP.md](docs/GOOGLE_SETUP.md).
 
 ## Vercel
 
-GitHub deposunu Vercel-ə import edin. Framework: Vite. Build command: `npm run build`. Output directory: `dist`. Hazırkı prototip üçün mühit dəyişəni tələb olunmur. Yayım bu repodan avtomatik edilməyib. İctimai istifadədən əvvəl real autentifikasiya və backend tamamlanmalıdır. Kommersiya istifadəsi üçün Vercel-in cari plan şərtlərini yoxlayın.
+Framework: Vite. Build: `npm run build`. Output: `dist`. Node API-lər `api/` qovluğundadır. Vercel Environment Variables:
 
-## Hesablar və yoxlama
+- `GOOGLE_CLIENT_ID`: Google Cloud Web OAuth Client ID.
+- `AUTH_SECRET`: ən az 32 simvolluq təsadüfi məxfi sessiya açarı.
+- `DATABASE_URL`: Neon Postgres URL, məxfi saxlanmalıdır.
 
-Telefon yalnız əlaqə üçündür. Qeydiyyat gələcəkdə Google ilə olacaq; hazırda aktiv deyil və Google düyməsi göstərilmir. Nəzərdə tutulan admin: rentacarr.az@gmail.com. Bu ünvanın qeyd edilməsi real hesab yaratmır. İcazələr və elanların Google hesabına bağlanması üçün server inteqrasiyası lazımdır: [giriş planı](docs/ACCOUNT_ACCESS.md).
+Google Console-da saytın dəqiq originini icazəli JavaScript originləri siyahısına əlavə edin. Sonra Vercel-də Redeploy edin. Məxfi dəyərləri çata və GitHub-a yazmayın. Hazırkı icra mühitində bu parametrlər yoxdur, ona görə real Google girişi və Neon bağlantısı canlı yoxlanılmayıb.
 
-Məlumat modeli testləri: `node --test tests/*.test.js`.
+## Kompüterdə işlətmə
 
-## Kompüterdə baxmaq
-
-Node.js 22 və ya 24 quraşdırıldıqdan sonra terminalda:
+Node.js 22 və ya 24. `.env.example` əsasında izlənməyən `.env.local` faylı hazırlayın.
 
 ```sh
-git clone https://github.com/kirayeal/RENTACARR.AZ.git
-cd RENTACARR.AZ
 npm ci
 npm run dev -- --port 3000
 ```
 
-Brauzerdə terminalın göstərdiyi yerli ünvanı açın. Bu yalnız server işləyən kompüterdə açılır; GitHub kod səhifəsi işlək saytın ünvanı deyil. Saytın aşağısındakı **Demo idarəetmə paneli** düyməsi ilə panelə keçin. Qeydiyyat tələb olunmur. Google girişi hələ aktiv deyil.
+Bu əmr API və frontend-i eyni serverdə açır. `npm run preview` yalnız frontend üçündür və giriş yoxlaması üçün uyğun deyil.
 
-## 10 nümunə və təqdimat statusları
+Windows-da Git olmadan: GitHub → Code → Download ZIP; arxivi tam çıxarın, `START-WINDOWS.cmd` faylını açın. Node.js LTS lazımdır. Terminaldakı Local ünvanını brauzerdə açın.
 
-Toyota RAV4, Volkswagen Polo GTI, BMW 3 Series, BMW 6 Series, BMW M4 və Cadillac Escalade modellərinin müxtəlif şəhər və il üzrə 10 nümunəsi. Hamısı eyni **RENTACARR Demo Avtopark** profilinə bağlıdır. Nümunələr real əlaqə nömrəsi və ya real müştəri hesabı daşımır.
+## Yoxlamalar
 
-Bu model seçimi ekonom, sedan, SUV, biznes və premium istifadə ssenarilərini nümayiş etdirir. Ən çox kirayəyə verilən modellərin yoxlanmış bazar reytinqi deyil. Qiymətlər, illər, şərtlər və fotolar yalnız nümayiş üçündür; real kirayə təklifi deyil. Marka siyahısı geniş seçim və Digər variantını təqdim edir; bütün dünya markalarının tam reyestri olduğu iddia edilmir.
+```sh
+npm test
+npm run build
+```
 
-- Standart: adi kataloq sırası.
-- VIP: standart elanlardan əvvəl.
-- Premium: ayrıca nişan, VIP-dən əvvəl. Avtomobil kateqoriyası ilə təqdimat statusu ayrıdır.
-- Admin statusları ödənişsiz dəyişə bilər; real ödəniş aparılmır.
-- Elanı redaktə etmək, şərtlərini dəyişmək, dayandırmaq / aktivləşdirmək və təsdiqlə silmək mümkündür.
-- Köhnə 6 nümunəlik yaddaş bir dəfə 10 elana genişləndirilir; istifadəçinin əlavə etdiyi məlumatlar qorunur. Sonrakı silmələr yenilənəndə geri qaytarılmır. “10 nümunə elanı tamamla” düyməsi çatışmayan nümunələri bərpa edir.
+İcazə testləri Google təsdiqindən sonra sessiya və sahib bağlanmasını idarə olunan test identifikatorları ilə yoxlayır. SQL sorğuları testdə PGlite Postgres mühərrikində icra olunur; Neon və Google ilə real şəbəkə bağlantısını əvəz etmir. Real Google tokeni olmadan istehsal verifikasiyası uğurlu olmur.
 
-## Windows: Git quraşdırmadan açmaq
+## Hazırkı məhdudiyyətlər
 
-1. GitHub səhifəsində **Code → Download ZIP** seçin.
-2. ZIP-i tam çıxarın. İçəridə package.json və START-WINDOWS.cmd olan qovluğu açın.
-3. **START-WINDOWS.cmd** faylını iki dəfə klikləyin. Node.js LTS quraşdırılmış olmalıdır.
-4. Terminalda göstərilən Local ünvanını brauzerdə açın. Server pəncərəsini açıq saxlayın.
+Real ödəniş, ödənişli paket satınalması, fayl yükləmə / şəkil saxlama xidməti, rezervasiya və çat hələ yoxdur. Adi hesab üçün 1 elan limiti serverdə tətbiq olunur; admin sahib adından limitsiz elan əlavə edə bilər. Adi istifadəçinin yeni və redaktə edilmiş elanı yoxlanışa düşür.
 
-Alternativ: həmin qovluğun ünvan sətrinə `cmd` yazıb Enter basın. Ardınca `npm ci` və `npm run dev -- --port 3000` əmrlərini işlədin. İstifadəçi qovluğunda və ya ZIP-in içindən npm əmrlərini işə salmayın.
-
-## Responsive görünüş
-
-Telefonlarda bir, planşetlərdə iki, geniş ekranlarda üç sütun. Şəkillər orijinal 440:300 nisbətində göstərilir. Mobil menyu, sürüşdürülən kateqoriyalar və rahat toxunma düymələri mövcuddur. Admin paneli və redaktə forması da kiçik ekranlarda işləyir.
+Əvvəlki localStorage demo məlumatları serverə köçürülmür və hesablar arasında göstərilmir; köhnə yaddaş yerində saxlanır. Baza boşdursa ümumi kataloqda 10 təqdimat elanı görünür. Onlar real sahib hesablarına aid edilmir.
