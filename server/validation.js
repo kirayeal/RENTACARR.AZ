@@ -10,8 +10,8 @@ export function cleanListing(input) {
     return input[name].trim();
   };
   const num = (key, min, max) => {
-    const defaults={deposit:0,mileage:250,minAge:18,experience:0};
-    const n = Number(input[key]??defaults[key]);
+    const defaults = { deposit: 0, mileage: 250, minAge: 18, experience: 0 };
+    const n = Number(input[key] ?? defaults[key]);
     if (!Number.isFinite(n) || n < min || n > max)
       throw httpError(400, "Qiymət və şərtlər düzgün deyil.");
     return n;
@@ -37,6 +37,7 @@ export function cleanListing(input) {
     minAge: num("minAge", 18, 80),
     experience: num("experience", 0, 60),
     description: String(input.description || "").slice(0, 2000),
+    terms: String(input.terms || "").slice(0, 2000),
     image: image || "/photos/journey.jpg",
   };
 }

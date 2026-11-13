@@ -1,24 +1,29 @@
+import { t } from "./i18n";
 import React, { useState } from "react";
 import { Building2, Car, ShieldCheck, Camera, Check } from "lucide-react";
 import { brands, categories, cities } from "./catalog";
 const Field = ({ label, ...props }) => (
   <label>
-    {label}
+    {t(label)}
     <input {...props} />
   </label>
 );
 const Select = ({ label, options, ...props }) => (
   <label>
-    {label}
+    {t(label)}
     <select {...props}>
-      {options.map((option) => {
-        const [value, text] = Array.isArray(option) ? option : [option, option];
-        return (
-          <option key={value} value={value}>
-            {text}
-          </option>
-        );
-      })}
+      {t(
+        options.map((option) => {
+          const [value, text] = Array.isArray(option)
+            ? option
+            : [option, option];
+          return (
+            <option key={value} value={value}>
+              {t(text)}
+            </option>
+          );
+        }),
+      )}
     </select>
   </label>
 );
@@ -36,42 +41,46 @@ export default function ListingEditor({
       <fieldset disabled={saving}>
         <legend>
           <Building2 size={17} />
-          Sahib məlumatları
+          {t("Sahib məlumatları")}
         </legend>
         <p className="fieldset-caption">
-          Elanı şirkətin və ya şəxsi sahibin profili ilə əlaqələndir.
+          {t("Elanı şirkətin və ya şəxsi sahibin profili ilə əlaqələndir.")}
         </p>
-        {!admin && listing && (
-          <input type="hidden" name="ownerId" value={listing.ownerId} />
+        {t(
+          !admin && listing && (
+            <input type="hidden" name="ownerId" value={listing.ownerId} />
+          ),
         )}
-        {admin && (
-          <Select
-            label="Mövcud sahib"
-            name="ownerId"
-            defaultValue={selectedOwner}
-            options={[
-              ["", "Yeni sahib profili yarat"],
-              ...owners.map((o) => [
-                o.id,
-                o.name + (o.demo ? " · Nümunə profil" : ` · ${o.phone}`),
-              ]),
-            ]}
-            onChange={(e) => {
-              setSelectedOwner(e.target.value);
-              const o = owners.find((x) => x.id === e.target.value);
-              const f = e.target.form;
-              if (o) {
-                f.elements.owner.value = o.name;
-                f.elements.phone.value = o.phone;
-                f.elements.ownerKind.value = o.kind;
-                f.elements.ownerEmail.value = o.expectedEmail || "";
-              }
-            }}
-          />
+        {t(
+          admin && (
+            <Select
+              label={t("Mövcud sahib")}
+              name="ownerId"
+              defaultValue={selectedOwner}
+              options={[
+                ["", "Yeni sahib profili yarat"],
+                ...owners.map((o) => [
+                  o.id,
+                  o.name + (o.demo ? " · Nümunə profil" : ` · ${o.phone}`),
+                ]),
+              ]}
+              onChange={(e) => {
+                setSelectedOwner(e.target.value);
+                const o = owners.find((x) => x.id === e.target.value);
+                const f = e.target.form;
+                if (o) {
+                  f.elements.owner.value = o.name;
+                  f.elements.phone.value = o.phone;
+                  f.elements.ownerKind.value = o.kind;
+                  f.elements.ownerEmail.value = o.expectedEmail || "";
+                }
+              }}
+            />
+          ),
         )}
         <div className="form-pair">
           <Select
-            label="Sahibin tipi"
+            label={t("Sahibin tipi")}
             name="ownerKind"
             defaultValue={listing?.company ? "company" : "person"}
             options={[
@@ -80,7 +89,7 @@ export default function ListingEditor({
             ]}
           />
           <Field
-            label="Sahibin / şirkətin adı"
+            label={t("Sahibin / şirkətin adı")}
             name="owner"
             required
             maxLength="80"
@@ -88,41 +97,41 @@ export default function ListingEditor({
           />
         </div>
         <Field
-          label="Telefon — yalnız əlaqə üçün"
+          label={t("Telefon — yalnız əlaqə üçün")}
           name="phone"
           type="tel"
           required={!listing?.demo && !profile?.demo}
           defaultValue={listing?.phone || ""}
-          placeholder="050 123 45 67"
+          placeholder={t("050 123 45 67")}
         />
         <Field
-          label="Sahibin Google e-poçtu (istəyə bağlı)"
+          label={t("Sahibin Google e-poçtu (istəyə bağlı)")}
           name="ownerEmail"
           type="email"
           maxLength="254"
           defaultValue={
             owners.find((o) => o.id === listing?.ownerId)?.expectedEmail || ""
           }
-          placeholder="sahib@gmail.com"
+          placeholder={t("sahib@gmail.com")}
         />
       </fieldset>
       <fieldset disabled={saving}>
         <legend>
           <Car size={17} />
-          Avtomobil haqqında
+          {t("Avtomobil haqqında")}
         </legend>
         <p className="fieldset-caption">
-          Axtarışda düzgün görünməsi üçün məlumatları dəqiq qeyd et.
+          {t("Axtarışda düzgün görünməsi üçün məlumatları dəqiq qeyd et.")}
         </p>
         <div className="form-pair">
           <Select
-            label="Marka"
+            label={t("Marka")}
             name="brand"
             defaultValue={listing?.brand || "Toyota"}
             options={brands}
           />
           <Field
-            label="Model"
+            label={t("Model")}
             name="model"
             required
             maxLength="60"
@@ -131,12 +140,12 @@ export default function ListingEditor({
               listing?.name?.replace(listing.brand, "").trim() ||
               ""
             }
-            placeholder="Corolla"
+            placeholder={t("Corolla")}
           />
         </div>
         <div className="form-pair">
           <Field
-            label="Buraxılış ili"
+            label={t("Buraxılış ili")}
             name="year"
             type="number"
             required
@@ -145,7 +154,7 @@ export default function ListingEditor({
             defaultValue={listing?.year || 2023}
           />
           <Select
-            label="Şəhər"
+            label={t("Şəhər")}
             name="city"
             defaultValue={listing?.city || "Bakı"}
             options={cities}
@@ -153,13 +162,13 @@ export default function ListingEditor({
         </div>
         <div className="form-pair">
           <Select
-            label="Kateqoriya"
+            label={t("Kateqoriya")}
             name="type"
             defaultValue={listing?.type || "Sedan"}
             options={categories}
           />
           <Field
-            label="Oturacaq sayı"
+            label={t("Oturacaq sayı")}
             name="seats"
             type="number"
             min="1"
@@ -170,13 +179,13 @@ export default function ListingEditor({
         </div>
         <div className="form-pair">
           <Select
-            label="Yanacaq"
+            label={t("Yanacaq")}
             name="fuel"
             defaultValue={listing?.fuel || "Benzin"}
             options={["Benzin", "Dizel", "Hibrid", "Elektrik"]}
           />
           <Select
-            label="Sürətlər qutusu"
+            label={t("Sürətlər qutusu")}
             name="transmission"
             defaultValue={listing?.transmission || "Avtomat"}
             options={["Avtomat", "Mexaniki"]}
@@ -186,13 +195,13 @@ export default function ListingEditor({
       <fieldset disabled={saving}>
         <legend>
           <ShieldCheck size={17} />
-          Qiymət və əlavə məlumat
+          {t("Qiymət və əlavə məlumat")}
         </legend>
         <p className="fieldset-caption">
-          Müştəri avtomobili seçməzdən əvvəl bu şərtləri görəcək.
+          {t("Müştəri avtomobili seçməzdən əvvəl bu şərtləri görəcək.")}
         </p>
         <Field
-          label="Günlük qiymət (₼)"
+          label={t("Günlük qiymət (₼)")}
           name="price"
           type="number"
           required
@@ -200,65 +209,84 @@ export default function ListingEditor({
           max="10000"
           defaultValue={listing?.price}
         />
-        {admin && (
-          <Select
-            label="Elanın təqdimatı"
-            name="promotion"
-            defaultValue={
-              listing?.promotion || (listing?.vip ? "vip" : "standard")
-            }
-            options={[
-              ["standard", "Standart"],
-              ["vip", "VIP"],
-              ["premium", "Premium"],
-            ]}
-          />
+        {t(
+          admin && (
+            <Select
+              label={t("Elanın təqdimatı")}
+              name="promotion"
+              defaultValue={
+                listing?.promotion || (listing?.vip ? "vip" : "standard")
+              }
+              options={[
+                ["standard", "Standart"],
+                ["vip", "VIP"],
+                ["premium", "Premium"],
+              ]}
+            />
+          ),
         )}
         <label>
-          Avtomobil haqqında əlavə məlumat
+          {t("Avtomobil haqqında əlavə məlumat")}
           <textarea
             name="description"
             rows="4"
             maxLength="2000"
             defaultValue={listing?.description || ""}
-            placeholder="Avtomobil haqqında qısa məlumat…"
+            placeholder={t("Avtomobil haqqında qısa məlumat…")}
           />
         </label>
       </fieldset>
+      <label>
+        {t("Kirayə şərtləri")}
+        <textarea
+          name="terms"
+          rows="3"
+          maxLength="2000"
+          defaultValue={listing?.terms || ""}
+          placeholder={t(
+            "Təhvil yeri, kirayə müddəti və ödəniş haqqında məlumat…",
+          )}
+        />
+      </label>
       <fieldset disabled={saving}>
         <legend>
           <Camera size={17} />
-          Avtomobilin fotosu
+          {t("Avtomobilin fotosu")}
         </legend>
         <p className="fieldset-caption">
-          Elana aid real fotonun HTTPS ünvanını əlavə et. Foto yükləmə xidməti
-          hələ qoşulmayıb.
+          {t(
+            "Elana aid real fotonun HTTPS ünvanını əlavə et. Foto yükləmə xidməti hələ qoşulmayıb.",
+          )}
         </p>
         <Field
-          label="Şəkil ünvanı (istəyə bağlı)"
+          label={t("Şəkil ünvanı (istəyə bağlı)")}
           name="image"
           type="url"
-          placeholder="https://…"
+          placeholder={t("https://…")}
           defaultValue={
             listing?.image?.startsWith("https://") ? listing.image : ""
           }
         />
-        {listing?.image && (
-          <div className="editor-photo">
-            <img src={listing.image} alt={listing.name} />
-            <span>Elanın hazırkı fotosu</span>
-          </div>
+        {t(
+          listing?.image && (
+            <div className="editor-photo">
+              <img src={listing.image} alt={listing.name} />
+              <span>{t("Elanın hazırkı fotosu")}</span>
+            </div>
+          ),
         )}
       </fieldset>
       <button className="primary" disabled={saving}>
         <Check size={16} />
-        {saving
-          ? "Saxlanılır…"
-          : listing
-            ? "Dəyişiklikləri saxla"
-            : admin
-              ? "Elanı dərc et"
-              : "Yoxlanışa göndər"}
+        {t(
+          saving
+            ? "Saxlanılır…"
+            : listing
+              ? "Dəyişiklikləri saxla"
+              : admin
+                ? "Elanı dərc et"
+                : "Yoxlanışa göndər",
+        )}
       </button>
     </form>
   );

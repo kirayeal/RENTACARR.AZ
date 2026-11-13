@@ -57,3 +57,9 @@ Real ödəniş, ödənişli paket satınalması, fayl yükləmə / şəkil saxla
 Əvvəlki localStorage demo məlumatları serverə köçürülmür və hesablar arasında göstərilmir; köhnə yaddaş yerində saxlanır. Baza boşdursa ümumi kataloqda 10 təqdimat elanı görünür. Onlar real sahib hesablarına aid edilmir.
 
 Qeydiyyat axını: Google təsdiqi → firma və ya şəxsi sahib seçimi → ad və mobil nömrə → hesab. Hər normallaşdırılmış mobil nömrə yalnız bir hesaba bağlanır. SMS təsdiqi qoşulmayıb. Yaş, depozit və təcrübə sahələri istifadəçi görünüşündən çıxarılıb. Mətn ölçüləri oxunaqlılıq üçün böyüdülüb.
+
+## Son giriş və kataloq yeniləməsi
+
+Əsas giriş indi telefon + real SMS kodudur. Google girişi ayrıca `GOOGLE_LOGIN_ENABLED=false` ilə gizlədilir. Telefon xidmətinin parametrləri və dəqiq axın: [PHONE_ACCESS.md](docs/PHONE_ACCESS.md). Əvvəlki yalnız-Google təsviri bu yeni seçimlə genişləndirilib. Telefonla giriş admin səlahiyyəti vermir.
+
+AZ / EN / RU interfeys dili seçimi, kompakt üst hissə, bütün kartdan açılan elan detalları, əlaqə bölməsi və ayrıca kirayə şərtləri əlavə olunub. İstifadəçinin yazdığı sərbəst elan mətni avtomatik tərcümə edilmir.

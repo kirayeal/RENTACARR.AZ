@@ -50,6 +50,7 @@ export function createHandler({
     if (action === "logout") {
       setCookie(res, "rc_session", "", 0);
       setCookie(res, "rc_nonce", "", 0);
+      setCookie(res, "rc_phone", "", 0);
       return json(res, 200, { user: null });
     }
     if (action !== "login") throw httpError(404, "Səhifə tapılmadı.");
@@ -85,6 +86,7 @@ export function createHandler({
       "rc_session",
       sign({
         purpose: "session",
+        method: "google",
         sub: payload.sub,
         email,
         name,

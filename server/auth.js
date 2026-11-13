@@ -6,6 +6,7 @@ export const isAdminEmail = (email) =>
     .toLowerCase() === ADMIN_EMAIL;
 export function authConfigured() {
   return Boolean(
+    process.env.GOOGLE_LOGIN_ENABLED === "true" &&
     process.env.GOOGLE_CLIENT_ID &&
     process.env.AUTH_SECRET?.length >= 32 &&
     process.env.DATABASE_URL,
@@ -53,9 +54,10 @@ export function session(req) {
     return null;
   return {
     id: value.sub,
-    email: value.email,
+    email: value.email.endsWith("@phone.invalid") ? "" : value.email,
+    phone: value.phone || null,
     name: value.name || "",
-    isAdmin: isAdminEmail(value.email),
+    isAdmin: value.method === "google" && isAdminEmail(value.email),
   };
 }
 export function setCookie(res, name, value, maxAge) {

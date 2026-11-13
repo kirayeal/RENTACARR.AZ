@@ -1,3 +1,5 @@
+> Əsas giriş indi telefon + SMS kodudur: [PHONE_ACCESS.md](PHONE_ACCESS.md). Google düyməsi standart olaraq gizlidir. Bu sənəddəki Google bağlantısını aktiv etmək üçün əlavə olaraq `GOOGLE_LOGIN_ENABLED=true` təyin olunmalıdır. İstifadəçinin hazırkı seçiminə görə bu parametr `false` qalır.
+
 # Google girişi və məlumatların ayrılması
 
 ## Nə dəyişdi

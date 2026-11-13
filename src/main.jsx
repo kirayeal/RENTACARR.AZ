@@ -1,3 +1,4 @@
+import { t, useLanguage, setLanguage } from "./i18n";
 import React, { useState, useEffect } from "react";
 import { SessionBoundary, GoogleLogin, request } from "./session";
 import { createRoot } from "react-dom/client";
@@ -36,10 +37,20 @@ import "./style.css";
 import "@fontsource-variable/inter";
 import ListingEditor from "./ListingEditor";
 import Registration from "./Registration";
+import PhoneLogin from "./PhoneLogin";
 import { initial, brands, categories, cities, promotionRank } from "./catalog";
 function App({ user, onAuthenticated, onLogout, authError }) {
+  const language = useLanguage();
+  useEffect(() => {
+    document.documentElement.lang = language;
+    document.title = "RENTACARR.AZ — " + t("Avtomobil kirayəsi");
+  }, [language]);
   const [adminView, setAdminView] = useState("overview");
-  const workspace = { cars: [], pending: [], owners: [] };
+  const workspace = {
+    cars: [],
+    pending: [],
+    owners: [],
+  };
   const [publicCars, setPublicCars] = useState(initial),
     [serviceError, setServiceError] = useState(""),
     [saving, setSaving] = useState(false);
@@ -55,7 +66,18 @@ function App({ user, onAuthenticated, onLogout, authError }) {
       max: "",
     }),
     [category, setCategory] = useState("Hamısı"),
-    [liked, setLiked] = useState([]),
+    [liked, setLiked] = useState(() => {
+      try {
+        const stored = JSON.parse(
+          localStorage.getItem(
+            "rentacarr.favorites." + (user?.id || "guest"),
+          ) || "[]",
+        );
+        return Array.isArray(stored) ? stored : [];
+      } catch {
+        return [];
+      }
+    }),
     [favorites, setFavorites] = useState(false),
     [selected, setSelected] = useState(null),
     [modal, setModal] = useState(
@@ -69,6 +91,14 @@ function App({ user, onAuthenticated, onLogout, authError }) {
     [adminSearch, setAdminSearch] = useState(""),
     [adminStatus, setAdminStatus] = useState("all"),
     [deleteId, setDeleteId] = useState(null);
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        "rentacarr.favorites." + (user?.id || "guest"),
+        JSON.stringify(liked),
+      );
+    } catch {}
+  }, [liked, user?.id]);
   const admin = Boolean(user?.isAdmin && user?.profile?.complete && adminMode);
   const editing = modal?.startsWith("edit:")
     ? [...cars, ...pending].find((c) => String(c.id) === modal.slice(5))
@@ -93,7 +123,10 @@ function App({ user, onAuthenticated, onLogout, authError }) {
     try {
       await request("/api/listings", {
         method: "PATCH",
-        body: { id, ...patch },
+        body: {
+          id,
+          ...patch,
+        },
       });
       await refreshWorkspace();
       note("Dəyişiklik saxlanıldı.");
@@ -103,7 +136,12 @@ function App({ user, onAuthenticated, onLogout, authError }) {
   }
   async function removeListing(id) {
     try {
-      await request("/api/listings", { method: "DELETE", body: { id } });
+      await request("/api/listings", {
+        method: "DELETE",
+        body: {
+          id,
+        },
+      });
       await refreshWorkspace();
       setDeleteId(null);
       note("Elan silindi.");
@@ -183,7 +221,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
     e.preventDefault();
     if (!user) {
       setModal("account");
-      note("Elan yerləşdirmək üçün Google ilə daxil olun.");
+      note("Elan yerləşdirmək üçün daxil olun.");
       return;
     }
     const d = new FormData(e.target);
@@ -194,7 +232,10 @@ function App({ user, onAuthenticated, onLogout, authError }) {
         if (details.ownerId)
           await request("/api/owners", {
             method: "PATCH",
-            body: { ...details, id: details.ownerId },
+            body: {
+              ...details,
+              id: details.ownerId,
+            },
           });
         await request("/api/listings", {
           method: "PATCH",
@@ -205,7 +246,11 @@ function App({ user, onAuthenticated, onLogout, authError }) {
             promotion: admin ? details.promotion : undefined,
           },
         });
-      } else await request("/api/listings", { method: "POST", body: details });
+      } else
+        await request("/api/listings", {
+          method: "POST",
+          body: details,
+        });
       await refreshWorkspace();
       setModal(null);
       note(
@@ -224,8 +269,21 @@ function App({ user, onAuthenticated, onLogout, authError }) {
   function exportWorkspace() {
     const url = URL.createObjectURL(
       new Blob(
-        [JSON.stringify({ version: 1, cars, pending, owners }, null, 2)],
-        { type: "application/json" },
+        [
+          JSON.stringify(
+            {
+              version: 1,
+              cars,
+              pending,
+              owners,
+            },
+            null,
+            2,
+          ),
+        ],
+        {
+          type: "application/json",
+        },
       ),
     );
     const a = document.createElement("a");
@@ -234,7 +292,6 @@ function App({ user, onAuthenticated, onLogout, authError }) {
     a.click();
     URL.revokeObjectURL(url);
   }
-
   const adminCars = cars
     .filter((c) =>
       (c.name + " " + c.owner)
@@ -252,7 +309,6 @@ function App({ user, onAuthenticated, onLogout, authError }) {
               ? c.promotion === "premium"
               : c.promotion === "vip" || (c.vip && c.promotion !== "premium")),
     );
-
   return (
     <>
       <header>
@@ -267,36 +323,43 @@ function App({ user, onAuthenticated, onLogout, authError }) {
           <span className="logo-mark">
             <Car size={23} />
           </span>
-          rentacarr<span className="logo-az">.az</span>
+          {t("rentacarr")}
+          <span className="logo-az">{t(".az")}</span>
         </a>
         <nav>
           <a href="#cars" onClick={() => setAdmin(false)}>
-            Avtomobillər
+            {t("Avtomobillər")}
           </a>
-          <button onClick={() => setModal("partners")}>Partnyorlar</button>
-          <button onClick={() => setModal("how")}>Necə işləyir?</button>
+          <button onClick={() => setModal("partners")}>
+            {t("Partnyorlar")}
+          </button>
+          <button onClick={() => setModal("how")}>{t("Necə işləyir?")}</button>
           <button
-            aria-label="Seçilmiş elanlar"
+            aria-label={t("Seçilmiş elanlar")}
             onClick={() => {
               setFavorites(!favorites);
-              document
-                .getElementById("cars")
-                ?.scrollIntoView({ behavior: "smooth" });
+              document.getElementById("cars")?.scrollIntoView({
+                behavior: "smooth",
+              });
             }}
           >
             <Heart size={16} fill={favorites ? "currentColor" : "none"} />
           </button>
         </nav>
         <div className="header-right">
-          <button
+          <select
             className="language"
-            onClick={() => note("Hazırda Azərbaycan dili mövcuddur.")}
+            aria-label="Language"
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
           >
-            AZ <ChevronDown size={13} />
-          </button>
+            <option value="az">AZ</option>
+            <option value="en">EN</option>
+            <option value="ru">RU</option>
+          </select>
           <button
             className="heart-top"
-            aria-label="Seçilmiş elanlar"
+            aria-label={t("Seçilmiş elanlar")}
             onClick={() => {
               setFavorites(!favorites);
               setAdmin(false);
@@ -307,11 +370,11 @@ function App({ user, onAuthenticated, onLogout, authError }) {
           </button>
           <button
             className="login"
-            aria-label={user ? "Hesabım" : "Qeydiyyat və giriş"}
+            aria-label={t(user ? "Hesabım" : "Qeydiyyat və giriş")}
             onClick={() => setModal("account")}
           >
             <UserRound size={17} />
-            <span>{user ? "Hesabım" : "Qeydiyyat / Giriş"}</span>
+            <span>{t(user ? "Hesabım" : "Qeydiyyat / Giriş")}</span>
           </button>
           <button
             className="primary add"
@@ -325,660 +388,123 @@ function App({ user, onAuthenticated, onLogout, authError }) {
               )
             }
           >
-            <Plus size={17} /> Elan yerləşdir
+            <Plus size={17} />
+            {t("Elan yerləşdir")}
           </button>
         </div>
       </header>
-      {!admin && (
-        <nav className="mobile-nav" aria-label="Əsas menyu">
-          <a href="#cars">Avtomobillər</a>
-          <button onClick={() => setModal("partners")}>Partnyorlar</button>
-          <button onClick={() => setModal("how")}>Necə işləyir?</button>
-          <button
-            aria-label="Seçilmiş elanlar"
-            onClick={() => {
-              setFavorites(!favorites);
-              document
-                .getElementById("cars")
-                ?.scrollIntoView({ behavior: "smooth" });
-            }}
-          >
-            <Heart size={16} fill={favorites ? "currentColor" : "none"} />
-          </button>
-        </nav>
-      )}
-      {(authError || serviceError) && (
-        <div className="service-notice" role="status">
-          {authError || serviceError}
-        </div>
-      )}
-      {admin ? (
-        <main className="admin" data-view={adminView}>
-          <div className="section-title">
-            <div>
-              <span className="eyebrow">İDARƏETMƏ PANELİ</span>
-              <h1>Hər şey nəzarətində.</h1>
-              <p>
-                Elanları, sahibləri və yoxlanışları idarə et. Giriş yalnız
-                təsdiqlənmiş admin hesabına açıqdır.
-              </p>
-            </div>
-            <button className="outline" onClick={() => setAdmin(false)}>
-              <ArrowLeft size={16} /> Sayta qayıt
+      {t(
+        !admin && (
+          <nav className="mobile-nav" aria-label={t("Əsas menyu")}>
+            <a href="#cars">{t("Avtomobillər")}</a>
+            <button onClick={() => setModal("partners")}>
+              {t("Partnyorlar")}
             </button>
-          </div>
-          <nav className="admin-nav" aria-label="İdarəetmə bölmələri">
-            {[
-              ["overview", "İcmal", LayoutDashboard],
-              ["listings", "Elanlar", Car],
-              ["owners", "Sahiblər", Users],
-              ["review", "Yoxlanış", ClipboardList],
-              ["help", "Bələdçi", CircleHelp],
-            ].map(([key, label, Icon]) => (
-              <button
-                key={key}
-                aria-pressed={adminView === key}
-                className={adminView === key ? "active" : ""}
-                onClick={() => setAdminView(key)}
-              >
-                <Icon size={17} />
-                {label}
-                {key === "review" && pending.length > 0 && (
-                  <span>{pending.length}</span>
-                )}
-              </button>
-            ))}
-          </nav>
-          <div className="stats">
-            {[
-              ["Aktiv elanlar", cars.filter((c) => !c.paused).length],
-              ["Yoxlanış gözləyən", pending.length],
-              [
-                "Premium elanlar",
-                cars.filter((c) => c.promotion === "premium").length,
-              ],
-              ["VIP elanlar", cars.filter((c) => c.promotion === "vip").length],
-            ].map(([label, n]) => (
-              <article key={label}>
-                <div className="stat-icon">
-                  {label.includes("Premium") ? (
-                    <Crown size={19} />
-                  ) : label.includes("VIP") ? (
-                    <Sparkles size={19} />
-                  ) : label.includes("gözləyən") ? (
-                    <Clock3 size={19} />
-                  ) : (
-                    <Car size={19} />
-                  )}
-                </div>
-                <span>{label}</span>
-                <strong>{n}</strong>
-              </article>
-            ))}
-          </div>
-          <div className="admin-actions">
+            <button onClick={() => setModal("how")}>
+              {t("Necə işləyir?")}
+            </button>
             <button
-              className="primary"
-              onClick={() =>
-                setModal(
-                  user
-                    ? user.profile?.complete
-                      ? "listing"
-                      : "register"
-                    : "account",
-                )
-              }
-            >
-              <Plus size={17} /> Sahibin adından elan yerləşdir
-            </button>
-            <button className="outline" onClick={() => setAdmin(false)}>
-              Nümunə kataloquna bax
-            </button>
-            <button className="outline" onClick={exportWorkspace}>
-              <Download size={16} /> Ehtiyat nüsxəni endir
-            </button>
-          </div>
-          <section className="admin-overview">
-            <div className="overview-heading">
-              <span className="eyebrow">İŞ MƏKANI</span>
-              <h2>Avtoparkına ümumi baxış</h2>
-              <p>Elanları, sahibləri və yoxlanışları bir yerdən idarə et.</p>
-            </div>
-            <div className="overview-grid">
-              <button onClick={() => setAdminView("listings")}>
-                <Car size={23} />
-                <h3>Elanları idarə et</h3>
-                <p>Qiymət, təqdimat və aktivlik statusu.</p>
-                <ArrowUpRight size={18} />
-              </button>
-              <button onClick={() => setAdminView("owners")}>
-                <Building2 size={23} />
-                <h3>Sahib profilləri</h3>
-                <p>{owners.length} profil və onlara aid avtomobillər.</p>
-                <ArrowUpRight size={18} />
-              </button>
-              <button onClick={() => setAdminView("review")}>
-                <ClipboardList size={23} />
-                <h3>Yoxlanış gözləyənlər</h3>
-                <p>{pending.length} elan qərarını gözləyir.</p>
-                <ArrowUpRight size={18} />
-              </button>
-            </div>
-            <div className="workspace-notice">
-              <ShieldCheck size={19} />
-              <div>
-                <h3>Qorunan admin iş məkanı</h3>
-                <p>
-                  Məlumatlar serverdə saxlanır. Sahib profilləri və şəxsi
-                  e-poçtlar yalnız icazəli hesablara göstərilir.
-                </p>
-              </div>
-            </div>
-          </section>
-          <section className="owner-management">
-            <span className="eyebrow">HESABDAN ƏVVƏL DƏ SAHİB PROFİLİ</span>
-            <h2>Avtomobil sahibləri</h2>
-            <p>
-              Telefon yalnız əlaqə üçündür. Yeni elan üçün mövcud sahibi seçin
-              və ya yeni profil yaradın. Sahib Google ilə təsdiqlənmiş giriş
-              etdikdə adminin qeyd etdiyi uyğun e-poçt onun profilinə bağlanır.
-              Telefon giriş üsulu deyil.
-            </p>
-            <input
-              className="owner-search"
-              aria-label="Sahib axtar"
-              placeholder="Ad, telefon və ya e-poçt ilə axtar…"
-              value={ownerQuery}
-              onChange={(e) => setOwnerQuery(e.target.value)}
-            />
-            {owners.length === 0 ? (
-              <div className="empty">
-                Hələ sahib profili yoxdur. Sahibin adından ilk elanı
-                yerləşdirin.
-              </div>
-            ) : (
-              owners
-                .filter((o) =>
-                  (o.name + " " + o.phone + " " + (o.expectedEmail || ""))
-                    .toLocaleLowerCase("az")
-                    .includes(ownerQuery.toLocaleLowerCase("az")),
-                )
-                .map((o) => (
-                  <article className="owner-row" key={o.id}>
-                    <div>
-                      <b>{o.name}</b>
-                      <p>
-                        {o.kind === "company"
-                          ? "Rentakar şirkəti"
-                          : "Şəxsi sahib"}{" "}
-                        · {o.phone}
-                      </p>
-                      <p>
-                        {o.expectedEmail ||
-                          "Google hesabı üçün e-poçt əlavə edilməyib"}
-                      </p>
-                    </div>
-                    <div>
-                      <strong>
-                        {
-                          cars.filter((c) => c.ownerId === o.id && !c.paused)
-                            .length
-                        }
-                      </strong>
-                      <small> aktiv elan</small>
-                      <p>
-                        {pending.filter((c) => c.ownerId === o.id).length}{" "}
-                        yoxlanışda
-                      </p>
-                    </div>
-                    <span className="claim-status">
-                      {o.accountId ? "Hesaba bağlanıb" : "Giriş gözlənilir"}
-                    </span>
-                    <button
-                      className="outline"
-                      onClick={() => {
-                        setSelected(null);
-                        setModal("owner:" + o.id);
-                      }}
-                    >
-                      Elanlarına bax
-                    </button>
-                  </article>
-                ))
-            )}
-          </section>
-          <section className="admin-review">
-            <h2>Yoxlanış gözləyən elanlar</h2>
-            {!pending.length ? (
-              <div className="empty">
-                Yeni elan yoxdur. “Elan yerləşdir” vasitəsilə nümunə elan
-                göndərə bilərsiniz.
-              </div>
-            ) : (
-              pending.map((c) => (
-                <div className="admin-row" key={c.id}>
-                  <div>
-                    <b>{c.name}</b>
-                    <p>
-                      {c.owner} · {c.city} · {c.price} ₼ / gün
-                    </p>
-                  </div>
-                  <button
-                    className="primary"
-                    onClick={() => mutateListing(c.id, { status: "active" })}
-                  >
-                    Təsdiqlə
-                  </button>
-                  <button
-                    className="outline"
-                    onClick={() => removeListing(c.id)}
-                  >
-                    Rədd et
-                  </button>
-                </div>
-              ))
-            )}
-          </section>
-          <section className="admin-listings">
-            <h2>Elanların idarə edilməsi</h2>
-            <div className="admin-filters">
-              <input
-                aria-label="Elan axtar"
-                placeholder="Avtomobil və ya sahib axtar…"
-                value={adminSearch}
-                onChange={(e) => setAdminSearch(e.target.value)}
-              />
-              <select
-                aria-label="Elan statusu"
-                value={adminStatus}
-                onChange={(e) => setAdminStatus(e.target.value)}
-              >
-                <option value="all">Bütün elanlar</option>
-                <option value="active">Aktiv</option>
-                <option value="paused">Dayandırılmış</option>
-                <option value="vip">VIP</option>
-                <option value="premium">Premium</option>
-              </select>
-              <span>{adminCars.length} elan</span>
-            </div>
-            {adminCars.map((c) => (
-              <div className="admin-row" key={c.id}>
-                <img className="admin-thumb" src={c.image} alt="" />
-                <div>
-                  <b>{c.name}</b>
-                  <p>
-                    {c.owner} · {c.city}
-                  </p>
-                  <span className={"status-pill " + (c.paused ? "paused" : "")}>
-                    {c.paused ? "Dayandırılıb" : "Aktiv"}
-                  </span>
-                  {c.demo && <span className="sample-pill">Nümunə</span>}
-                </div>
-                <span>{c.price} ₼ / gün</span>
-                <select
-                  aria-label={`${c.name} təqdimat`}
-                  value={c.promotion || (c.vip ? "vip" : "standard")}
-                  onChange={(e) =>
-                    mutateListing(c.id, { promotion: e.target.value })
-                  }
-                >
-                  <option value="standard">Standart</option>
-                  <option value="vip">VIP</option>
-                  <option value="premium">Premium</option>
-                </select>
-                <button
-                  className="outline"
-                  onClick={() => setModal("edit:" + c.id)}
-                >
-                  <Pencil size={15} /> Redaktə et
-                </button>
-                <button
-                  className="outline"
-                  onClick={() =>
-                    mutateListing(c.id, {
-                      status: c.paused ? "active" : "paused",
-                    })
-                  }
-                >
-                  {c.paused ? <Play size={15} /> : <Pause size={15} />}{" "}
-                  {c.paused ? "Aktivləşdir" : "Dayandır"}
-                </button>
-                <button
-                  className="outline danger"
-                  onClick={() => setDeleteId(c.id)}
-                >
-                  <Trash2 size={15} /> Sil
-                </button>
-              </div>
-            ))}
-            {!adminCars.length && (
-              <div className="empty">Bu seçimə uyğun elan yoxdur.</div>
-            )}
-          </section>
-          <section className="admin-guide">
-            <h2>Admin üçün qısa bələdçi</h2>
-            <p>
-              <b>Elanlar:</b> Sahib seçin, avtomobili və şərtləri doldurun.
-              Adminin elanı dərhal görünür; ziyarətçinin elanı yoxlanışa düşür.
-            </p>
-            <p>
-              <b>VIP və Premium:</b> Ödəniş etmədən statusu paneldən dəyişə
-              bilərsiniz. Premium əvvəl, VIP sonra, standart elanlar isə onların
-              ardınca göstərilir.
-            </p>
-            <p>
-              <b>Dayandırma:</b> Avtomobil kirayədədirsə, elanı silmədən
-              kataloqdan gizlədin.
-            </p>
-            <p>
-              <b>Sahiblər:</b> Eyni sahibin yeni avtomobili üçün mövcud profili
-              seçin. Sahibin təsdiqlənmiş Google hesabı profilə bağlanır.
-            </p>
-            <p>
-              <b>Məlumatlar:</b> Dəyişikliklər serverdə saxlanır. Şəxsi
-              məlumatlar yalnız icazəli hesablara açıqdır. Ödəniş sistemi hələ
-              aktiv deyil.
-            </p>
-          </section>
-        </main>
-      ) : (
-        <>
-          <section className="hero">
-            <div className="hero-content">
-              <div className="hero-tag">
-                <span /> AZƏRBAYCANIN AVTOMOBİL KİRAYƏSİ PLATFORMASI
-              </div>
-              <h1>
-                Yol səninlə
-                <br />
-                başlayır<span>.</span>
-              </h1>
-              <p>
-                Şəhər içi işlərdən unudulmaz səyahətlərə.
-                <br />
-                Sənə uyğun avtomobili bir yerdə tap.
-              </p>
-              <a className="hero-link" href="#cars">
-                Avtomobillərə bax <ArrowUpRight size={18} />
-              </a>
-              <div className="hero-proof">
-                <ShieldCheck size={19} />
-                <span>
-                  Şirkətlərdən və şəxsi sahiblərdən
-                  <br />
-                  <b>Birbaşa əlaqə. Rahat seçim.</b>
-                </span>
-              </div>
-            </div>
-            <div className="hero-visual">
-              <img
-                src="/photos/porsche-road.jpg"
-                alt="Yolda hərəkət edən Porsche Panamera"
-                fetchPriority="high"
-              />
-              <div className="hero-caption">
-                <span>
-                  <span className="live-dot" /> YENİ YOLLAR, YENİ TƏƏSSÜRATLAR
-                </span>
-                <b>Səfərin ritmini özün seç.</b>
-                <ArrowUpRight size={22} />
-              </div>
-            </div>
-          </section>
-          <div className="search-wrap">
-            <form
-              className="search-box"
-              onSubmit={(e) => {
-                e.preventDefault();
-                setFilters({ city, brand, max });
-                document
-                  .getElementById("cars")
-                  .scrollIntoView({ behavior: "smooth" });
+              aria-label={t("Seçilmiş elanlar")}
+              onClick={() => {
+                setFavorites(!favorites);
+                document.getElementById("cars")?.scrollIntoView({
+                  behavior: "smooth",
+                });
               }}
             >
-              <label>
-                <span>
-                  <MapPin size={15} /> Şəhər
-                </span>
-                <select value={city} onChange={(e) => setCity(e.target.value)}>
-                  {["Bütün şəhərlər", ...cities].map((x) => (
-                    <option key={x}>{x}</option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                <span>
-                  <Car size={15} /> Marka
-                </span>
-                <select
-                  value={brand}
-                  onChange={(e) => setBrand(e.target.value)}
-                >
-                  {["Bütün markalar", ...brands].map((x) => (
-                    <option key={x}>{x}</option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                <span>Günlük büdcə</span>
-                <div className="budget">
-                  <input
-                    type="number"
-                    min="1"
-                    placeholder="Maksimum qiymət"
-                    value={max}
-                    onChange={(e) => setMax(e.target.value)}
-                  />
-                  <b>₼</b>
-                </div>
-              </label>
-              <button className="primary search-submit">
-                <Search size={18} /> Avtomobil tap
-              </button>
-            </form>
+              <Heart size={16} fill={favorites ? "currentColor" : "none"} />
+            </button>
+          </nav>
+        ),
+      )}
+      {t(
+        (authError || serviceError) && (
+          <div className="service-notice" role="status">
+            {t(authError || serviceError)}
           </div>
-          <section className="benefits">
-            <div>
-              <ShieldCheck />
-              <span>
-                Yoxlanılmış elanlar<small>Daha rahat seçim üçün</small>
-              </span>
-            </div>
-            <div>
-              <Car />
-              <span>
-                Hər zövqə uyğun seçim<small>Ekonomdan premiuma</small>
-              </span>
-            </div>
-            <div>
-              <Phone />
-              <span>
-                Sahiblə birbaşa əlaqə<small>Vasitəçisiz, əlavə xərcsiz</small>
-              </span>
-            </div>
-            <div>
-              <Plus />
-              <span>
-                İlk elanın pulsuzdur<small>Avtomobilindən gəlir qazan</small>
-              </span>
-            </div>
-          </section>
-          <main id="cars">
+        ),
+      )}
+      {t(
+        admin ? (
+          <main className="admin" data-view={adminView}>
             <div className="section-title">
               <div>
-                <span className="eyebrow">SEÇİM SƏNİNDİR</span>
-                <h2>
-                  {favorites
-                    ? "Bəyəndiyin avtomobillər"
-                    : "Növbəti yol yoldaşını tap"}
-                </h2>
-                <p>Planına və büdcənə uyğun avtomobilləri kəşf et.</p>
+                <span className="eyebrow">{t("İDARƏETMƏ PANELİ")}</span>
+                <h1>{t("Hər şey nəzarətində.")}</h1>
+                <p>
+                  {t(
+                    "Elanları, sahibləri və yoxlanışları idarə et. Giriş yalnız təsdiqlənmiş admin hesabına açıqdır.",
+                  )}
+                </p>
               </div>
-              <span className="listing-count">
-                {filtered.length} avtomobil mövcuddur
-              </span>
+              <button className="outline" onClick={() => setAdmin(false)}>
+                <ArrowLeft size={16} />
+                {t("Sayta qayıt")}
+              </button>
             </div>
-            <div className="filter-bar">
-              <div className="tabs">
-                {["Hamısı", ...categories].map((x) => (
+            <nav className="admin-nav" aria-label={t("İdarəetmə bölmələri")}>
+              {t(
+                [
+                  ["overview", "İcmal", LayoutDashboard],
+                  ["listings", "Elanlar", Car],
+                  ["owners", "Sahiblər", Users],
+                  ["review", "Yoxlanış", ClipboardList],
+                  ["help", "Bələdçi", CircleHelp],
+                ].map(([key, label, Icon]) => (
                   <button
-                    key={x}
-                    className={category === x ? "active" : ""}
-                    onClick={() => setCategory(x)}
+                    key={key}
+                    aria-pressed={adminView === key}
+                    className={adminView === key ? "active" : ""}
+                    onClick={() => setAdminView(key)}
                   >
-                    {x === "Hamısı" && <Car size={16} />} {x}
+                    <Icon size={17} />
+                    {t(label)}
+                    {t(
+                      key === "review" && pending.length > 0 && (
+                        <span>{t(pending.length)}</span>
+                      ),
+                    )}
                   </button>
-                ))}
-              </div>
-              <select
-                aria-label="Elan sıralaması"
-                value={sort}
-                onChange={(e) => setSort(e.target.value)}
-              >
-                {["Seçilmiş elanlar", "Əvvəlcə ucuz", "Əvvəlcə bahalı"].map(
-                  (x) => (
-                    <option key={x}>{x}</option>
-                  ),
-                )}
-              </select>
-            </div>
-            <label className="model-search">
-              Model axtar
-              <input
-                value={modelQuery}
-                onChange={(e) => setModelQuery(e.target.value)}
-                placeholder="Məsələn: RAV4, Panamera, GLS…"
-              />
-            </label>
-            <div className="demo-note">
-              Təqdimat kataloqu · Real fotolar, nümunə qiymətlər
-            </div>
-            <div className="grid">
-              {filtered.map((c) => (
-                <article className="car-card" key={c.id}>
-                  <div className="car-image">
-                    <button
-                      className="image-open"
-                      aria-label={c.name + " elanı aç"}
-                      onClick={() => setSelected(c)}
-                    >
-                      <img
-                        src={c.image}
-                        alt={c.name}
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    </button>
-                    <div className="badges">
-                      {c.promotion === "premium" ? (
-                        <span className="premium">
-                          <Crown size={12} /> Premium
-                        </span>
-                      ) : (
-                        c.vip && (
-                          <span className="vip">
-                            <Sparkles size={12} /> VIP
-                          </span>
-                        )
+                )),
+              )}
+            </nav>
+            <div className="stats">
+              {t(
+                [
+                  ["Aktiv elanlar", cars.filter((c) => !c.paused).length],
+                  ["Yoxlanış gözləyən", pending.length],
+                  [
+                    "Premium elanlar",
+                    cars.filter((c) => c.promotion === "premium").length,
+                  ],
+                  [
+                    "VIP elanlar",
+                    cars.filter((c) => c.promotion === "vip").length,
+                  ],
+                ].map(([label, n]) => (
+                  <article key={label}>
+                    <div className="stat-icon">
+                      {t(
+                        label.includes("Premium") ? (
+                          <Crown size={19} />
+                        ) : label.includes("VIP") ? (
+                          <Sparkles size={19} />
+                        ) : label.includes("gözləyən") ? (
+                          <Clock3 size={19} />
+                        ) : (
+                          <Car size={19} />
+                        ),
                       )}
-                      <span className="kind">
-                        {c.company ? "Şirkət" : "Şəxsi sahib"}
-                      </span>
                     </div>
-                    <button
-                      aria-label="Elanı bəyən"
-                      className={
-                        "like " + (liked.includes(c.id) ? "liked" : "")
-                      }
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setLiked(
-                          liked.includes(c.id)
-                            ? liked.filter((x) => x !== c.id)
-                            : [...liked, c.id],
-                        );
-                      }}
-                    >
-                      <Heart
-                        size={18}
-                        fill={liked.includes(c.id) ? "currentColor" : "none"}
-                      />
-                    </button>
-                  </div>
-                  <div className="card-body">
-                    <div className="card-location">
-                      <MapPin size={12} />
-                      {c.city}
-                      <span>{c.year}</span>
-                    </div>
-                    <button className="car-name" onClick={() => setSelected(c)}>
-                      {c.name}
-                    </button>
-                    <div className="specs">
-                      <span>
-                        <Gauge size={14} /> {c.transmission || "Avtomat"}
-                      </span>
-                      <span>
-                        <Fuel size={14} /> {c.fuel || "Benzin"}
-                      </span>
-                      <span>
-                        <Users size={14} /> {c.seats || 5} yer
-                      </span>
-                    </div>
-                    <div className="card-bottom">
-                      <div>
-                        <strong>
-                          {c.price} <span>₼</span>
-                        </strong>
-                        <small> / gün</small>
-                      </div>
-                      <button
-                        aria-label="Elana bax"
-                        onClick={() => setSelected(c)}
-                      >
-                        <ArrowUpRight size={19} />
-                      </button>
-                    </div>
-                    <div className="owner">
-                      <span className="owner-icon">
-                        {c.company ? <Car size={13} /> : <Users size={13} />}
-                      </span>
-                      {c.owner}
-                      {c.company && <ShieldCheck size={13} color="#267357" />}
-                    </div>
-                  </div>
-                </article>
-              ))}
+                    <span>{t(label)}</span>
+                    <strong>{t(n)}</strong>
+                  </article>
+                )),
+              )}
             </div>
-            {!filtered.length && (
-              <div className="empty">
-                Bu seçimə uyğun avtomobil yoxdur.
-                <button
-                  onClick={() => {
-                    setFilters({
-                      city: "Bütün şəhərlər",
-                      brand: "Bütün markalar",
-                      max: "",
-                    });
-                    setCategory("Hamısı");
-                    setModelQuery("");
-                    setFavorites(false);
-                  }}
-                >
-                  Filtrləri təmizlə
-                </button>
-              </div>
-            )}
-            <div className="bottom-banner">
-              <div className="banner-icon">
-                <Car size={38} />
-              </div>
-              <div>
-                <span>SƏNİN AVTOMOBİLİN, SƏNİN QAZANCIN</span>
-                <h2>Avtomobilin boş dayanmasın.</h2>
-                <p>İlk elanını pulsuz yerləşdir, yeni müştərilər qazan.</p>
-              </div>
+            <div className="admin-actions">
               <button
+                className="primary"
                 onClick={() =>
                   setModal(
                     user
@@ -989,365 +515,677 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                   )
                 }
               >
-                Pulsuz elan yerləşdir <ArrowUpRight size={18} />
+                <Plus size={17} />
+                {t("Sahibin adından elan yerləşdir")}
+              </button>
+              <button className="outline" onClick={() => setAdmin(false)}>
+                {t("Nümunə kataloquna bax")}
+              </button>
+              <button className="outline" onClick={exportWorkspace}>
+                <Download size={16} />
+                {t("Ehtiyat nüsxəni endir")}
               </button>
             </div>
-          </main>
-          <section className="how">
-            <span className="eyebrow">CƏMİ 3 ADDIM</span>
-            <h2>Yola çıxmaq bu qədər asandır.</h2>
-            <div>
-              {[
-                [
-                  "01",
-                  "Avtomobilini seç",
-                  "Şəhər, marka və büdcənə görə axtar.",
-                ],
-                [
-                  "02",
-                  "Sahibi ilə danış",
-                  "Şərtləri telefon və ya WhatsApp ilə dəqiqləşdir.",
-                ],
-                [
-                  "03",
-                  "Yolun dadını çıxar",
-                  "Avtomobili təhvil al və səyahətə başla.",
-                ],
-              ].map(([n, t, p]) => (
-                <article key={n}>
-                  <span>{n}</span>
-                  <h3>{t}</h3>
-                  <p>{p}</p>
-                </article>
-              ))}
-            </div>
-          </section>
-        </>
-      )}
-      <footer>
-        <a className="logo" href="#">
-          <span className="logo-mark">
-            <Car size={22} />
-          </span>
-          rentacarr<span className="logo-az">.az</span>
-        </a>
-        <span>Yol səninlə başlayır.</span>
-        {user?.isAdmin && user?.profile?.complete && (
-          <button
-            onClick={() => {
-              setAdmin(true);
-              window.scrollTo(0, 0);
-            }}
-          >
-            İdarəetmə paneli <ArrowUpRight size={14} />
-          </button>
-        )}
-        <small>© {new Date().getFullYear()} RENTACARR.AZ</small>
-      </footer>
-      {deleteId !== null && (
-        <div className="overlay">
-          <section
-            className="modal"
-            role="alertdialog"
-            aria-modal="true"
-            aria-label="Elanı sil"
-          >
-            <h2>Elan silinsin?</h2>
-            <p>
-              {cars.find((c) => c.id === deleteId)?.name} kataloqdan və
-              serverdən silinəcək. Elanı sadəcə gizlətmək üçün dayandırma
-              funksiyasından istifadə edə bilərsiniz.
-            </p>
-            <div className="contact">
-              <button className="outline" onClick={() => setDeleteId(null)}>
-                Ləğv et
-              </button>
-              <button
-                className="primary danger"
-                onClick={() => removeListing(deleteId)}
-              >
-                Bəli, sil
-              </button>
-            </div>
-          </section>
-        </div>
-      )}
-      {(selected || modal) && (
-        <div
-          className="overlay"
-          onClick={() => {
-            setSelected(null);
-            setModal(null);
-          }}
-        >
-          <section
-            className="modal"
-            role="dialog"
-            aria-modal="true"
-            aria-label={selected?.name || "Məlumat pəncərəsi"}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              className="close"
-              aria-label="Bağla"
-              onClick={() => {
-                setSelected(null);
-                setModal(null);
-              }}
-            >
-              <X />
-            </button>
-            {selected ? (
-              <>
-                <img
-                  className="detail-image"
-                  src={selected.image}
-                  decoding="async"
-                  alt={selected.name}
-                />
-                <span className="eyebrow">
-                  {selected.city} · {selected.year} · NÜMUNƏ ELAN
-                </span>
-                <h2>{selected.name}</h2>
-                <p className="detail-price">
-                  {selected.price} ₼ <small>/ gün</small>
+            <section className="admin-overview">
+              <div className="overview-heading">
+                <span className="eyebrow">{t("İŞ MƏKANI")}</span>
+                <h2>{t("Avtoparkına ümumi baxış")}</h2>
+                <p>
+                  {t(
+                    "Elanları, sahibləri və yoxlanışları bir yerdən idarə et.",
+                  )}
                 </p>
-                <div className="detail-specs">
-                  <span>
-                    <Gauge size={16} />
-                    {selected.transmission || "Avtomat"}
-                  </span>
-                  <span>
-                    <Fuel size={16} />
-                    {selected.fuel || "Benzin"}
-                  </span>
-                  <span>
-                    <Users size={16} />
-                    {selected.seats || 5} yer
-                  </span>
+              </div>
+              <div className="overview-grid">
+                <button onClick={() => setAdminView("listings")}>
+                  <Car size={23} />
+                  <h3>{t("Elanları idarə et")}</h3>
+                  <p>{t("Qiymət, təqdimat və aktivlik statusu.")}</p>
+                  <ArrowUpRight size={18} />
+                </button>
+                <button onClick={() => setAdminView("owners")}>
+                  <Building2 size={23} />
+                  <h3>{t("Sahib profilləri")}</h3>
+                  <p>
+                    {t(owners.length)}
+                    {t("profil və onlara aid avtomobillər.")}
+                  </p>
+                  <ArrowUpRight size={18} />
+                </button>
+                <button onClick={() => setAdminView("review")}>
+                  <ClipboardList size={23} />
+                  <h3>{t("Yoxlanış gözləyənlər")}</h3>
+                  <p>
+                    {t(pending.length)}
+                    {t("elan qərarını gözləyir.")}
+                  </p>
+                  <ArrowUpRight size={18} />
+                </button>
+              </div>
+              <div className="workspace-notice">
+                <ShieldCheck size={19} />
+                <div>
+                  <h3>{t("Qorunan admin iş məkanı")}</h3>
+                  <p>
+                    {t(
+                      "Məlumatlar serverdə saxlanır. Sahib profilləri və şəxsi e-poçtlar yalnız icazəli hesablara göstərilir.",
+                    )}
+                  </p>
                 </div>
-                <p className="listing-description">
-                  {selected.description || "Şərtləri sahibi ilə dəqiqləşdirin."}
-                </p>
-                {selected.phone ? (
-                  <div className="contact">
-                    <a className="primary" href={"tel:" + selected.phone}>
-                      Zəng et
-                    </a>
-                    <a
-                      className="outline"
-                      href={
-                        "https://wa.me/" + selected.phone.replace(/\D/g, "")
-                      }
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      WhatsApp
-                    </a>
+              </div>
+            </section>
+            <section className="owner-management">
+              <span className="eyebrow">
+                {t("HESABDAN ƏVVƏL DƏ SAHİB PROFİLİ")}
+              </span>
+              <h2>{t("Avtomobil sahibləri")}</h2>
+              <p>
+                {t(
+                  "Hər sahibin elanları öz profilinə bağlanır. Telefonla giriş SMS kodu ilə təsdiqlənir.",
+                )}
+              </p>
+              <input
+                className="owner-search"
+                aria-label={t("Sahib axtar")}
+                placeholder={t("Ad, telefon və ya e-poçt ilə axtar…")}
+                value={ownerQuery}
+                onChange={(e) => setOwnerQuery(e.target.value)}
+              />
+              {t(
+                owners.length === 0 ? (
+                  <div className="empty">
+                    {t(
+                      "Hələ sahib profili yoxdur. Sahibin adından ilk elanı yerləşdirin.",
+                    )}
                   </div>
                 ) : (
-                  <div className="empty">
-                    <Phone size={19} /> Nümunə elanda əlaqə nömrəsi yoxdur.
-                  </div>
-                )}
-              </>
-            ) : modal === "listing" || editing ? (
-              <>
-                <span className="eyebrow">İLK ELANIN PULSUZDUR</span>
-                <h2>
-                  {editing
-                    ? "Elanı redaktə et"
-                    : admin
-                      ? "Sahibin adından elan yerləşdir"
-                      : "Avtomobilini paylaş"}
-                </h2>
-                <p>
-                  {admin
-                    ? "Elan seçdiyiniz sahibin profilinə əlavə ediləcək və dərhal kataloqda görünəcək. Telefon qeydiyyat üçün deyil, əlaqə üçündür."
-                    : "Elan yoxlanışdan sonra görünəcək. Onu şəxsi hesabından izləyə və redaktə edə bilərsən."}
-                </p>
-                <div className="form-hint">
-                  Telefon yalnız əlaqə üçündür. Adminin daxil etdiyi sahib
-                  e-poçtu təsdiqlənmiş Google hesabına uyğun gələndə elanlar
-                  həmin hesabda görünür.
-                </div>
-                <ListingEditor
-                  saving={saving}
-                  listing={editing}
-                  owners={owners}
-                  admin={admin}
-                  onSubmit={submit}
-                />
-              </>
-            ) : modal?.startsWith("owner:") ? (
-              (() => {
-                const owner = owners.find((o) => o.id === modal.slice(6));
-                return owner ? (
-                  <>
-                    <span className="eyebrow">SAHİB PROFİLİ</span>
-                    <h2>{owner.name}</h2>
-                    <p>
-                      {owner.phone} ·{" "}
-                      {owner.kind === "company"
-                        ? "Rentakar şirkəti"
-                        : "Şəxsi sahib"}
-                    </p>
-                    {admin && (
-                      <p>{owner.expectedEmail || "E-poçt qeyd edilməyib"}</p>
-                    )}
-                    <div className="form-hint">
-                      Bu profilə aid elanlar aşağıdadır. Hesab Google tərəfindən
-                      təsdiqlənir. Telefon yalnız əlaqə üçündür.
-                    </div>
-                    {[...cars, ...pending]
-                      .filter((c) => c.ownerId === owner.id)
-                      .map((c) => (
-                        <div className="owner-listing" key={c.id}>
-                          <img src={c.image} alt="" />
-                          <div>
-                            <b>{c.name}</b>
-                            <p>
-                              {c.price} ₼ / gün ·{" "}
-                              {pending.some((p) => p.id === c.id)
-                                ? "Yoxlanışda"
-                                : c.paused
-                                  ? "Dayandırılıb"
-                                  : "Aktiv"}
-                            </p>
-                          </div>
+                  owners
+                    .filter((o) =>
+                      (o.name + " " + o.phone + " " + (o.expectedEmail || ""))
+                        .toLocaleLowerCase("az")
+                        .includes(ownerQuery.toLocaleLowerCase("az")),
+                    )
+                    .map((o) => (
+                      <article className="owner-row" key={o.id}>
+                        <div>
+                          <b>{t(o.name)}</b>
+                          <p>
+                            {t(
+                              o.kind === "company"
+                                ? "Rentakar şirkəti"
+                                : "Şəxsi sahib",
+                            )}
+                            {t(" ")}
+                            {t("·")}
+                            {t(o.phone)}
+                          </p>
+                          <p>
+                            {t(
+                              o.expectedEmail ||
+                                "Google hesabı üçün e-poçt əlavə edilməyib",
+                            )}
+                          </p>
                         </div>
-                      ))}
-                  </>
-                ) : null;
-              })()
-            ) : (modal === "register" || modal === "account") &&
-              user &&
-              !user.profile?.complete ? (
-              <Registration
-                user={user}
-                onComplete={async (account) => {
-                  await onAuthenticated(account);
-                  setModal("account");
-                }}
-              />
-            ) : modal === "account" ? (
-              <>
-                <span className="eyebrow">
-                  {user ? "ŞƏXSİ HESAB" : "XOŞ GƏLMİSİNİZ"}
-                </span>
-                <div className="modal-emblem">
-                  <UserRound size={25} />
-                </div>
-                <h2>{user ? user.name : "Qeydiyyat və giriş"}</h2>
-                {user ? (
-                  <>
-                    <p>{user.email}</p>
-                    <div className="account-role">
-                      {user.isAdmin ? "Admin hesabı" : "Şəxsi hesab"}
-                    </div>
-                    <div className="account-actions">
-                      <button
-                        className="outline"
-                        onClick={() => setModal("my-listings")}
-                      >
-                        <Car size={16} /> Elanlarım
-                      </button>
-                      <button
-                        className="primary"
-                        onClick={() => setModal("listing")}
-                      >
-                        <Plus size={16} /> Elan yerləşdir
-                      </button>
-                      {user.isAdmin && (
+                        <div>
+                          <strong>
+                            {t(
+                              cars.filter(
+                                (c) => c.ownerId === o.id && !c.paused,
+                              ).length,
+                            )}
+                          </strong>
+                          <small>{t("aktiv elan")}</small>
+                          <p>
+                            {t(
+                              pending.filter((c) => c.ownerId === o.id).length,
+                            )}
+                            {t(" ")}
+                            {t("yoxlanışda")}
+                          </p>
+                        </div>
+                        <span className="claim-status">
+                          {t(
+                            o.accountId
+                              ? "Hesaba bağlanıb"
+                              : "Giriş gözlənilir",
+                          )}
+                        </span>
                         <button
                           className="outline"
                           onClick={() => {
-                            setModal(null);
-                            setAdmin(true);
-                            window.scrollTo(0, 0);
+                            setSelected(null);
+                            setModal("owner:" + o.id);
                           }}
                         >
-                          <LayoutDashboard size={16} /> İdarəetmə paneli
+                          {t("Elanlarına bax")}
                         </button>
-                      )}
+                      </article>
+                    ))
+                ),
+              )}
+            </section>
+            <section className="admin-review">
+              <h2>{t("Yoxlanış gözləyən elanlar")}</h2>
+              {t(
+                !pending.length ? (
+                  <div className="empty">
+                    {t(
+                      "Yeni elan yoxdur. “Elan yerləşdir” vasitəsilə nümunə elan göndərə bilərsiniz.",
+                    )}
+                  </div>
+                ) : (
+                  pending.map((c) => (
+                    <div className="admin-row" key={c.id}>
+                      <div>
+                        <b>{t(c.name)}</b>
+                        <p>
+                          {t(c.owner)}
+                          {t("·")}
+                          {t(c.city)}
+                          {t("·")}
+                          {t(c.price)}
+                          {t("₼ / gün")}
+                        </p>
+                      </div>
+                      <button
+                        className="primary"
+                        onClick={() =>
+                          mutateListing(c.id, {
+                            status: "active",
+                          })
+                        }
+                      >
+                        {t("Təsdiqlə")}
+                      </button>
                       <button
                         className="outline"
-                        onClick={() => onLogout().catch((e) => note(e.message))}
+                        onClick={() => removeListing(c.id)}
                       >
-                        Hesabdan çıx
+                        {t("Rədd et")}
                       </button>
                     </div>
-                  </>
-                ) : (
-                  <>
-                    <p>
-                      Google hesabınla təhlükəsiz daxil ol. Şəxsi hesabında
-                      yalnız sənə aid məlumatlar və elanlar görünür.
-                    </p>
-                    <GoogleLogin onAuthenticated={onAuthenticated} />
-                  </>
+                  ))
+                ),
+              )}
+            </section>
+            <section className="admin-listings">
+              <h2>{t("Elanların idarə edilməsi")}</h2>
+              <div className="admin-filters">
+                <input
+                  aria-label={t("Elan axtar")}
+                  placeholder={t("Avtomobil və ya sahib axtar…")}
+                  value={adminSearch}
+                  onChange={(e) => setAdminSearch(e.target.value)}
+                />
+                <select
+                  aria-label={t("Elan statusu")}
+                  value={adminStatus}
+                  onChange={(e) => setAdminStatus(e.target.value)}
+                >
+                  <option value="all">{t("Bütün elanlar")}</option>
+                  <option value="active">{t("Aktiv")}</option>
+                  <option value="paused">{t("Dayandırılmış")}</option>
+                  <option value="vip">{t("VIP")}</option>
+                  <option value="premium">{t("Premium")}</option>
+                </select>
+                <span>
+                  {t(adminCars.length)}
+                  {t("elan")}
+                </span>
+              </div>
+              {t(
+                adminCars.map((c) => (
+                  <div className="admin-row" key={c.id}>
+                    <img className="admin-thumb" src={c.image} alt={t("")} />
+                    <div>
+                      <b>{t(c.name)}</b>
+                      <p>
+                        {t(c.owner)}
+                        {t("·")}
+                        {t(c.city)}
+                      </p>
+                      <span
+                        className={"status-pill " + (c.paused ? "paused" : "")}
+                      >
+                        {t(c.paused ? "Dayandırılıb" : "Aktiv")}
+                      </span>
+                      {t(
+                        c.demo && (
+                          <span className="sample-pill">{t("Nümunə")}</span>
+                        ),
+                      )}
+                    </div>
+                    <span>
+                      {t(c.price)}
+                      {t("₼ / gün")}
+                    </span>
+                    <select
+                      aria-label={t(`${c.name} təqdimat`)}
+                      value={c.promotion || (c.vip ? "vip" : "standard")}
+                      onChange={(e) =>
+                        mutateListing(c.id, {
+                          promotion: e.target.value,
+                        })
+                      }
+                    >
+                      <option value="standard">{t("Standart")}</option>
+                      <option value="vip">{t("VIP")}</option>
+                      <option value="premium">{t("Premium")}</option>
+                    </select>
+                    <button
+                      className="outline"
+                      onClick={() => setModal("edit:" + c.id)}
+                    >
+                      <Pencil size={15} />
+                      {t("Redaktə et")}
+                    </button>
+                    <button
+                      className="outline"
+                      onClick={() =>
+                        mutateListing(c.id, {
+                          status: c.paused ? "active" : "paused",
+                        })
+                      }
+                    >
+                      {t(c.paused ? <Play size={15} /> : <Pause size={15} />)}
+                      {t(" ")}
+                      {t(c.paused ? "Aktivləşdir" : "Dayandır")}
+                    </button>
+                    <button
+                      className="outline danger"
+                      onClick={() => setDeleteId(c.id)}
+                    >
+                      <Trash2 size={15} />
+                      {t("Sil")}
+                    </button>
+                  </div>
+                )),
+              )}
+              {t(
+                !adminCars.length && (
+                  <div className="empty">
+                    {t("Bu seçimə uyğun elan yoxdur.")}
+                  </div>
+                ),
+              )}
+            </section>
+            <section className="admin-guide">
+              <h2>{t("Admin üçün qısa bələdçi")}</h2>
+              <p>
+                <b>{t("Elanlar:")}</b>
+                {t(
+                  "Sahib seçin, avtomobili və şərtləri doldurun. Adminin elanı dərhal görünür; ziyarətçinin elanı yoxlanışa düşür.",
                 )}
-              </>
-            ) : modal === "my-listings" && user ? (
-              <>
-                <span className="eyebrow">ŞƏXSİ HESAB</span>
-                <h2>Elanlarım</h2>
-                <p>Yalnız sənin hesabına bağlı elanlar göstərilir.</p>
-                {[...cars, ...pending]
-                  .filter((c) =>
-                    owners.some(
-                      (o) => o.id === c.ownerId && o.accountId === user.id,
+              </p>
+              <p>
+                <b>{t("VIP və Premium:")}</b>
+                {t(
+                  "Ödəniş etmədən statusu paneldən dəyişə bilərsiniz. Premium əvvəl, VIP sonra, standart elanlar isə onların ardınca göstərilir.",
+                )}
+              </p>
+              <p>
+                <b>{t("Dayandırma:")}</b>
+                {t(
+                  "Avtomobil kirayədədirsə, elanı silmədən kataloqdan gizlədin.",
+                )}
+              </p>
+              <p>
+                <b>{t("Sahiblər:")}</b>
+                {t(
+                  "Eyni sahibin yeni avtomobili üçün mövcud profili seçin. Sahibin təsdiqlənmiş Google hesabı profilə bağlanır.",
+                )}
+              </p>
+              <p>
+                <b>{t("Məlumatlar:")}</b>
+                {t(
+                  "Dəyişikliklər serverdə saxlanır. Şəxsi məlumatlar yalnız icazəli hesablara açıqdır. Ödəniş sistemi hələ aktiv deyil.",
+                )}
+              </p>
+            </section>
+          </main>
+        ) : (
+          <>
+            <section className="hero">
+              <div className="hero-content">
+                <div className="hero-tag">{t("Avtomobil kirayəsi")}</div>
+                <h1>{t("Azərbaycanda kirayə avtomobil tap")}</h1>
+                <p>
+                  {t(
+                    "Rentakar şirkətlərinin və şəxsi sahiblərin elanları. Qiyməti müqayisə et, sahibi ilə birbaşa danış.",
+                  )}
+                </p>
+              </div>
+              <div className="hero-visual">
+                <img
+                  src="/photos/porsche-road.jpg"
+                  alt="Porsche Panamera"
+                  fetchPriority="high"
+                />
+              </div>
+            </section>
+            <div className="search-wrap">
+              <form
+                className="search-box"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setFilters({
+                    city,
+                    brand,
+                    max,
+                  });
+                  document.getElementById("cars").scrollIntoView({
+                    behavior: "smooth",
+                  });
+                }}
+              >
+                <label>
+                  <span>
+                    <MapPin size={15} />
+                    {t("Şəhər")}
+                  </span>
+                  <select
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                  >
+                    {t(
+                      ["Bütün şəhərlər", ...cities].map((x) => (
+                        <option key={x} value={x}>
+                          {t(x)}
+                        </option>
+                      )),
+                    )}
+                  </select>
+                </label>
+                <label>
+                  <span>
+                    <Car size={15} />
+                    {t("Marka")}
+                  </span>
+                  <select
+                    value={brand}
+                    onChange={(e) => setBrand(e.target.value)}
+                  >
+                    {t(
+                      ["Bütün markalar", ...brands].map((x) => (
+                        <option key={x} value={x}>
+                          {t(x)}
+                        </option>
+                      )),
+                    )}
+                  </select>
+                </label>
+                <label>
+                  <span>{t("Günlük büdcə")}</span>
+                  <div className="budget">
+                    <input
+                      type="number"
+                      min="1"
+                      placeholder={t("Maksimum qiymət")}
+                      value={max}
+                      onChange={(e) => setMax(e.target.value)}
+                    />
+                    <b>{t("₼")}</b>
+                  </div>
+                </label>
+                <button className="primary search-submit">
+                  <Search size={18} />
+                  {t("Avtomobil tap")}
+                </button>
+              </form>
+            </div>
+            <section className="benefits">
+              <div>
+                <ShieldCheck />
+                <span>
+                  {t("Yoxlanılmış elanlar")}
+                  <small>{t("Daha rahat seçim üçün")}</small>
+                </span>
+              </div>
+              <div>
+                <Car />
+                <span>
+                  {t("Hər zövqə uyğun seçim")}
+                  <small>{t("Ekonomdan premiuma")}</small>
+                </span>
+              </div>
+              <div>
+                <Phone />
+                <span>
+                  {t("Sahiblə birbaşa əlaqə")}
+                  <small>{t("Vasitəçisiz, əlavə xərcsiz")}</small>
+                </span>
+              </div>
+              <div>
+                <Plus />
+                <span>
+                  {t("İlk elanın pulsuzdur")}
+                  <small>{t("Avtomobilindən gəlir qazan")}</small>
+                </span>
+              </div>
+            </section>
+            <main id="cars">
+              <div className="section-title">
+                <div>
+                  <span className="eyebrow">{t("SEÇİM SƏNİNDİR")}</span>
+                  <h2>
+                    {t(
+                      favorites
+                        ? "Bəyəndiyin avtomobillər"
+                        : "Kirayə avtomobillər",
+                    )}
+                  </h2>
+                  <p>{t("Planına və büdcənə uyğun avtomobilləri kəşf et.")}</p>
+                </div>
+                <span className="listing-count">
+                  {t(`${filtered.length} avtomobil mövcuddur`)}
+                </span>
+              </div>
+              <div className="filter-bar">
+                <div className="tabs">
+                  {t(
+                    ["Hamısı", ...categories].map((x) => (
+                      <button
+                        key={x}
+                        className={category === x ? "active" : ""}
+                        onClick={() => setCategory(x)}
+                      >
+                        {t(x === "Hamısı" && <Car size={16} />)} {t(x)}
+                      </button>
+                    )),
+                  )}
+                </div>
+                <select
+                  aria-label={t("Elan sıralaması")}
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value)}
+                >
+                  {t(
+                    ["Seçilmiş elanlar", "Əvvəlcə ucuz", "Əvvəlcə bahalı"].map(
+                      (x) => (
+                        <option key={x} value={x}>
+                          {t(x)}
+                        </option>
+                      ),
                     ),
-                  )
-                  .map((c) => (
-                    <article className="my-listing" key={c.id}>
-                      <img src={c.image} alt={c.name} />
-                      <div>
-                        <h3>{c.name}</h3>
-                        <p>
-                          {c.price} ₼ / gün ·{" "}
-                          {c.status === "pending"
-                            ? "Yoxlanışda"
-                            : c.paused
-                              ? "Dayandırılıb"
-                              : "Aktiv"}
-                        </p>
+                  )}
+                </select>
+              </div>
+              <label className="model-search">
+                {t("Model axtar")}
+                <input
+                  value={modelQuery}
+                  onChange={(e) => setModelQuery(e.target.value)}
+                  placeholder={t("Məsələn: RAV4, Panamera, GLS…")}
+                />
+              </label>
+              <div className="demo-note">
+                {t("Təqdimat kataloqu · Real fotolar, nümunə qiymətlər")}
+              </div>
+              <div className="grid">
+                {t(
+                  filtered.map((c) => (
+                    <article
+                      className="car-card"
+                      key={c.id}
+                      onClick={() => setSelected(c)}
+                    >
+                      <div className="car-image">
                         <button
-                          className="outline"
-                          onClick={() => setModal("edit:" + c.id)}
+                          className="image-open"
+                          aria-label={t(c.name + " elanı aç")}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelected(c);
+                          }}
                         >
-                          <Pencil size={14} /> Redaktə et
+                          <img
+                            src={c.image}
+                            alt={c.name}
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        </button>
+                        <div className="badges">
+                          {t(
+                            c.promotion === "premium" ? (
+                              <span className="premium">
+                                <Crown size={12} />
+                                {t("Premium")}
+                              </span>
+                            ) : (
+                              c.vip && (
+                                <span className="vip">
+                                  <Sparkles size={12} />
+                                  {t("VIP")}
+                                </span>
+                              )
+                            ),
+                          )}
+                          <span className="kind">
+                            {t(c.company ? "Şirkət" : "Şəxsi sahib")}
+                          </span>
+                        </div>
+                        <button
+                          aria-label={t("Elanı bəyən")}
+                          className={
+                            "like " + (liked.includes(c.id) ? "liked" : "")
+                          }
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setLiked(
+                              liked.includes(c.id)
+                                ? liked.filter((x) => x !== c.id)
+                                : [...liked, c.id],
+                            );
+                          }}
+                        >
+                          <Heart
+                            size={18}
+                            fill={
+                              liked.includes(c.id) ? "currentColor" : "none"
+                            }
+                          />
                         </button>
                       </div>
+                      <div className="card-body">
+                        <div className="card-location">
+                          <MapPin size={12} />
+                          {t(c.city)}
+                          <span>{t(c.year)}</span>
+                        </div>
+                        <button
+                          className="car-name"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelected(c);
+                          }}
+                        >
+                          {t(c.name)}
+                        </button>
+                        <div className="specs">
+                          <span>
+                            <Gauge size={14} /> {t(c.transmission || "Avtomat")}
+                          </span>
+                          <span>
+                            <Fuel size={14} /> {t(c.fuel || "Benzin")}
+                          </span>
+                          <span>
+                            <Users size={14} /> {t(c.seats || 5)}
+                            {t("yer")}
+                          </span>
+                        </div>
+                        <div className="card-bottom">
+                          <div>
+                            <strong>
+                              {t(c.price)} <span>{t("₼")}</span>
+                            </strong>
+                            <small>{t("/ gün")}</small>
+                          </div>
+                          <button
+                            aria-label={t("Elana bax")}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelected(c);
+                            }}
+                          >
+                            <ArrowUpRight size={19} />
+                          </button>
+                        </div>
+                        <div className="owner">
+                          <span className="owner-icon">
+                            {t(
+                              c.company ? (
+                                <Car size={13} />
+                              ) : (
+                                <Users size={13} />
+                              ),
+                            )}
+                          </span>
+                          {t(c.owner)}
+                          {t(
+                            c.company && (
+                              <ShieldCheck size={13} color="#267357" />
+                            ),
+                          )}
+                        </div>
+                      </div>
                     </article>
-                  ))}
-                {![...cars, ...pending].some((c) =>
-                  owners.some(
-                    (o) => o.id === c.ownerId && o.accountId === user.id,
-                  ),
-                ) && (
-                  <div className="empty">
-                    <Car size={24} /> Hələ hesabına bağlı elan yoxdur.
-                  </div>
+                  )),
                 )}
-                <button className="primary" onClick={() => setModal("listing")}>
-                  <Plus size={16} /> Elan yerləşdir
-                </button>
-              </>
-            ) : modal === "partners" ? (
-              <>
-                <span className="eyebrow">BİRLİKDƏ BÖYÜYƏK</span>
-                <div className="modal-emblem">
-                  <Building2 size={25} />
+              </div>
+              {t(
+                !filtered.length && (
+                  <div className="empty">
+                    {t("Bu seçimə uyğun avtomobil yoxdur.")}
+                    <button
+                      onClick={() => {
+                        setFilters({
+                          city: "Bütün şəhərlər",
+                          brand: "Bütün markalar",
+                          max: "",
+                        });
+                        setCategory("Hamısı");
+                        setModelQuery("");
+                        setFavorites(false);
+                      }}
+                    >
+                      {t("Filtrləri təmizlə")}
+                    </button>
+                  </div>
+                ),
+              )}
+              <div className="bottom-banner">
+                <div className="banner-icon">
+                  <Car size={38} />
                 </div>
-                <h2>Avtoparkını daha çox insan görsün.</h2>
-                <p>
-                  Rentakar şirkətləri və şəxsi sahiblər üçün ilk aktiv elan
-                  pulsuzdur. 3 və 10 avtomobillik paketlər, VIP yerləşdirmə və
-                  şirkət profilləri nəzərdə tutulur.
-                </p>
+                <div>
+                  <span>{t("SƏNİN AVTOMOBİLİN, SƏNİN QAZANCIN")}</span>
+                  <h2>{t("Avtomobilin boş dayanmasın.")}</h2>
+                  <p>
+                    {t("İlk elanını pulsuz yerləşdir, yeni müştərilər qazan.")}
+                  </p>
+                </div>
                 <button
-                  className="primary"
                   onClick={() =>
                     setModal(
                       user
@@ -1358,38 +1196,511 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                     )
                   }
                 >
-                  <Plus size={17} /> İlk elanını yerləşdir
+                  {t("Pulsuz elan yerləşdir")}
+                  <ArrowUpRight size={18} />
                 </button>
-              </>
-            ) : (
-              <>
-                <span className="eyebrow">NECƏ İŞLƏYİR?</span>
-                <h2>Seç. Əlaqə saxla. Yola çıx.</h2>
-                <p>
-                  Avtomobili filtrlərlə tap, elanın şərtlərini oxu və sahibi ilə
-                  birbaşa əlaqə saxla. Qiyməti, depoziti, sığortanı və təhvil
-                  şərtlərini ödənişdən əvvəl sahibi ilə dəqiqləşdir.
-                </p>
-                <p>
-                  Avtomobil yerləşdirmək üçün elan formasını doldur. Təsdiqlənən
-                  elanlar kataloqda görünür.
-                </p>
-              </>
-            )}
-          </section>
-        </div>
+              </div>
+            </main>
+            <section className="how">
+              <span className="eyebrow">{t("CƏMİ 3 ADDIM")}</span>
+              <h2>{t("Yola çıxmaq bu qədər asandır.")}</h2>
+              <div>
+                {t(
+                  [
+                    [
+                      "01",
+                      "Avtomobilini seç",
+                      "Şəhər, marka və büdcənə görə axtar.",
+                    ],
+                    [
+                      "02",
+                      "Sahibi ilə danış",
+                      "Şərtləri telefon və ya WhatsApp ilə dəqiqləşdir.",
+                    ],
+                    [
+                      "03",
+                      "Yolun dadını çıxar",
+                      "Avtomobili təhvil al və səyahətə başla.",
+                    ],
+                  ].map(([n, title, p]) => (
+                    <article key={n}>
+                      <span>{t(n)}</span>
+                      <h3>{t(title)}</h3>
+                      <p>{t(p)}</p>
+                    </article>
+                  )),
+                )}
+              </div>
+            </section>
+          </>
+        ),
       )}
-      {toast && (
-        <div className="toast" role="status" aria-live="polite">
-          <Check size={18} />
-          {toast}
-        </div>
+      <footer>
+        <a className="logo" href="#">
+          <span className="logo-mark">
+            <Car size={22} />
+          </span>
+          {t("rentacarr")}
+          <span className="logo-az">{t(".az")}</span>
+        </a>
+        <span>{t("Avtomobil kirayəsi")}</span>
+        {t(
+          user?.isAdmin && user?.profile?.complete && (
+            <button
+              onClick={() => {
+                setAdmin(true);
+                window.scrollTo(0, 0);
+              }}
+            >
+              {t("İdarəetmə paneli")}
+              <ArrowUpRight size={14} />
+            </button>
+          ),
+        )}
+        <small>
+          {t("©")}
+          {t(new Date().getFullYear())}
+          {t("RENTACARR.AZ")}
+        </small>
+      </footer>
+      {t(
+        deleteId !== null && (
+          <div className="overlay">
+            <section
+              className="modal"
+              role="alertdialog"
+              aria-modal="true"
+              aria-label={t("Elanı sil")}
+            >
+              <h2>{t("Elan silinsin?")}</h2>
+              <p>
+                {t(cars.find((c) => c.id === deleteId)?.name)}
+                {t(
+                  "kataloqdan və serverdən silinəcək. Elanı sadəcə gizlətmək üçün dayandırma funksiyasından istifadə edə bilərsiniz.",
+                )}
+              </p>
+              <div className="contact">
+                <button className="outline" onClick={() => setDeleteId(null)}>
+                  {t("Ləğv et")}
+                </button>
+                <button
+                  className="primary danger"
+                  onClick={() => removeListing(deleteId)}
+                >
+                  {t("Bəli, sil")}
+                </button>
+              </div>
+            </section>
+          </div>
+        ),
+      )}
+      {t(
+        (selected || modal) && (
+          <div
+            className="overlay"
+            onClick={() => {
+              setSelected(null);
+              setModal(null);
+            }}
+          >
+            <section
+              className="modal"
+              role="dialog"
+              aria-modal="true"
+              aria-label={t(selected?.name || "Məlumat pəncərəsi")}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                className="close"
+                aria-label={t("Bağla")}
+                onClick={() => {
+                  setSelected(null);
+                  setModal(null);
+                }}
+              >
+                <X />
+              </button>
+              {t(
+                selected ? (
+                  <>
+                    <img
+                      className="detail-image"
+                      src={selected.image}
+                      decoding="async"
+                      alt={selected.name}
+                    />
+                    <span className="eyebrow">
+                      {t(selected.city)}
+                      {t("·")}
+                      {t(selected.year)}
+                      {t(selected.demo ? "· NÜMUNƏ ELAN" : "ELAN")}
+                    </span>
+                    <h2>{t(selected.name)}</h2>
+                    <p className="detail-price">
+                      {t(selected.price)}
+                      {t("₼")}
+                      <small>{t("/ gün")}</small>
+                    </p>
+                    <div className="detail-specs">
+                      <span>
+                        <Gauge size={16} />
+                        {t(selected.transmission || "Avtomat")}
+                      </span>
+                      <span>
+                        <Fuel size={16} />
+                        {t(selected.fuel || "Benzin")}
+                      </span>
+                      <span>
+                        <Users size={16} />
+                        {t(selected.seats || 5)}
+                        {t("yer")}
+                      </span>
+                    </div>
+                    <h3>{t("Ətraflı məlumat")}</h3>
+                    <p className="detail-owner">
+                      <Building2 size={17} />
+                      {selected.owner} · {t(selected.city)}
+                    </p>
+                    <p className="listing-description">
+                      {t(
+                        selected.description ||
+                          "Şərtləri sahibi ilə dəqiqləşdirin.",
+                      )}
+                    </p>
+                    <section className="rental-terms">
+                      <h3>{t("Kirayə şərtləri")}</h3>
+                      <p>
+                        {t(
+                          selected.terms ||
+                            "Qiymət gündəlik kirayə üçündür. Təhvil yeri, müddət və ödəniş şərtləri sahibi ilə dəqiqləşdirilir.",
+                        )}
+                      </p>
+                    </section>
+                    <h3>{t("Əlaqə")}</h3>
+                    {t(
+                      selected.phone ? (
+                        <div className="contact">
+                          <a className="primary" href={"tel:" + selected.phone}>
+                            {selected.phone}
+                          </a>
+                          <a
+                            className="outline"
+                            href={
+                              "https://wa.me/" +
+                              selected.phone.replace(/\D/g, "")
+                            }
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {t("WhatsApp")}
+                          </a>
+                        </div>
+                      ) : (
+                        <div className="empty">
+                          <Phone size={19} />
+                          {t(
+                            "Bu nümunə elanda real əlaqə nömrəsi göstərilmir.",
+                          )}
+                        </div>
+                      ),
+                    )}
+                  </>
+                ) : modal === "listing" || editing ? (
+                  <>
+                    <span className="eyebrow">{t("İLK ELANIN PULSUZDUR")}</span>
+                    <h2>
+                      {t(
+                        editing
+                          ? "Elanı redaktə et"
+                          : admin
+                            ? "Sahibin adından elan yerləşdir"
+                            : "Avtomobilini paylaş",
+                      )}
+                    </h2>
+                    <p>
+                      {t(
+                        admin
+                          ? "Elan seçdiyiniz sahibin profilinə əlavə ediləcək və dərhal kataloqda görünəcək. Telefon qeydiyyat üçün deyil, əlaqə üçündür."
+                          : "Elan yoxlanışdan sonra görünəcək. Onu şəxsi hesabından izləyə və redaktə edə bilərsən.",
+                      )}
+                    </p>
+                    <div className="form-hint">
+                      {t(
+                        "Hər sahibin elanları öz profilinə bağlanır. Telefonla giriş SMS kodu ilə təsdiqlənir.",
+                      )}
+                    </div>
+                    <ListingEditor
+                      saving={saving}
+                      listing={editing}
+                      owners={owners}
+                      admin={admin}
+                      onSubmit={submit}
+                    />
+                  </>
+                ) : modal?.startsWith("owner:") ? (
+                  (() => {
+                    const owner = owners.find((o) => o.id === modal.slice(6));
+                    return owner ? (
+                      <>
+                        <span className="eyebrow">{t("SAHİB PROFİLİ")}</span>
+                        <h2>{t(owner.name)}</h2>
+                        <p>
+                          {t(owner.phone)}
+                          {t("·")}
+                          {t(" ")}
+                          {t(
+                            owner.kind === "company"
+                              ? "Rentakar şirkəti"
+                              : "Şəxsi sahib",
+                          )}
+                        </p>
+                        {t(
+                          admin && (
+                            <p>
+                              {t(
+                                owner.expectedEmail || "E-poçt qeyd edilməyib",
+                              )}
+                            </p>
+                          ),
+                        )}
+                        <div className="form-hint">
+                          {t(
+                            "Hər sahibin elanları öz profilinə bağlanır. Telefonla giriş SMS kodu ilə təsdiqlənir.",
+                          )}
+                        </div>
+                        {t(
+                          [...cars, ...pending]
+                            .filter((c) => c.ownerId === owner.id)
+                            .map((c) => (
+                              <div className="owner-listing" key={c.id}>
+                                <img src={c.image} alt={t("")} />
+                                <div>
+                                  <b>{t(c.name)}</b>
+                                  <p>
+                                    {t(c.price)}
+                                    {t("₼ / gün ·")}
+                                    {t(" ")}
+                                    {t(
+                                      pending.some((p) => p.id === c.id)
+                                        ? "Yoxlanışda"
+                                        : c.paused
+                                          ? "Dayandırılıb"
+                                          : "Aktiv",
+                                    )}
+                                  </p>
+                                </div>
+                              </div>
+                            )),
+                        )}
+                      </>
+                    ) : null;
+                  })()
+                ) : (modal === "register" || modal === "account") &&
+                  user &&
+                  !user.profile?.complete ? (
+                  <Registration
+                    user={user}
+                    onComplete={async (account) => {
+                      await onAuthenticated(account);
+                      setModal("account");
+                    }}
+                  />
+                ) : modal === "account" ? (
+                  <>
+                    <span className="eyebrow">
+                      {t(user ? "ŞƏXSİ HESAB" : "XOŞ GƏLMİSİNİZ")}
+                    </span>
+                    <div className="modal-emblem">
+                      <UserRound size={25} />
+                    </div>
+                    <h2>{t(user ? user.name : "Qeydiyyat və giriş")}</h2>
+                    {t(
+                      user ? (
+                        <>
+                          <p>{t(user.email)}</p>
+                          <div className="account-role">
+                            {t(user.isAdmin ? "Admin hesabı" : "Şəxsi hesab")}
+                          </div>
+                          <div className="account-actions">
+                            <button
+                              className="outline"
+                              onClick={() => setModal("my-listings")}
+                            >
+                              <Car size={16} />
+                              {t("Elanlarım")}
+                            </button>
+                            <button
+                              className="primary"
+                              onClick={() => setModal("listing")}
+                            >
+                              <Plus size={16} />
+                              {t("Elan yerləşdir")}
+                            </button>
+                            {t(
+                              user.isAdmin && (
+                                <button
+                                  className="outline"
+                                  onClick={() => {
+                                    setModal(null);
+                                    setAdmin(true);
+                                    window.scrollTo(0, 0);
+                                  }}
+                                >
+                                  <LayoutDashboard size={16} />
+                                  {t("İdarəetmə paneli")}
+                                </button>
+                              ),
+                            )}
+                            <button
+                              className="outline"
+                              onClick={() =>
+                                onLogout().catch((e) => note(e.message))
+                              }
+                            >
+                              {t("Hesabdan çıx")}
+                            </button>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <p>
+                            {t(
+                              "Telefon nömrənə gələn kodla hesabını təsdiqlə.",
+                            )}
+                          </p>
+                          <PhoneLogin onAuthenticated={onAuthenticated} />
+                          <GoogleLogin onAuthenticated={onAuthenticated} />
+                        </>
+                      ),
+                    )}
+                  </>
+                ) : modal === "my-listings" && user ? (
+                  <>
+                    <span className="eyebrow">{t("ŞƏXSİ HESAB")}</span>
+                    <h2>{t("Elanlarım")}</h2>
+                    <p>
+                      {t("Yalnız sənin hesabına bağlı elanlar göstərilir.")}
+                    </p>
+                    {t(
+                      [...cars, ...pending]
+                        .filter((c) =>
+                          owners.some(
+                            (o) =>
+                              o.id === c.ownerId && o.accountId === user.id,
+                          ),
+                        )
+                        .map((c) => (
+                          <article className="my-listing" key={c.id}>
+                            <img src={c.image} alt={c.name} />
+                            <div>
+                              <h3>{t(c.name)}</h3>
+                              <p>
+                                {t(c.price)}
+                                {t("₼ / gün ·")}
+                                {t(" ")}
+                                {t(
+                                  c.status === "pending"
+                                    ? "Yoxlanışda"
+                                    : c.paused
+                                      ? "Dayandırılıb"
+                                      : "Aktiv",
+                                )}
+                              </p>
+                              <button
+                                className="outline"
+                                onClick={() => setModal("edit:" + c.id)}
+                              >
+                                <Pencil size={14} />
+                                {t("Redaktə et")}
+                              </button>
+                            </div>
+                          </article>
+                        )),
+                    )}
+                    {t(
+                      ![...cars, ...pending].some((c) =>
+                        owners.some(
+                          (o) => o.id === c.ownerId && o.accountId === user.id,
+                        ),
+                      ) && (
+                        <div className="empty">
+                          <Car size={24} />
+                          {t("Hələ hesabına bağlı elan yoxdur.")}
+                        </div>
+                      ),
+                    )}
+                    <button
+                      className="primary"
+                      onClick={() => setModal("listing")}
+                    >
+                      <Plus size={16} />
+                      {t("Elan yerləşdir")}
+                    </button>
+                  </>
+                ) : modal === "partners" ? (
+                  <>
+                    <span className="eyebrow">{t("BİRLİKDƏ BÖYÜYƏK")}</span>
+                    <div className="modal-emblem">
+                      <Building2 size={25} />
+                    </div>
+                    <h2>{t("Avtoparkını daha çox insan görsün.")}</h2>
+                    <p>
+                      {t(
+                        "Rentakar şirkətləri və şəxsi sahiblər üçün ilk aktiv elan pulsuzdur. 3 və 10 avtomobillik paketlər, VIP yerləşdirmə və şirkət profilləri nəzərdə tutulur.",
+                      )}
+                    </p>
+                    <button
+                      className="primary"
+                      onClick={() =>
+                        setModal(
+                          user
+                            ? user.profile?.complete
+                              ? "listing"
+                              : "register"
+                            : "account",
+                        )
+                      }
+                    >
+                      <Plus size={17} />
+                      {t("İlk elanını yerləşdir")}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <span className="eyebrow">{t("NECƏ İŞLƏYİR?")}</span>
+                    <h2>{t("Seç. Əlaqə saxla. Yola çıx.")}</h2>
+                    <p>
+                      {t(
+                        "Avtomobili filtrlərlə tap, elanın şərtlərini oxu və sahibi ilə birbaşa əlaqə saxla. Qiyməti, depoziti, sığortanı və təhvil şərtlərini ödənişdən əvvəl sahibi ilə dəqiqləşdir.",
+                      )}
+                    </p>
+                    <p>
+                      {t(
+                        "Avtomobil yerləşdirmək üçün elan formasını doldur. Təsdiqlənən elanlar kataloqda görünür.",
+                      )}
+                    </p>
+                  </>
+                ),
+              )}
+            </section>
+          </div>
+        ),
+      )}
+      {t(
+        toast && (
+          <div className="toast" role="status" aria-live="polite">
+            <Check size={18} />
+            {t(toast)}
+          </div>
+        ),
       )}
     </>
   );
 }
 createRoot(document.getElementById("root")).render(
   <SessionBoundary>
-    {(props) => <App key={props.user?.id || "public"} {...props} />}
+    {t((props) => (
+      <App key={props.user?.id || "public"} {...props} />
+    ))}
   </SessionBoundary>,
 );

@@ -8,8 +8,10 @@ import { createHandler as createAuth } from "../api/auth.js";
 import { createHandler as createListings } from "../api/listings.js";
 import { createHandler as createWorkspace } from "../api/workspace.js";
 import { createHandler as createOwners } from "../api/owners.js";
+import { createHandler as createPhone } from "../api/phone.js";
 import { createHandler as createProfile } from "../api/profile.js";
 process.env.AUTH_SECRET = "test-only-secret-for-isolated-tests-1234567890";
+process.env.GOOGLE_LOGIN_ENABLED = "true";
 process.env.GOOGLE_CLIENT_ID = "test-only-google-client";
 process.env.DATABASE_URL = "test-only-in-memory-database";
 let pg, sql, listings, workspace, owners;
@@ -34,6 +36,7 @@ const actor = (id, email) => ({
   email,
   name: id,
   purpose: "session",
+  method: "google",
   exp: Date.now() + 3600000,
 });
 const admin = actor("admin", "rentacarr.az@gmail.com"),
@@ -332,4 +335,74 @@ test("registration requires identity and reserves each normalized phone for one 
   const read = await call(profile, { user: u });
   assert.equal(read.data.profile.name, "New firm");
   assert.equal(read.data.profile.complete, true);
+});
+
+test("SMS verification is required and phone access never grants the Google admin role", async () => {
+  process.env.TWILIO_ACCOUNT_SID = "test-sid";
+  process.env.TWILIO_AUTH_TOKEN = "test-token";
+  process.env.TWILIO_VERIFY_SERVICE_SID = "test-service";
+  let sends = 0;
+  const phone = createPhone({
+    getDb: async () => sql,
+    sendVerification: async (path, data) => {
+      if (path === "Verifications") {
+        sends++;
+        return { status: "pending" };
+      }
+      return { status: data.Code === "654321" ? "approved" : "pending" };
+    },
+  });
+  const start = await call(phone, {
+    method: "POST",
+    url: "/?action=start",
+    input: { phone: "0501234560" },
+  });
+  assert.equal(start.status, 200);
+  assert.equal(sends, 1);
+  const challenge = [].concat(start.headers["set-cookie"])[0].split(";")[0];
+  const bad = await call(phone, {
+    method: "POST",
+    url: "/?action=verify",
+    cookie: challenge,
+    input: { phone: "0501234560", code: "000000" },
+  });
+  assert.equal(bad.status, 401);
+  assert.equal(bad.headers["set-cookie"], undefined);
+  const missing = await call(phone, {
+    method: "POST",
+    url: "/?action=verify",
+    input: { phone: "0501234560", code: "654321" },
+  });
+  assert.equal(missing.status, 401);
+  const good = await call(phone, {
+    method: "POST",
+    url: "/?action=verify",
+    cookie: challenge,
+    input: { phone: "0501234560", code: "654321" },
+  });
+  assert.equal(good.status, 200);
+  assert.equal(good.data.user.id, admin.sub);
+  assert.equal(good.data.user.isAdmin, false);
+  for (let i = 0; i < 4; i++)
+    assert.equal(
+      (
+        await call(phone, {
+          method: "POST",
+          url: "/?action=start",
+          input: { phone: "0501234560" },
+        })
+      ).status,
+      200,
+    );
+  assert.equal(
+    (
+      await call(phone, {
+        method: "POST",
+        url: "/?action=start",
+        input: { phone: "0501234560" },
+      })
+    ).status,
+    429,
+  );
+  assert.equal(sends, 5);
 });

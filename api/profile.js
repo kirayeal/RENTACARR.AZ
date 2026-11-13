@@ -28,6 +28,11 @@ export function createHandler({ getDb = db } = {}) {
     } catch {
       throw httpError(400, "Mobil nömrəni düzgün daxil edin.");
     }
+    if (user.phone && phone !== user.phone)
+      throw httpError(
+        400,
+        "Yalnız SMS ilə təsdiqlədiyiniz nömrəni istifadə edin.",
+      );
     const name = String(input.name || "").trim();
     if (!name || name.length > 100)
       throw httpError(400, "Ad və ya firma adını daxil edin.");

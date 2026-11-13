@@ -93,9 +93,27 @@ export const cities = [
 export const demoOwners = [
   {
     id: "demo-fleet",
-    name: "RENTACARR Demo Avtopark",
+    name: "Bakı Rentakar · nümunə",
     phone: "",
     kind: "company",
+    expectedEmail: null,
+    accountId: null,
+    demo: true,
+  },
+  {
+    id: "demo-premium",
+    name: "Premium Rentakar · nümunə",
+    phone: "",
+    kind: "company",
+    expectedEmail: null,
+    accountId: null,
+    demo: true,
+  },
+  {
+    id: "demo-private",
+    name: "Şəxsi sahib · nümunə",
+    phone: "",
+    kind: "person",
     expectedEmail: null,
     accountId: null,
     demo: true,
@@ -238,9 +256,11 @@ export const initial = models.map(
     city,
     promotion,
     vip: promotion !== "standard",
-    ownerId: "demo-fleet",
-    owner: demoOwners[0].name,
-    company: true,
+    ownerId: demoOwners[type === "Premium" ? 1 : i % 4 === 0 ? 2 : 0].id,
+    owner: demoOwners[type === "Premium" ? 1 : i % 4 === 0 ? 2 : 0].name,
+    company:
+      demoOwners[type === "Premium" ? 1 : i % 4 === 0 ? 2 : 0].kind ===
+      "company",
     demo: true,
     phone: "",
     image: `/photos/${file}`,

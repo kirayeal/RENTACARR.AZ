@@ -1,3 +1,4 @@
+import { t } from "./i18n";
 import React, { useState } from "react";
 import { Building2, UserRound, Phone, ArrowRight } from "lucide-react";
 import { request } from "./session";
@@ -7,9 +8,9 @@ export default function Registration({ user, onComplete }) {
     [saving, setSaving] = useState(false);
   return (
     <>
-      <span className="eyebrow">QEYDİYYAT</span>
-      <h2>Hesabını tamamlayaq.</h2>
-      <p>Hər telefon nömrəsi yalnız bir hesaba bağlanır.</p>
+      <span className="eyebrow">{t("QEYDİYYAT")}</span>
+      <h2>{t("Hesabını tamamlayaq.")}</h2>
+      <p>{t("Hər telefon nömrəsi yalnız bir hesaba bağlanır.")}</p>
       <form
         className="registration-form"
         onSubmit={async (e) => {
@@ -20,7 +21,10 @@ export default function Registration({ user, onComplete }) {
           try {
             await request("/api/profile", {
               method: "POST",
-              body: { ...data, kind },
+              body: {
+                ...data,
+                kind,
+              },
             });
             await onComplete(user);
           } catch (e) {
@@ -37,7 +41,7 @@ export default function Registration({ user, onComplete }) {
             onClick={() => setKind("company")}
           >
             <Building2 size={22} />
-            Rentakar şirkəti
+            {t("Rentakar şirkəti")}
           </button>
           <button
             type="button"
@@ -45,39 +49,46 @@ export default function Registration({ user, onComplete }) {
             onClick={() => setKind("person")}
           >
             <UserRound size={22} />
-            Şəxsi sahib
+            {t("Şəxsi sahib")}
           </button>
         </div>
         <label>
-          {kind === "company" ? "Firma adı" : "Ad və soyad"}
+          {t(kind === "company" ? "Firma adı" : "Ad və soyad")}
           <input
             name="name"
             required
             maxLength="100"
             autoComplete="organization"
-            placeholder={
-              kind === "company" ? "Firmanızın adı" : "Adınız və soyadınız"
-            }
+            placeholder={t(
+              kind === "company" ? "Firmanızın adı" : "Adınız və soyadınız",
+            )}
           />
         </label>
         <label>
-          Telefon nömrəsi
+          {t("Telefon nömrəsi")}
           <input
             name="phone"
+            defaultValue={user.phone || ""}
+            readOnly={Boolean(user.phone)}
             type="tel"
             required
             autoComplete="tel"
-            placeholder="050 123 45 67"
+            placeholder={t("050 123 45 67")}
           />
         </label>
-        <div className="registration-email">Google hesabı: {user.email}</div>
-        {error && (
-          <p role="alert" className="auth-error">
-            {error}
-          </p>
+        <div className="registration-email">
+          {t("Hesab:")}
+          {t(user.email || user.phone)}
+        </div>
+        {t(
+          error && (
+            <p role="alert" className="auth-error">
+              {t(error)}
+            </p>
+          ),
         )}
         <button className="primary" disabled={saving}>
-          {saving ? "Saxlanılır…" : "Qeydiyyatı tamamla"}
+          {t(saving ? "Saxlanılır…" : "Qeydiyyatı tamamla")}
           <ArrowRight size={17} />
         </button>
       </form>

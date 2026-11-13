@@ -1,3 +1,4 @@
+import { t } from "./i18n";
 import React, { useState, useEffect, useCallback } from "react";
 import { LogIn, Info } from "lucide-react";
 export async function request(path, options = {}) {
@@ -8,7 +9,10 @@ export async function request(path, options = {}) {
         ? AbortSignal.timeout(15000)
         : undefined,
     ...options,
-    headers: { "Content-Type": "application/json", ...options.headers },
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
     body: options.body ? JSON.stringify(options.body) : undefined,
   });
   let data;
@@ -59,7 +63,9 @@ export function GoogleLogin({ onAuthenticated }) {
             try {
               const result = await request("/api/auth?action=login", {
                 method: "POST",
-                body: { credential },
+                body: {
+                  credential,
+                },
               });
               if (active) await onAuthenticated(result.user);
             } catch (e) {
@@ -92,28 +98,14 @@ export function GoogleLogin({ onAuthenticated }) {
   return (
     <div className="google-access">
       <div id="google-signin" />
-      {status === "loading" && <p>Giriş xidməti yoxlanır…</p>}
-      {status === "disabled" && (
-        <div className="auth-notice">
-          <Info size={18} />
-          <p>
-            Google ilə qeydiyyat hələ aktivləşdirilməyib. Qoşulduqda giriş
-            düyməsi burada görünəcək.
+      {t(status === "loading" && <p>{t("Giriş xidməti yoxlanır…")}</p>)}
+      {t(
+        error && (
+          <p role="alert" className="auth-error">
+            {t(error)}
           </p>
-        </div>
+        ),
       )}
-      {error && (
-        <p role="alert" className="auth-error">
-          {error}
-        </p>
-      )}
-      <div className="account-privacy">
-        <LogIn size={15} />
-        <span>
-          Telefon və e-poçt yazmaqla giriş yoxdur. Hesab Google tərəfindən
-          təsdiqlənir.
-        </span>
-      </div>
     </div>
   );
 }
@@ -127,7 +119,10 @@ export function SessionBoundary({ children }) {
       return;
     }
     const result = await request("/api/profile");
-    setUser({ ...account, profile: result.profile });
+    setUser({
+      ...account,
+      profile: result.profile,
+    });
   }, []);
   useEffect(() => {
     request("/api/auth?action=session")
@@ -138,7 +133,8 @@ export function SessionBoundary({ children }) {
   if (loading)
     return (
       <div className="session-loading">
-        RENTACARR<span>Sayt açılır…</span>
+        {t("RENTACARR")}
+        <span>{t("Sayt açılır…")}</span>
       </div>
     );
   return children({
@@ -146,7 +142,9 @@ export function SessionBoundary({ children }) {
     onAuthenticated: finishLogin,
     authError: error,
     onLogout: async () => {
-      await request("/api/auth?action=logout", { method: "POST" });
+      await request("/api/auth?action=logout", {
+        method: "POST",
+      });
       setUser(null);
     },
   });

@@ -7,11 +7,11 @@ import {
   upgradeDemoWorkspace,
   promotionRank,
 } from "../src/catalog.js";
-test("ten complete demo listings belong to the same demo owner without real contacts", () => {
+test("ten complete demo listings belong to known demo owners without real contacts", () => {
   assert.equal(initial.length, 10);
   assert.equal(new Set(initial.map((c) => c.id)).size, 10);
   for (const car of initial) {
-    assert.equal(car.ownerId, demoOwners[0].id);
+    assert.ok(demoOwners.some((owner) => owner.id === car.ownerId));
     assert.equal(car.phone, "");
     assert.ok(brands.includes(car.brand));
     assert.ok(car.deposit >= 0 && car.mileage > 0);
