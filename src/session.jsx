@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { LogIn, Info } from "lucide-react";
 export async function request(path, options = {}) {
   const res = await fetch(path, {
@@ -61,7 +61,7 @@ export function GoogleLogin({ onAuthenticated }) {
                 method: "POST",
                 body: { credential },
               });
-              if (active) onAuthenticated(result.user);
+              if (active) await onAuthenticated(result.user);
             } catch (e) {
               if (active) setError(e.message);
             }
@@ -121,9 +121,17 @@ export function SessionBoundary({ children }) {
   const [user, setUser] = useState(null),
     [loading, setLoading] = useState(true),
     [error, setError] = useState("");
+  const finishLogin = useCallback(async (account) => {
+    if (!account) {
+      setUser(null);
+      return;
+    }
+    const result = await request("/api/profile");
+    setUser({ ...account, profile: result.profile });
+  }, []);
   useEffect(() => {
     request("/api/auth?action=session")
-      .then((data) => setUser(data.user))
+      .then((data) => finishLogin(data.user))
       .catch(() => setError("Giriş xidməti açılmadı. Səhifəni yeniləyin."))
       .finally(() => setLoading(false));
   }, []);
@@ -135,7 +143,7 @@ export function SessionBoundary({ children }) {
     );
   return children({
     user,
-    onAuthenticated: setUser,
+    onAuthenticated: finishLogin,
     authError: error,
     onLogout: async () => {
       await request("/api/auth?action=logout", { method: "POST" });

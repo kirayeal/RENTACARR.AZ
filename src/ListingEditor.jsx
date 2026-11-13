@@ -186,84 +186,42 @@ export default function ListingEditor({
       <fieldset disabled={saving}>
         <legend>
           <ShieldCheck size={17} />
-          Qiymət və kirayə şərtləri
+          Qiymət və əlavə məlumat
         </legend>
         <p className="fieldset-caption">
           Müştəri avtomobili seçməzdən əvvəl bu şərtləri görəcək.
         </p>
-        <div className="form-pair">
-          <Field
-            label="Günlük qiymət (₼)"
-            name="price"
-            type="number"
-            required
-            min="1"
-            max="10000"
-            defaultValue={listing?.price}
+        <Field
+          label="Günlük qiymət (₼)"
+          name="price"
+          type="number"
+          required
+          min="1"
+          max="10000"
+          defaultValue={listing?.price}
+        />
+        {admin && (
+          <Select
+            label="Elanın təqdimatı"
+            name="promotion"
+            defaultValue={
+              listing?.promotion || (listing?.vip ? "vip" : "standard")
+            }
+            options={[
+              ["standard", "Standart"],
+              ["vip", "VIP"],
+              ["premium", "Premium"],
+            ]}
           />
-          <Field
-            label="Depozit (₼)"
-            name="deposit"
-            type="number"
-            min="0"
-            max="100000"
-            required
-            defaultValue={listing?.deposit ?? 200}
-          />
-        </div>
-        <div className="form-pair">
-          <Field
-            label="Yürüş limiti (km / gün)"
-            name="mileage"
-            type="number"
-            min="1"
-            max="10000"
-            required
-            defaultValue={listing?.mileage ?? 250}
-          />
-          <Field
-            label="Minimum yaş"
-            name="minAge"
-            type="number"
-            min="18"
-            max="80"
-            required
-            defaultValue={listing?.minAge ?? 23}
-          />
-        </div>
-        <div className="form-pair">
-          <Field
-            label="Sürücülük təcrübəsi (il)"
-            name="experience"
-            type="number"
-            min="0"
-            max="60"
-            required
-            defaultValue={listing?.experience ?? 2}
-          />
-          {admin && (
-            <Select
-              label="Elanın təqdimatı"
-              name="promotion"
-              defaultValue={
-                listing?.promotion || (listing?.vip ? "vip" : "standard")
-              }
-              options={[
-                ["standard", "Standart — pulsuz"],
-                ["vip", "VIP — ön sıralarda"],
-                ["premium", "Premium — xüsusi vurğu"],
-              ]}
-            />
-          )}
-        </div>
+        )}
         <label>
-          Kirayə şərtləri və təsvir
+          Avtomobil haqqında əlavə məlumat
           <textarea
             name="description"
             rows="4"
             maxLength="2000"
             defaultValue={listing?.description || ""}
-            placeholder="Təhvil yeri, sığorta və digər şərtlər…"
+            placeholder="Avtomobil haqqında qısa məlumat…"
           />
         </label>
       </fieldset>

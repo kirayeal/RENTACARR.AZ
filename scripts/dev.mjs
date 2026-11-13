@@ -4,12 +4,14 @@ import auth from "../api/auth.js";
 import listings from "../api/listings.js";
 import workspace from "../api/workspace.js";
 import owners from "../api/owners.js";
+import profile from "../api/profile.js";
 Object.assign(process.env, loadEnv("development", process.cwd(), ""));
 const handlers = {
   "/api/auth": auth,
   "/api/listings": listings,
   "/api/workspace": workspace,
   "/api/owners": owners,
+  "/api/profile": profile,
 };
 let vite;
 const server = createServer((req, res) => {

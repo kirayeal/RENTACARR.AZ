@@ -27,3 +27,9 @@ Adminin elanları birbaşa aktiv olur və adminə pulsuz elan limiti tətbiq edi
 `.env.example` nümunəsindəki dəyişənləri izlənməyən `.env.local` faylında saxlayın. `npm run dev -- --port 3000` frontend və API-ni birgə açır. `npm run preview` yalnız statik frontend üçündür; Google/API yoxlaması üçün istifadə etməyin.
 
 Əvvəlki localStorage demo məlumatları serverə avtomatik köçürülmür və başqa hesablara göstərilmir. Köhnə lokal yaddaş silinmir. Real məlumat bazası boş olanda ümumi kataloqda 10 təqdimat elanı qalır; onlar şəxsi hesabların elanları deyil.
+
+## Qeydiyyatı tamamlamaq
+
+Google hesabı təsdiqləndikdən sonra istifadəçi firma/şəxsi sahib seçimini, adını və mobil nömrəsini daxil edir. Admin də bu mərhələni tamamlayır. Telefon Azərbaycan mobil formatına normallaşdırılır və bazada UNIQUE məhdudiyyəti ilə yalnız bir hesaba verilir. Başqa Google hesabı həmin nömrəni götürə bilmir. Bu, nömrənin SMS vasitəsilə sahiblik təsdiqi deyil; SMS xidməti hələ qoşulmayıb. Telefon əsasında başqa sahibin elanları avtomatik hesaba keçirilmir.
+
+İstifadəçi qeydiyyatı tamamlamadan yeni elan göndərə bilmir. Admin rolu yenə yalnız Google tərəfindən təsdiqlənmiş rentacarr.az@gmail.com hesabına verilir. Adminin hesabında “İdarəetmə paneli” göstərilir; adi istifadəçiyə göstərilmir.

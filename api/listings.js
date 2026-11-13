@@ -28,6 +28,10 @@ export function createHandler({ getDb = db } = {}) {
     const input = await body(req);
     const sql = await getDb();
     if (req.method === "POST") {
+      const registration =
+        await sql`SELECT user_id FROM rc_registrations WHERE user_id=${user.id}`;
+      if (!registration[0])
+        throw httpError(409, "Əvvəlcə qeydiyyat məlumatlarını tamamlayın.");
       if (!user.isAdmin) {
         const count =
           await sql`SELECT COUNT(*)::INT AS n FROM rc_listings l JOIN rc_owners o ON o.id=l.owner_id WHERE o.account_user_id=${user.id}`;

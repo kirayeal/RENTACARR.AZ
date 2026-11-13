@@ -55,3 +55,5 @@ npm run build
 Real ödəniş, ödənişli paket satınalması, fayl yükləmə / şəkil saxlama xidməti, rezervasiya və çat hələ yoxdur. Adi hesab üçün 1 elan limiti serverdə tətbiq olunur; admin sahib adından limitsiz elan əlavə edə bilər. Adi istifadəçinin yeni və redaktə edilmiş elanı yoxlanışa düşür.
 
 Əvvəlki localStorage demo məlumatları serverə köçürülmür və hesablar arasında göstərilmir; köhnə yaddaş yerində saxlanır. Baza boşdursa ümumi kataloqda 10 təqdimat elanı görünür. Onlar real sahib hesablarına aid edilmir.
+
+Qeydiyyat axını: Google təsdiqi → firma və ya şəxsi sahib seçimi → ad və mobil nömrə → hesab. Hər normallaşdırılmış mobil nömrə yalnız bir hesaba bağlanır. SMS təsdiqi qoşulmayıb. Yaş, depozit və təcrübə sahələri istifadəçi görünüşündən çıxarılıb. Mətn ölçüləri oxunaqlılıq üçün böyüdülüb.

@@ -35,6 +35,7 @@ import {
 import "./style.css";
 import "@fontsource-variable/inter";
 import ListingEditor from "./ListingEditor";
+import Registration from "./Registration";
 import { initial, brands, categories, cities, promotionRank } from "./catalog";
 function App({ user, onAuthenticated, onLogout, authError }) {
   const [adminView, setAdminView] = useState("overview");
@@ -57,7 +58,9 @@ function App({ user, onAuthenticated, onLogout, authError }) {
     [liked, setLiked] = useState([]),
     [favorites, setFavorites] = useState(false),
     [selected, setSelected] = useState(null),
-    [modal, setModal] = useState(null),
+    [modal, setModal] = useState(
+      user && !user.profile?.complete ? "register" : null,
+    ),
     [adminMode, setAdmin] = useState(false),
     [pending, setPending] = useState(workspace.pending),
     [sort, setSort] = useState("Seçilmiş elanlar"),
@@ -66,7 +69,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
     [adminSearch, setAdminSearch] = useState(""),
     [adminStatus, setAdminStatus] = useState("all"),
     [deleteId, setDeleteId] = useState(null);
-  const admin = Boolean(user?.isAdmin && adminMode);
+  const admin = Boolean(user?.isAdmin && user?.profile?.complete && adminMode);
   const editing = modal?.startsWith("edit:")
     ? [...cars, ...pending].find((c) => String(c.id) === modal.slice(5))
     : null;
@@ -304,15 +307,23 @@ function App({ user, onAuthenticated, onLogout, authError }) {
           </button>
           <button
             className="login"
-            aria-label={user ? "Hesabım" : "Daxil ol"}
+            aria-label={user ? "Hesabım" : "Qeydiyyat və giriş"}
             onClick={() => setModal("account")}
           >
             <UserRound size={17} />
-            <span>{user ? "Hesabım" : "Daxil ol"}</span>
+            <span>{user ? "Hesabım" : "Qeydiyyat / Giriş"}</span>
           </button>
           <button
             className="primary add"
-            onClick={() => setModal(user ? "listing" : "account")}
+            onClick={() =>
+              setModal(
+                user
+                  ? user.profile?.complete
+                    ? "listing"
+                    : "register"
+                  : "account",
+              )
+            }
           >
             <Plus size={17} /> Elan yerləşdir
           </button>
@@ -408,7 +419,15 @@ function App({ user, onAuthenticated, onLogout, authError }) {
           <div className="admin-actions">
             <button
               className="primary"
-              onClick={() => setModal(user ? "listing" : "account")}
+              onClick={() =>
+                setModal(
+                  user
+                    ? user.profile?.complete
+                      ? "listing"
+                      : "register"
+                    : "account",
+                )
+              }
             >
               <Plus size={17} /> Sahibin adından elan yerləşdir
             </button>
@@ -704,9 +723,6 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                 <b>Səfərin ritmini özün seç.</b>
                 <ArrowUpRight size={22} />
               </div>
-              <div className="photo-label">
-                <Camera size={13} /> Real avtomobil fotosu
-              </div>
             </div>
           </section>
           <div className="search-wrap">
@@ -962,7 +978,17 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                 <h2>Avtomobilin boş dayanmasın.</h2>
                 <p>İlk elanını pulsuz yerləşdir, yeni müştərilər qazan.</p>
               </div>
-              <button onClick={() => setModal(user ? "listing" : "account")}>
+              <button
+                onClick={() =>
+                  setModal(
+                    user
+                      ? user.profile?.complete
+                        ? "listing"
+                        : "register"
+                      : "account",
+                  )
+                }
+              >
                 Pulsuz elan yerləşdir <ArrowUpRight size={18} />
               </button>
             </div>
@@ -1006,7 +1032,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
           rentacarr<span className="logo-az">.az</span>
         </a>
         <span>Yol səninlə başlayır.</span>
-        {user?.isAdmin && (
+        {user?.isAdmin && user?.profile?.complete && (
           <button
             onClick={() => {
               setAdmin(true);
@@ -1099,21 +1125,6 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                     <Users size={16} />
                     {selected.seats || 5} yer
                   </span>
-                </div>
-                <h3 className="detail-subtitle">Kirayə şərtləri</h3>
-                <div className="detail-terms">
-                  <p>
-                    Depozit <b>{selected.deposit ?? 300} ₼</b>
-                  </p>
-                  <p>
-                    Yürüş limiti <b>{selected.mileage ?? 250} km / gün</b>
-                  </p>
-                  <p>
-                    Minimum yaş <b>{selected.minAge ?? 23} yaş</b>
-                  </p>
-                  <p>
-                    Sürücülük təcrübəsi <b>{selected.experience ?? 2} il</b>
-                  </p>
                 </div>
                 <p className="listing-description">
                   {selected.description || "Şərtləri sahibi ilə dəqiqləşdirin."}
@@ -1209,6 +1220,16 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                   </>
                 ) : null;
               })()
+            ) : (modal === "register" || modal === "account") &&
+              user &&
+              !user.profile?.complete ? (
+              <Registration
+                user={user}
+                onComplete={async (account) => {
+                  await onAuthenticated(account);
+                  setModal("account");
+                }}
+              />
             ) : modal === "account" ? (
               <>
                 <span className="eyebrow">
@@ -1217,7 +1238,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                 <div className="modal-emblem">
                   <UserRound size={25} />
                 </div>
-                <h2>{user ? user.name : "Sənin avtomobil məkanın."}</h2>
+                <h2>{user ? user.name : "Qeydiyyat və giriş"}</h2>
                 {user ? (
                   <>
                     <p>{user.email}</p>
@@ -1327,7 +1348,15 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                 </p>
                 <button
                   className="primary"
-                  onClick={() => setModal(user ? "listing" : "account")}
+                  onClick={() =>
+                    setModal(
+                      user
+                        ? user.profile?.complete
+                          ? "listing"
+                          : "register"
+                        : "account",
+                    )
+                  }
                 >
                   <Plus size={17} /> İlk elanını yerləşdir
                 </button>

@@ -2803,3 +2803,336 @@ footer small {
     gap: 15px;
   }
 }
+/* Readable text sizes throughout the rental catalog and account panels. */
+:root {
+  font-size: 16px;
+  --muted: #657268;
+}
+.eyebrow,
+.hero-tag {
+  font-size: 11px;
+  letter-spacing: 1.2px;
+}
+.hero p {
+  font-size: 16px;
+}
+.hero-proof span,
+.hero-proof b {
+  font-size: 12px;
+}
+.hero-link,
+.primary,
+.outline {
+  font-size: 14px;
+}
+.section-title p,
+.listing-count,
+.demo-note {
+  font-size: 13px;
+}
+.search-box label > span {
+  font-size: 12px;
+}
+.search-box select,
+.search-box input {
+  font-size: 15px;
+}
+.tabs button,
+.filter-bar select,
+.model-search {
+  font-size: 13px;
+}
+.model-search input {
+  font-size: 14px;
+}
+.benefits span {
+  font-size: 13px;
+}
+.benefits small {
+  font-size: 12px;
+}
+.card-location,
+.owner {
+  font-size: 12px;
+}
+.car-name {
+  font-size: 20px;
+}
+.specs {
+  font-size: 13px;
+  gap: 14px;
+}
+.badges span {
+  font-size: 11px;
+}
+.card-bottom small {
+  font-size: 12px;
+}
+.bottom-banner p,
+.bottom-banner > button,
+.how p {
+  font-size: 14px;
+}
+.bottom-banner span {
+  font-size: 10px;
+}
+.how h3 {
+  font-size: 17px;
+}
+.modal p {
+  font-size: 14px;
+}
+.modal .eyebrow {
+  font-size: 11px;
+}
+.listing-form label {
+  font-size: 13px;
+}
+.fieldset-caption {
+  font-size: 12px !important;
+}
+.form-hint {
+  font-size: 12px;
+}
+.admin .section-title p,
+.admin-guide p,
+.workspace-notice p,
+.overview-grid p,
+.owner-management > p,
+.admin-filters span {
+  font-size: 13px;
+}
+.admin-nav button {
+  font-size: 14px;
+}
+.admin-row p,
+.owner-row p {
+  font-size: 12px;
+}
+.owner-row b,
+.admin-row b {
+  font-size: 15px;
+}
+.admin-row .outline,
+.admin-row select,
+.claim-status {
+  font-size: 12px;
+}
+.stats span {
+  font-size: 13px;
+}
+.overview-heading p {
+  font-size: 14px;
+}
+.overview-grid h3 {
+  font-size: 17px;
+}
+.workspace-notice h3 {
+  font-size: 15px;
+}
+.empty {
+  font-size: 13px;
+}
+.account-privacy,
+.auth-notice p {
+  font-size: 12px;
+}
+.login {
+  font-size: 14px;
+}
+.registration-form {
+  display: grid;
+  gap: 21px;
+  margin-top: 25px;
+}
+.registration-form label {
+  display: grid;
+  gap: 10px;
+  font-size: 14px;
+  color: #53674c;
+}
+.registration-form input {
+  border: 1px solid #dce4d5;
+  border-radius: 7px;
+  padding: 14px;
+  font-size: 16px;
+  min-height: 49px;
+  background: #fbfcf8;
+  width: 100%;
+  min-width: 0;
+}
+.registration-types {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.registration-types button {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  align-items: flex-start;
+  border: 1px solid #dce4d5;
+  padding: 20px;
+  border-radius: 9px;
+  font-size: 14px;
+  min-width: 0;
+}
+.registration-types button[aria-pressed="true"] {
+  background: #eef4e7;
+  border-color: #7f9d69;
+  color: #426a35;
+}
+.registration-email {
+  font-size: 12px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+  color: #75836a;
+}
+.account-role {
+  font-size: 12px;
+}
+.my-listing p {
+  font-size: 12px;
+}
+.modal .listing-description {
+  display: none;
+}
+@media (max-width: 1100px) {
+  header nav {
+    display: none;
+  }
+  .specs {
+    font-size: 12px;
+    gap: 10px;
+  }
+}
+@media (max-width: 640px) {
+  .hero-tag {
+    font-size: 9px;
+  }
+  .hero p {
+    font-size: 14px;
+  }
+  .hero-proof span,
+  .hero-proof b {
+    font-size: 11px;
+  }
+  .hero-link {
+    font-size: 13px;
+  }
+  .eyebrow {
+    font-size: 10px;
+  }
+  .benefits span {
+    font-size: 11px;
+  }
+  .benefits small {
+    font-size: 10px;
+  }
+  .section-title p {
+    font-size: 13px;
+  }
+  .tabs button {
+    font-size: 12px;
+  }
+  .filter-bar select,
+  .model-search,
+  .demo-note {
+    font-size: 12px;
+  }
+  .card-location,
+  .owner {
+    font-size: 12px;
+  }
+  .specs {
+    font-size: 12px;
+    gap: 17px;
+  }
+  .car-name {
+    font-size: 20px;
+  }
+  .modal p {
+    font-size: 14px;
+  }
+  .modal .eyebrow {
+    font-size: 10px;
+  }
+  .form-hint {
+    font-size: 12px;
+  }
+  .listing-form label {
+    font-size: 13px;
+  }
+  .admin .section-title p {
+    font-size: 12px;
+  }
+  .admin-nav button {
+    font-size: 12px;
+  }
+  .stats span {
+    font-size: 11px;
+  }
+  .admin-row p,
+  .owner-row p {
+    font-size: 12px;
+  }
+  .admin-row b,
+  .owner-row b {
+    font-size: 14px;
+  }
+  .claim-status {
+    font-size: 10px;
+  }
+  .overview-grid h3 {
+    font-size: 15px;
+  }
+  .overview-grid p,
+  .workspace-notice p {
+    font-size: 12px;
+  }
+  .registration-types button {
+    font-size: 13px;
+    padding: 17px;
+  }
+  .primary,
+  .outline {
+    font-size: 13px;
+  }
+  .add {
+    font-size: 10px;
+  }
+  .login {
+    font-size: 0;
+  }
+  .how p {
+    font-size: 13px;
+  }
+  .bottom-banner p {
+    font-size: 13px;
+  }
+  .bottom-banner > button {
+    font-size: 13px;
+  }
+}
+@media (max-width: 360px) {
+  .add {
+    font-size: 0;
+  }
+  .specs {
+    gap: 12px;
+    font-size: 11px;
+  }
+  .registration-types {
+    gap: 10px;
+  }
+  .registration-types button {
+    font-size: 12px;
+    padding: 14px;
+  }
+  .modal {
+    padding: 22px;
+  }
+  .stats span {
+    font-size: 10px;
+  }
+}

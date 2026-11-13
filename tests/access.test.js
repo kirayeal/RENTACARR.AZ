@@ -8,6 +8,7 @@ import { createHandler as createAuth } from "../api/auth.js";
 import { createHandler as createListings } from "../api/listings.js";
 import { createHandler as createWorkspace } from "../api/workspace.js";
 import { createHandler as createOwners } from "../api/owners.js";
+import { createHandler as createProfile } from "../api/profile.js";
 process.env.AUTH_SECRET = "test-only-secret-for-isolated-tests-1234567890";
 process.env.GOOGLE_CLIENT_ID = "test-only-google-client";
 process.env.DATABASE_URL = "test-only-in-memory-database";
@@ -114,6 +115,8 @@ before(async () => {
   await prepareSchema(sql);
   for (const u of [admin, alice, bob])
     await sql`INSERT INTO rc_users(id,email,name) VALUES(${u.sub},${u.email},${u.name})`;
+  for (const [i, u] of [admin, alice, bob].entries())
+    await sql`INSERT INTO rc_registrations(user_id,name,phone,kind) VALUES(${u.sub},${u.name},${"+99450123456" + i},'person')`;
   const getDb = async () => sql;
   listings = createListings({ getDb });
   workspace = createWorkspace({ getDb });
@@ -298,4 +301,35 @@ test("only verified Google login attaches admin-preauthorized profiles to the ow
     ).status,
     401,
   );
+});
+
+test("registration requires identity and reserves each normalized phone for one account", async () => {
+  const profile = createProfile({ getDb: async () => sql });
+  assert.equal(
+    (
+      await call(profile, {
+        method: "POST",
+        input: { name: "No identity", phone: "0501234567" },
+      })
+    ).status,
+    401,
+  );
+  const u = actor("new-registration", "new-registration@example.test");
+  await sql`INSERT INTO rc_users(id,email,name) VALUES(${u.sub},${u.email},${u.name})`;
+  const duplicate = await call(profile, {
+    method: "POST",
+    user: u,
+    input: { name: "New firm", kind: "company", phone: "0501234560" },
+  });
+  assert.equal(duplicate.status, 409);
+  const success = await call(profile, {
+    method: "POST",
+    user: u,
+    input: { name: "New firm", kind: "company", phone: "055 987 65 43" },
+  });
+  assert.equal(success.status, 200);
+  assert.equal(success.data.profile.phone, "+994559876543");
+  const read = await call(profile, { user: u });
+  assert.equal(read.data.profile.name, "New firm");
+  assert.equal(read.data.profile.complete, true);
 });
