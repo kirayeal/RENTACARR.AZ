@@ -21,6 +21,7 @@ import {
   Phone,
 } from "lucide-react";
 import "./style.css";
+import "./responsive.css";
 import ListingEditor from "./ListingEditor";
 import {
   initial,
@@ -30,12 +31,13 @@ import {
   cities,
   promotionRank,
   upgradeDemoWorkspace,
+  upgradeDemoPhotos,
 } from "./catalog";
-const photo = (id) =>
-  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=1000&q=85`;
 function App() {
   const [workspace] = useState(() =>
-    upgradeDemoWorkspace(loadWorkspace(initial, localStorage, demoOwners)),
+    upgradeDemoPhotos(
+      upgradeDemoWorkspace(loadWorkspace(initial, localStorage, demoOwners)),
+    ),
   );
   const [owners, setOwners] = useState(workspace.owners),
     [ownerQuery, setOwnerQuery] = useState(""),
@@ -128,7 +130,7 @@ function App() {
         ownerEmail: d.get("ownerEmail"),
         phone: d.get("phone"),
         type: d.get("type"),
-        image: d.get("image") || editing?.image || "/cars/demo-9.svg",
+        image: d.get("image") || editing?.image || "/photos/car-6.jpg",
         fuel: d.get("fuel"),
         transmission: d.get("transmission"),
         seats: Number(d.get("seats")),
@@ -273,6 +275,13 @@ function App() {
           </button>
         </div>
       </header>
+      {!admin && (
+        <nav className="mobile-nav" aria-label="Əsas menyu">
+          <a href="#cars">Avtomobillər</a>
+          <button onClick={() => setModal("partners")}>Partnyorlar</button>
+          <button onClick={() => setModal("how")}>Necə işləyir?</button>
+        </nav>
+      )}
       {admin ? (
         <main className="admin">
           <div className="section-title">
@@ -558,16 +567,12 @@ function App() {
                 Avtomobillərə bax <ArrowUpRight size={18} />
               </a>
               <div className="hero-proof">
-                <span className="avatars">
-                  {" "}
-                  <i>A</i>
-                  <i>R</i>
-                  <i>N</i>
+                <ShieldCheck size={19} />
+                <span>
+                  Şirkətlərdən və şəxsi sahiblərdən
+                  <br />
+                  <b>Birbaşa əlaqə. Rahat seçim.</b>
                 </span>
-                <div>
-                  <b>Sənin yolun, sənin seçimin</b>
-                  <small>Şirkətlər və şəxsi sahiblər bir arada</small>
-                </div>
               </div>
             </div>
             <div className="hero-caption">
@@ -575,9 +580,6 @@ function App() {
               <b>
                 Öz hekayəni başlat. <ArrowUpRight size={18} />
               </b>
-            </div>
-            <div className="hero-count">
-              <span>01</span> ━━━ <small>03</small>
             </div>
           </section>
           <div className="search-wrap">
@@ -706,7 +708,7 @@ function App() {
               />
             </label>
             <div className="demo-note">
-              Nümunə elanlar · Qiymətlər və şəkillər təqdimat üçündür.
+              Nümunə elanlar · Real fotolar · Qiymətlər və şərtlər nümunədir.
             </div>
             <div className="grid">
               {filtered.map((c) => (
@@ -926,6 +928,7 @@ function App() {
                 <img
                   className="detail-image"
                   src={selected.image}
+                  decoding="async"
                   alt={selected.name}
                 />
                 <span className="eyebrow">

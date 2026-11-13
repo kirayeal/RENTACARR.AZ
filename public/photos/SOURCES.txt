@@ -1,0 +1,6 @@
+Photographic assets: codewithsadee/ridex, assets/images.
+Repository: https://github.com/codewithsadee/ridex
+Source README: https://github.com/codewithsadee/ridex#license
+The source author states: "This project is free to use and does not contains any license."
+Files retained unmodified: car-1.jpg through car-6.jpg; hero-banner.jpg renamed hero-bmw.jpg.
+These are presentation photographs, not photos of actual rental offers. Vehicle year, pricing and conditions are demo data.

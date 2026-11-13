@@ -15,7 +15,7 @@ test("ten complete demo listings belong to the same demo owner without real cont
     assert.equal(car.phone, "");
     assert.ok(brands.includes(car.brand));
     assert.ok(car.deposit >= 0 && car.mileage > 0);
-    assert.ok(car.image.startsWith("/cars/"));
+    assert.ok(car.image.startsWith("/photos/"));
   }
   assert.deepEqual(
     new Set(initial.map((c) => c.promotion)),
@@ -50,4 +50,22 @@ test("migration adds missing examples once and preserves user data", () => {
     cars: upgraded.cars.filter((c) => c.id !== 1),
   };
   assert.equal(upgradeDemoWorkspace(removed).cars.length, 10);
+});
+
+test("photo migration replaces only built-in illustrations and preserves custom data", async () => {
+  const { upgradeDemoPhotos } = await import("../src/catalog.js");
+  const saved = {
+    cars: [
+      { id: 1, image: "/cars/demo-1.svg", price: 432, paused: true },
+      { id: 2, image: "https://example.com/custom.jpg", name: "Custom name" },
+      { id: "custom", image: "/cars/demo-3.svg" },
+    ],
+  };
+  const next = upgradeDemoPhotos(saved);
+  assert.equal(next.cars[0].image, initial[0].image);
+  assert.equal(next.cars[0].price, 432);
+  assert.equal(next.cars[0].paused, true);
+  assert.equal(next.cars[1].name, "Custom name");
+  assert.equal(next.cars[1].image, "https://example.com/custom.jpg");
+  assert.deepEqual(next.cars[2], saved.cars[2]);
 });
