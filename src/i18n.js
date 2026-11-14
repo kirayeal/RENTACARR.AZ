@@ -24,6 +24,21 @@ export function useLanguage() {
   );
 }
 const rows = [
+  ["Baxış tarixçəsini təmizlə", "Clear viewing history", "Очистить историю просмотров"],
+  ["Hələ baxdığınız avtomobil yoxdur.", "You haven’t viewed any cars yet.", "Вы ещё не просматривали автомобили."],
+  ["Giriş üçün sessiya kukisi istifadə olunur. Dil, seçilmiş elanlar, son baxılanlar və saxlanmış axtarışlar bu brauzerdə saxlanır. Şifrələr açıq formada saxlanmır.", "A session cookie is used for login. Language, favorites, recently viewed cars and saved searches are stored in this browser. Passwords are not stored as plain text.", "Для входа используется сессионный cookie. Язык, избранное, история просмотров и сохранённые поиски хранятся в этом браузере. Пароли не хранятся в открытом виде."],
+  ["Şirkətlər və şəxsi sahiblər", "Rental companies and private owners", "Компании и частные владельцы"],
+  ["Elan görünüşü", "Listing view", "Вид объявлений"],
+  ["Son baxılanlar", "Recently viewed", "Недавно просмотренные"],
+  ["Saxlanmış axtarışlar", "Saved searches", "Сохранённые поиски"],
+  ["Axtarışı saxla", "Save search", "Сохранить поиск"],
+  ["Axtarışı aç", "Open search", "Открыть поиск"],
+  ["Axtarışı sil", "Delete search", "Удалить поиск"],
+  ["Hələ saxlanmış axtarış yoxdur.", "No saved searches yet.", "Пока нет сохранённых поисков."],
+  ["Seçdiyiniz filtrlərə bir toxunuşla qayıdın. Axtarışlar bu brauzerdə saxlanır.", "Return to your filters with one click. Searches are stored in this browser.", "Вернитесь к выбранным фильтрам одним нажатием. Поиски хранятся в этом браузере."],
+  ["Axtarış saxlanıldı.", "Search saved.", "Поиск сохранён."],
+  ["Bu axtarış artıq saxlanılıb.", "This search is already saved.", "Этот поиск уже сохранён."],
+  ["Ən çox 5 axtarış saxlamaq olar. Əvvəlki seçimlərdən birini silin.", "You can save up to 5 searches. Remove an earlier search first.", "Можно сохранить до 5 поисков. Сначала удалите один из предыдущих."],
   ["Ağcabədi", "Agjabadi", "Агджабеди"],
   ["Ağdam", "Aghdam", "Агдам"],
   ["Ağdaş", "Agdash", "Агдаш"],

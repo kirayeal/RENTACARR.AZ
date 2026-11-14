@@ -6,4 +6,4 @@ Siyahılar `src/catalog.js` faylındadır: 134 avtomobil/light-commercial marka 
 
 `CatalogSelect` kataloqda və elan formasında eyni saxlanan dəyərlərdən istifadə edir. Ekrandakı tərcümə dəyəri dəyişdirmir: məsələn, "Баку" seçimi `Bakı` kimi saxlanır. Yazı axtarışı Azərbaycan hərflərini və sadə Latın girişini uyğunlaşdırır; `seki`, `ismayilli`, `skoda`, `mersedes` ilə seçim tapmaq mümkündür. Əvvəlki elanlarda olan siyahıdan kənar dəyər redaktə zamanı saxlanır.
 
-Şrift: yerli Manrope Variable (400–450 çəkiləri). Şrift lisenziyası `public/licenses/Manrope-OFL.txt` faylındadır. Xarici font sorğusu tələb olunmur.
+Şrift: yerli Onest Variable (400–450 çəkiləri). Şrift lisenziyası `public/licenses/Onest-OFL.txt` faylındadır. Xarici font sorğusu tələb olunmur.

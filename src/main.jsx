@@ -42,11 +42,16 @@ import {
   BriefcaseBusiness,
   Coins,
   ArrowLeftRight,
+  Bookmark,
+  History,
 } from "lucide-react";
 import "./style.css";
-import "./catalogue.css";
-import "@fontsource-variable/manrope";
+import "./experience.css";
+import "@fontsource-variable/onest";
 import ListingEditor from "./ListingEditor";
+import BrandMark from "./BrandMark";
+import SavedSearches from "./SavedSearches";
+import {preferenceKey,normalizeSearch,readSavedSearches,readRecentIds,rememberRecent} from "./searchPreferences";
 import CatalogSelect from "./CatalogSelect";
 import RentalDetail from "./RentalDetail";
 import CompareCars from "./CompareCars";
@@ -73,6 +78,11 @@ function App({ user, onAuthenticated, onLogout, authError }) {
     try { const ids = JSON.parse(localStorage.getItem("rentacarr.compare") || "[]"); return Array.isArray(ids) ? [...new Set(ids.filter(id => typeof id === "string"))].slice(0,3) : []; } catch { return []; }
   });
   useEffect(() => {try {localStorage.setItem("rentacarr.compare",JSON.stringify(compared));} catch {}},[compared]);
+  const [feed,setFeed] = useState("all");
+  const [recentIds,setRecentIds] = useState(()=>{try{return readRecentIds(localStorage,preferenceKey(user?.id,"recent"));}catch{return [];}});
+  const [savedSearches,setSavedSearches] = useState(()=>{try{return readSavedSearches(localStorage,preferenceKey(user?.id,"searches"));}catch{return [];}});
+  useEffect(()=>{try{localStorage.setItem(preferenceKey(user?.id,"recent"),JSON.stringify(recentIds));}catch{}},[recentIds,user?.id]);
+  useEffect(()=>{try{localStorage.setItem(preferenceKey(user?.id,"searches"),JSON.stringify(savedSearches));}catch{}},[savedSearches,user?.id]);
   const workspace = {
     cars: [],
     pending: [],
@@ -128,7 +138,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
   }, [liked, user?.id]);
   const [page, setPage] = useState(1);
   const pageSize = 12;
-  useEffect(() => setPage(1), [filters, category, favorites, modelQuery, sort, criteria]);
+  useEffect(() => setPage(1), [filters, category, favorites, modelQuery, sort, criteria, feed]);
   const admin = Boolean(user?.isAdmin && adminMode);
   const editing = modal?.startsWith("edit:")
     ? [...cars, ...pending].find((c) => String(c.id) === modal.slice(5))
@@ -161,6 +171,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
     window.addEventListener("popstate", restore);
     return () => window.removeEventListener("popstate", restore);
   }, [publicCars]);
+  useEffect(()=>{if(selected)setRecentIds(ids=>rememberRecent(ids,selected.id));},[selected?.id]);
   useEffect(() => {
     if (selected) document.title = selected.name + " — RENTACARR.AZ";
     else document.title = "RENTACARR.AZ — " + t("Avtomobil kirayəsi");
@@ -265,7 +276,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
           .toLocaleLowerCase("az")
           .includes(modelQuery.toLocaleLowerCase("az")),
     )
-    .filter(c => matchesCriteria(c, criteria))
+    .filter(c => matchesCriteria(c, criteria) && (feed !== "recent" || recentIds.includes(String(c.id))))
     .filter(
       (c) =>
         (filters.city === "Bütün şəhərlər" || c.city === filters.city) &&
@@ -279,16 +290,30 @@ function App({ user, onAuthenticated, onLogout, authError }) {
         ? a.price - b.price
         : sort === "Əvvəlcə bahalı"
           ? b.price - a.price
-          : promotionRank(b) - promotionRank(a),
+          : feed === "recent" ? recentIds.indexOf(String(a.id)) - recentIds.indexOf(String(b.id)) : promotionRank(b) - promotionRank(a),
     );
+  const extraFilterCount = [filters.max,modelQuery,category !== "Hamısı",criteria.owner !== "all",criteria.fuel,criteria.transmission,criteria.seats,criteria.noDeposit].filter(Boolean).length;
+  const searchActive = filters.city !== "Bütün şəhərlər" || filters.brand !== "Bütün markalar" || extraFilterCount > 0 || favorites;
+  const recentCount = publicCars.filter(car=>recentIds.includes(String(car.id))).length;
   const comparedCars = publicCars.filter(car => compared.includes(String(car.id)));
   function compareCar(id) {
     const ids = comparedCars.map(car => String(car.id));
     if (!ids.includes(String(id)) && ids.length >= 3) {note("Ən çox 3 avtomobil müqayisə edə bilərsiniz.");return;}
     setCompared(toggleCompared(ids, id));
   }
+  function saveCurrentSearch() {
+    const search=normalizeSearch({...filters,model:modelQuery,category,sort,criteria});
+    if(savedSearches.some(item=>JSON.stringify(item.search)===JSON.stringify(search))){note("Bu axtarış artıq saxlanılıb.");return;}
+    if(savedSearches.length>=5){note("Ən çox 5 axtarış saxlamaq olar. Əvvəlki seçimlərdən birini silin.");setModal("saved-searches");return;}
+    const title=[filters.brand!=="Bütün markalar"?filters.brand:null,filters.city!=="Bütün şəhərlər"?t(filters.city):null,category!=="Hamısı"?t(category):null].filter(Boolean).join(" · ") || t("Bütün elanlar");
+    setSavedSearches(items=>[...items,{id:crypto.randomUUID(),title,search}]);note("Axtarış saxlanıldı.");
+  }
+  function applySavedSearch(search) {
+    setCity(search.city);setBrand(search.brand);setMax(search.max);setModelQuery(search.model);setCategory(search.category);setSort(search.sort);setCriteria(search.criteria);setFilters({city:search.city,brand:search.brand,max:search.max});setFeed("all");setFavorites(false);setPage(1);setAdmin(false);setSelected(null);
+    setTimeout(()=>document.getElementById("cars")?.scrollIntoView({behavior:"smooth"}),0);
+  }
   function resetSearch() {
-    setCity("Bütün şəhərlər");setBrand("Bütün markalar");setMax("");setModelQuery("");setCategory("Hamısı");setFavorites(false);setCriteria({...emptyCriteria});
+    setFeed("all");setCity("Bütün şəhərlər");setBrand("Bütün markalar");setMax("");setModelQuery("");setCategory("Hamısı");setFavorites(false);setCriteria({...emptyCriteria});
     setFilters({city:"Bütün şəhərlər",brand:"Bütün markalar",max:""});
   }
   const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
@@ -402,7 +427,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
             setFavorites(false);
           }}
         >
-          {t("rentacarr")}
+          <BrandMark/><span className="wordmark">{t("rentacarr")}</span>
           <span className="logo-az">{t(".az")}</span>
         </a>
         <nav>
@@ -427,7 +452,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
             className="heart-top"
             aria-label={t("Seçilmiş elanlar")}
             onClick={() => {
-              setFavorites(!favorites);
+              setFavorites(!favorites);setFeed("all");
               setSelected(null);
               setAdmin(false);
               document.getElementById("cars")?.scrollIntoView();
@@ -473,7 +498,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
             <button
               aria-label={t("Seçilmiş elanlar")}
               onClick={() => {
-                setFavorites(!favorites);
+                setFavorites(!favorites);setFeed("all");
                 setSelected(null);
                 document.getElementById("cars")?.scrollIntoView({
                   behavior: "smooth",
@@ -919,21 +944,10 @@ function App({ user, onAuthenticated, onLogout, authError }) {
           </main>
         ) : (
           <>
-            <section className="hero">
-              <div className="hero-content">
-                <div className="hero-tag">{t("Avtomobil kirayəsi")}</div>
-                <h1>{t("Avtomobil seçimi, aydın şərtlər.")}</h1>
-                <p>
-                  {t("Rentakar şirkətləri və şəxsi sahiblərdən günlük, həftəlik və aylıq avtomobil kirayəsi.")}
-                </p>
-              </div>
-              <div className="hero-periods" aria-label={t("Kirayə müddəti")}>
-                <span>{t("Günlük")}</span><span>{t("Həftəlik")}</span><span>{t("Aylıq")}</span>
-              </div>
-            </section>
+            <section className="discovery-intro"><div><span className="intro-label">{t("Şirkətlər və şəxsi sahiblər")}</span><h1>{t("Kirayə avtomobillər")}</h1></div><button className="saved-search-entry" onClick={()=>setModal("saved-searches")}><Bookmark size={17}/>{t("Saxlanmış axtarışlar")}<span>{savedSearches.length}</span></button></section>
             <div className="marketplace-layout">
               <aside
-                className={"search-wrap " + (filtersOpen ? "filters-open" : "")}
+                className={"search-wrap " + (filtersOpen ? "filters-open " : "") + (advancedOpen ? "advanced-open" : "")}
               >
                 <div className="filter-panel-heading">
                   <span>
@@ -998,17 +1012,15 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                       placeholder={t("Məsələn: RAV4, Panamera, GLS…")}
                     />
                   </label>
-                  <label className="category-field"><span>{t("Kateqoriya")}</span><select value={category} onChange={e=>setCategory(e.target.value)}>{["Hamısı",...categories].map(value=><option key={value} value={value}>{t(value)}</option>)}</select></label>
-                  <label className="owner-field"><span>{t("Sahibin tipi")}</span><select value={criteria.owner} onChange={e=>setCriteria({...criteria,owner:e.target.value})}><option value="all">{t("Hamısı")}</option><option value="company">{t("Rentakar şirkəti")}</option><option value="person">{t("Şəxsi sahib")}</option></select></label>
-                  <button type="button" className="criteria-reset search-reset" onClick={resetSearch}>{t("Filtrləri təmizlə")}</button>
-                  <button type="button" className="advanced-toggle" aria-expanded={advancedOpen} onClick={()=>setAdvancedOpen(!advancedOpen)}><SlidersHorizontal size={16}/>{t("Daha çox filtr")}</button>
+                  <button type="button" className="criteria-reset search-reset" hidden={!searchActive} onClick={resetSearch}>{t("Filtrləri təmizlə")}</button>
+                  <button type="button" className="advanced-toggle" aria-expanded={advancedOpen} onClick={()=>setAdvancedOpen(!advancedOpen)}><SlidersHorizontal size={16}/>{t("Daha çox filtr")}{extraFilterCount > 0 && <span className="extra-filter-count">{extraFilterCount}</span>}</button>
                   <button className="primary search-submit">
                     <Search size={18} />
                     {t("Avtomobil tap")}
                   </button>
                 </form>
                 <div className={"criteria-panel " + (advancedOpen ? "is-open" : "")}>
-                  <h3>{t("Kirayə seçimləri")}</h3>
+                  <h3>{t("Kirayə seçimləri")}</h3><label>{t("Kateqoriya")}<select value={category} onChange={e=>setCategory(e.target.value)}>{["Hamısı",...categories].map(value=><option key={value} value={value}>{t(value)}</option>)}</select></label>
                   <label>{t("Sahibin tipi")}<select value={criteria.owner} onChange={e=>setCriteria({...criteria,owner:e.target.value})}><option value="all">{t("Hamısı")}</option><option value="company">{t("Rentakar şirkəti")}</option><option value="person">{t("Şəxsi sahib")}</option></select></label>
                   <label>{t("Sürətlər qutusu")}<select value={criteria.transmission} onChange={e=>setCriteria({...criteria,transmission:e.target.value})}>{["","Avtomat","Mexaniki"].map(value=><option key={value} value={value}>{t(value || "Hamısı")}</option>)}</select></label>
                   <label>{t("Yanacaq")}<select value={criteria.fuel} onChange={e=>setCriteria({...criteria,fuel:e.target.value})}>{["","Benzin","Dizel","Hibrid","Elektrik"].map(value=><option key={value} value={value}>{t(value || "Hamısı")}</option>)}</select></label>
@@ -1022,24 +1034,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                 </div>
               </aside>
               <main id="cars">
-                <div className="section-title">
-                  <div>
-                    <span className="eyebrow">{t("SEÇİM SƏNİNDİR")}</span>
-                    <h1 className="catalogue-title">
-                      {t(
-                        favorites
-                          ? "Bəyəndiyin avtomobillər"
-                          : "Avtomobil elanları",
-                      )}
-                    </h1>
-                    <p>
-                      {t("Planına və büdcənə uyğun avtomobilləri kəşf et.")}
-                    </p>
-                  </div>
-                  <span className="listing-count">
-                    {t(`${filtered.length} avtomobil mövcuddur`)}
-                  </span>
-                </div>
+                <div className="discovery-tabs" role="group" aria-label={t("Elan görünüşü")}><button aria-pressed={!favorites && feed==="all"} onClick={()=>{setFavorites(false);setFeed("all");}}><Car size={17}/>{t("Bütün elanlar")}</button><button aria-pressed={favorites} onClick={()=>{setFavorites(true);setFeed("all");}}><Heart size={17}/>{t("Seçilmişlər")}<span>{liked.length}</span></button><button aria-pressed={feed==="recent" && !favorites} onClick={()=>{setFeed("recent");setSort("Seçilmiş elanlar");setFavorites(false);}}><History size={17}/>{t("Son baxılanlar")}</button></div>
                 <div className="mobile-catalogue-tools">
                   <button
                     className="outline"
@@ -1064,7 +1059,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                   </button>
                   <span>{t(`${filtered.length} avtomobil mövcuddur`)}</span>
                 </div>
-                <div className="popular-brands" aria-label={t("Populyar markalar")}><span>{t("Tez seçim")}</span>{["Toyota","Hyundai","Kia","Mercedes-Benz","BMW"].map(make=><button key={make} aria-pressed={filters.brand === make} onClick={()=>{setBrand(make);setFilters({...filters,brand:make});setCategory("Hamısı");setPage(1);}}>{make}</button>)}</div>
+                <div className="popular-brands" aria-label={t("Populyar markalar")}><span>{t("Tez seçim")}</span>{["Toyota","Hyundai","Kia","Mercedes-Benz","BMW"].map(make=><button key={make} aria-pressed={filters.brand === make} onClick={()=>{setFeed("all");setFavorites(false);setBrand(make);setFilters({...filters,brand:make});setCategory("Hamısı");setPage(1);}}>{make}</button>)}</div>
                 {filtered.some(car => car.demo) && <p className="catalogue-demo-note">{t("Nümunə elanlar real kirayə təklifi deyil.")}</p>}
                 <div className="catalogue-toolbar">
                   <div className="results-description">
@@ -1088,6 +1083,8 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                       )),
                     )}
                   </select>
+                  {feed === "recent" && recentCount > 0 && <button className="clear-recent-btn" aria-label={t("Baxış tarixçəsini təmizlə")} onClick={()=>setRecentIds([])}><Trash2 size={16}/></button>}
+                  <button className="save-search-btn" onClick={saveCurrentSearch}><Bookmark size={16}/>{t("Axtarışı saxla")}</button>
                   <div className="view-switch" aria-label={t("Görünüş")}>
                     <button
                       aria-label={t("Kart görünüşü")}
@@ -1241,7 +1238,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                 {t(
                   !filtered.length && (
                     <div className="empty">
-                      {t("Bu seçimə uyğun avtomobil yoxdur.")}
+                      {t(feed === "recent" && recentCount === 0 ? "Hələ baxdığınız avtomobil yoxdur." : "Bu seçimə uyğun avtomobil yoxdur.")}
                       <button
                         onClick={() => {
                           setFilters({
@@ -1278,7 +1275,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
       {comparedCars.length > 0 && !admin && modal !== "compare" && <aside className="compare-tray" aria-label={t("Müqayisə")}><div><ArrowLeftRight size={18}/><span>{comparedCars.length}/3 {t("avtomobil seçilib")}</span></div><div className="compare-thumbs">{comparedCars.map(car=><img key={car.id} src={car.image} alt={car.name}/>)}</div><button className="primary" disabled={comparedCars.length < 2} onClick={()=>setModal("compare")}>{t("Müqayisə et")}</button><button className="tray-clear" aria-label={t("Seçimi təmizlə")} onClick={()=>setCompared([])}><X size={18}/></button></aside>}
       <footer>
         <a className="logo" href="#">
-          {t("rentacarr")}
+          <BrandMark/><span className="wordmark">{t("rentacarr")}</span>
           <span className="logo-az">{t(".az")}</span>
         </a>
         <div className="footer-links"><button onClick={() => setModal("how")}>{t("Necə işləyir?")}</button><button onClick={() => setModal("privacy")}>{t("Məxfilik")}</button><a href="mailto:rentacarr.az@gmail.com">{t("Bizimlə əlaqə")}</a></div>
@@ -1296,9 +1293,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
           ),
         )}
         <small>
-          {t("©")}
-          {t(new Date().getFullYear())}
-          {t("RENTACARR.AZ")}
+          © {new Date().getFullYear()} RENTACARR.AZ
         </small>
       </footer>
       {t(
@@ -1479,12 +1474,13 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                           </dl>
                           <div className="account-summary">
                             <button onClick={() => setModal("my-listings")}><Car size={18} /><span>{t("Elanlarım")}</span><strong>{[...cars, ...pending].filter(c => owners.some(o => o.id === c.ownerId && o.accountId === user.id)).length}</strong></button>
-                            <button onClick={() => {setFavorites(true);setSelected(null);setAdmin(false);setModal(null);setTimeout(() => document.getElementById("cars")?.scrollIntoView(), 0);}}><Heart size={18} /><span>{t("Seçilmişlər")}</span><strong>{liked.length}</strong></button>
+                            <button onClick={() => {setFavorites(true);setFeed("all");setSelected(null);setAdmin(false);setModal(null);setTimeout(() => document.getElementById("cars")?.scrollIntoView(), 0);}}><Heart size={18} /><span>{t("Seçilmişlər")}</span><strong>{liked.length}</strong></button>
                           </div>
                           <div className="account-role">
                             {t(user.isAdmin ? "Admin hesabı" : "Şəxsi hesab")}
                           </div>
                           <div className="account-actions">
+                            <button className="outline" onClick={()=>setModal("saved-searches")}><Bookmark size={16}/>{t("Saxlanmış axtarışlar")}</button>
                             <button className="outline" onClick={()=>setModal("settings")}><SlidersHorizontal size={16}/>{t("Ayarlar")}</button>
                             <button className="outline" onClick={()=>setModal("profile-edit")}><Pencil size={16}/>{t("Hesab məlumatlarını redaktə et")}</button>
                             <button
@@ -1599,12 +1595,14 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                   <><span className="eyebrow">RENTACARR.AZ</span><h2>{t("Ayarlar")}</h2><p>{user.email}</p><div className="account-actions"><button className="outline" onClick={()=>setModal("profile-edit")}>{t("Hesab məlumatlarını redaktə et")}</button>{user.isAdmin && <button className="primary" onClick={()=>{setModal(null);setSelected(null);setAdmin(true);setAdminView("review");window.scrollTo(0,0);}}><LayoutDashboard size={17}/>{t("İdarəetmə paneli")} · {pending.length} {t("yoxlanışda")}</button>}<button className="outline" onClick={()=>setModal("privacy")}>{t("Məxfilik")}</button></div></>
                 ) : modal?.startsWith("review:") && admin ? (
                   (() => {const car = pending.find(c=>String(c.id)===modal.slice(7));return car ? <ReviewListing car={car} onEdit={()=>setModal("edit:"+car.id)} onApprove={async()=>{if(await mutateListing(car.id,{status:"active"}))setModal(null);}} onReject={()=>{setModal(null);setDeleteId(car.id);}}/> : <div className="empty">{t("Elan tapılmadı")}</div>;})()
+                ) : modal === "saved-searches" ? (
+                  <SavedSearches items={savedSearches} onApply={applySavedSearch} onDelete={id=>setSavedSearches(items=>items.filter(item=>item.id!==id))}/>
                 ) : modal === "compare" ? (
                   <CompareCars cars={comparedCars} onRemove={compareCar} onClear={()=>setCompared([])} onSelect={setSelected}/>
                 ) : modal === "profile-edit" && user ? (
                   <ProfileEditor user={user} onSaved={async()=>{await onAuthenticated(user);setModal("account");note("Dəyişiklik saxlanıldı.");}}/>
                 ) : modal === "privacy" ? (
-                  <><span className="eyebrow">RENTACARR.AZ</span><h2>{t("Məxfilik")}</h2><p>{t("Hesab məlumatlarınız yalnız öz hesabınızda və səlahiyyətli idarəetmə bölməsində görünür. Elan sahibinin adı və əlaqə nömrəsi elanda açıq göstərilir.")}</p><p>{t("Giriş üçün sessiya kukisi, dil və seçilmiş elanlar üçün brauzer yaddaşı istifadə olunur. Şifrələr açıq formada saxlanmır.")}</p><a className="outline" href="mailto:rentacarr.az@gmail.com">rentacarr.az@gmail.com</a></>
+                  <><span className="eyebrow">RENTACARR.AZ</span><h2>{t("Məxfilik")}</h2><p>{t("Hesab məlumatlarınız yalnız öz hesabınızda və səlahiyyətli idarəetmə bölməsində görünür. Elan sahibinin adı və əlaqə nömrəsi elanda açıq göstərilir.")}</p><p>{t("Giriş üçün sessiya kukisi istifadə olunur. Dil, seçilmiş elanlar, son baxılanlar və saxlanmış axtarışlar bu brauzerdə saxlanır. Şifrələr açıq formada saxlanmır.")}</p><a className="outline" href="mailto:rentacarr.az@gmail.com">rentacarr.az@gmail.com</a></>
                 ) : modal === "partners" ? (
                   <>
                     <span className="eyebrow">{t("BİRLİKDƏ BÖYÜYƏK")}</span>
