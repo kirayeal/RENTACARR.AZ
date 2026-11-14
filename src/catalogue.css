@@ -827,3 +827,115 @@ footer .logo { color: #33475d; }
 
 .catalogue-title { font-size: 18px; font-weight: 400; line-height: 1.4; letter-spacing: 0; margin: 0; color: #33475d; }
 @media (max-width: 640px) { .catalogue-title { font-size: 17px; } }
+
+/* Manrope typography, searchable directories and clearer visual hierarchy. */
+:root { font-family: 'Manrope Variable',Manrope,Arial,sans-serif; --ink: #233449; --muted: #718197; --line: #dfe6ef; background: #f4f6fa; }
+body { color: #233449; }
+h1,h2,h3,b,strong { font-weight: 450; }
+header { background: #20394f; border-bottom: 3px solid #b89973; height: 73px; box-shadow: 0 3px 18px #132b4612; }
+header .logo { font-family: 'Manrope Variable',sans-serif; font-size: 23px; font-weight: 450; letter-spacing: -.9px; }
+header .logo::before { content: ''; display: block; height: 27px; width: 24px; margin-right: 10px; border: 1px solid #b6c6d4; border-radius: 6px; background: linear-gradient(112deg,transparent 30%,#b6c6d4 31%,#b6c6d4 35%,transparent 36%,transparent 63%,#b89973 64%,#b89973 68%,transparent 69%); }
+header nav { font-size: 12px; gap: 23px; }
+header nav a,header nav button { transition: color .2s; }
+header nav a:hover,header nav button:hover { color: #fff; }
+header .add { border-radius: 7px; background: #fff; color: #23435f; font-size: 12px; }
+header .language-switch button { font-size: 11px; }
+header .login { font-size: 12px; }
+.marketplace-layout { max-width: 1228px; padding-left: 24px; padding-right: 24px; }
+.search-wrap { margin: 22px 0 0; padding: 20px; border: 1px solid #e0e6ef; border-radius: 12px; background: #fff; box-shadow: 0 7px 25px #243d5c08; }
+.search-box { gap: 14px; }
+.search-box label > span,.search-box label { color: #667c93; font-size: 11px; }
+.search-box input,.search-box select,.criteria-panel select { background: #fafbfd; border: 1px solid #dce4ee; border-radius: 6px; color: #3b526d; min-height: 44px; font-size: 13px; }
+.search-submit { border-radius: 7px; min-height: 42px; background: #294e6d; border-color: #294e6d; }
+.search-submit:hover { background: #1d3e5b; border-color: #1d3e5b; }
+.advanced-toggle,.search-reset { font-size: 12px; }
+.criteria-panel { background: #f8fafd; margin-left: -20px; margin-right: -20px; margin-bottom: -20px; padding: 20px; border-top-color: #e1e7f0; border-radius: 0 0 12px 12px; }
+main#cars { padding-top: 25px; }
+.catalogue-title { font-size: 21px; font-weight: 450; color: #233449; letter-spacing: -.5px; }
+.popular-brands { display: flex; align-items: center; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 0 14px; }
+.popular-brands > span { flex-shrink: 0; color: #8692a1; font-size: 11px; margin-right: 7px; }
+.popular-brands button { padding: 7px 12px; border: 1px solid #dde5ef; border-radius: 6px; background: #fff; color: #5d738d; font-size: 11px; white-space: nowrap; transition: border-color .2s,color .2s,background .2s; }
+.popular-brands button:hover,.popular-brands button[aria-pressed=true] { background: #eaf1f8; border-color: #a9bed2; color: #23435f; }
+.catalogue-demo-note { color: #7d8c9f; }
+.catalogue-toolbar { padding-bottom: 17px; }
+.results-description,.catalogue-toolbar > select { font-size: 11px; color: #7d8c9f; }
+.car-card { border-radius: 10px; border: 1px solid #e1e7ef; background: #fff; box-shadow: 0 2px 7px #253b5604; transition: box-shadow .2s,border-color .2s,transform .2s; }
+.car-card:hover { border: 1px solid #c4d1df; box-shadow: 0 8px 24px #253b5612; transform: translateY(-2px); }
+.car-image { aspect-ratio: 1.45; background: #e9eef5; }
+.car-body { padding: 12px 13px 0; }
+.car-name { font-size: 16px; font-weight: 450; letter-spacing: -.4px; margin-bottom: 9px; color: #334a65; }
+.card-bottom strong { font-size: 24px; font-weight: 450; letter-spacing: -.8px; color: #243c58; }
+.card-bottom small { color: #7d8c9f; font-size: 10px; }
+.card-location,.card-location > span,.specs { color: #7c8a9e; font-size: 11px; }
+.specs { gap: 8px; }
+.card-location { padding-top: 9px; }
+.owner { color: #8491a3; border-color: #edf1f6; }
+.like { border: 1px solid #ffffffa1; box-shadow: 0 2px 7px #20334a10; }
+.like:hover,.like.liked { color: #234e73; }
+.compare-select { border-radius: 5px; }
+.pagination button { border-color: #dce4ee; background: #fff; color: #62778f; border-radius: 7px; }
+.pagination [aria-current=page] { background: #294e6d; border-color: #294e6d; color: #fff; }
+.catalogue-service-note { border-color: #dde5ee; color: #7d8c9f; padding-top: 20px; }
+footer { background: #fff; border-color: #dfe6ef; }
+footer .logo { font-family: 'Manrope Variable',sans-serif; font-weight: 450; letter-spacing: -.7px; }
+/* The same searchable selection works in discovery and in listing forms. */
+.catalog-select { position: relative; display: grid; gap: 7px; min-width: 0; }
+.catalog-select-label { display: block; color: #667c93; font-size: 11px; line-height: 1.6; }
+.catalog-select-trigger { width: 100%; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; min-height: 44px; text-align: left; border: 1px solid #dce4ee; background: #fafbfd; color: #3b526d; border-radius: 6px; font-size: 13px; }
+.catalog-select-trigger > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.catalog-select-trigger[aria-expanded=true] { border-color: #829fb9; box-shadow: 0 0 0 3px #294e6d0a; }
+.catalog-select-popup { position: absolute; z-index: 45; top: calc(100% + 6px); left: 0; right: 0; padding: 7px; border: 1px solid #d7e1ec; border-radius: 8px; background: #fff; box-shadow: 0 10px 35px #263e5b24; }
+.catalog-select-search { display: flex; align-items: center; gap: 8px; padding: 0 8px; background: #f5f8fc; border: 1px solid #e1e8f1; border-radius: 5px; color: #8497ad; }
+.catalog-select-search input,.search-box .catalog-select-search input { font: inherit; background: transparent; min-height: 37px; padding: 8px 0; border: 0; outline: 0; width: 100%; min-width: 0; color: #3b526d; font-size: 12px; }
+.search-box .catalog-select-search input:focus { border: 0; outline: 0; }
+.catalog-select-list { max-height: 250px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; padding-top: 5px; }
+.catalog-select-list button { width: 100%; padding: 9px; display: flex; align-items: center; justify-content: space-between; gap: 10px; text-align: left; font-size: 12px; line-height: 1.5; color: #62778f; border-radius: 4px; }
+.catalog-select-list button.is-active { background: #f0f5fa; color: #284e70; }
+.catalog-select-list button[aria-selected=true] { color: #234e73; background: #eaf1f8; }
+.catalog-select-empty { margin: 0; padding: 15px 9px; color: #7d8c9f; font-size: 12px; line-height: 1.7; }
+.listing-form .catalog-select-label { font-size: 13px; }
+.listing-form .catalog-select-trigger { font-size: 14px; min-height: 46px; }
+@media (max-width: 800px) {
+ .search-wrap { padding: 17px; }
+ .criteria-panel { margin: 17px -17px -17px; padding: 17px; }
+ .catalog-select-popup { z-index: 48; }
+}
+@media (max-width: 640px) {
+ header { height: 67px; padding: 0 14px; }
+ header .logo { font-size: 21px; }
+ header .logo::before { width: 18px; height: 22px; border-radius: 4px; margin-right: 6px; }
+ .header-right { gap: 10px; }
+ .language-switch { gap: 6px; }
+ .language-switch button { min-width: 15px; }
+ .marketplace-layout { padding: 0 12px; }
+ .search-wrap { padding: 14px; margin-top: 14px; border-radius: 9px; }
+ .search-box { gap: 11px; }
+ .search-box input,.search-box select,.catalog-select-trigger { font-size: 12px; min-height: 41px; padding: 10px; }
+ .catalog-select-label { font-size: 10px; }
+ .catalog-select-search input,.search-box .catalog-select-search input { font-size: 16px; }
+ .catalog-select-list button { min-height: 40px; font-size: 12px; }
+ .criteria-panel { margin-left: -14px; margin-right: -14px; margin-bottom: -14px; padding: 14px; }
+ .catalogue-title { font-size: 19px; }
+ .popular-brands { gap: 6px; margin-bottom: 12px; }
+ .popular-brands > span { font-size: 10px; }
+ .popular-brands button { padding: 7px 9px; font-size: 10px; }
+ .grid { gap: 11px; }
+ .grid .car-body { padding: 11px 10px 0; }
+ .grid .car-name { font-family: 'Manrope Variable',sans-serif; font-size: 15px; font-weight: 450; line-height: 1.4; min-height: 42px; letter-spacing: -.4px; }
+ .grid .card-bottom strong { font-size: 22px; font-weight: 450; }
+ .grid .specs,.grid .card-location { font-size: 10px; }
+ .grid .specs { gap: 6px; }
+ .grid .owner { font-size: 10px; }
+ .grid .sample-ribbon { font-size: 8px; }
+ .grid .badges span { font-size: 8px; }
+ .listing-form .catalog-select-trigger { font-size: 16px; }
+}
+@media (max-width: 360px) {
+ header .logo { font-size: 18px; }
+ header .logo::before { display: none; }
+ .header-right { gap: 8px; }
+ .grid .car-name { font-size: 14px; }
+}
+@media (max-width: 640px) {
+ header .add { font-size: 0; width: 33px; min-width: 33px; min-height: 34px; padding: 8px; }
+}

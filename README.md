@@ -4,7 +4,9 @@ Azərbaycan, ingilis və rus dillərində avtomobil kirayəsi platforması. Reac
 
 ## Yeni görünüş və seçim imkanları
 
-RENTACARR.AZ brendi ilə sıx elan kataloqu: yuxarıda ümumi filtrlər, kompüterdə 4, telefonda 2 sütun, kartın ilk sətrində günlük kirayə qiyməti. Satışa aid kredit, barter və satış yürüşü əvəzinə kirayə depoziti və şərtlər göstərilir. Sahibin tipi, yanacaq, sürətlər qutusu, minimum oturacaq sayı və depozitsiz kirayə filtrləri birlikdə işləyir. Hər səhifədə 12 elan göstərilir; əlavə filtrlər ayrıca açılır. AZ/EN/RU, seçilmişlər və kart/siyahı görünüşü saxlanılıb.
+Yerli Manrope şrifti, öz loqo nişanı və axtarılan 134 marka / 79 məkan kataloqu ilə RENTACARR.AZ. [Kataloq mənbələri və axtarış](docs/CATALOG_DIRECTORY.md).
+
+Sıx elan kataloqu: yuxarıda ümumi filtrlər, kompüterdə 4, telefonda 2 sütun, kartın ilk sətrində günlük kirayə qiyməti. Satışa aid kredit, barter və satış yürüşü əvəzinə kirayə depoziti və şərtlər göstərilir. Sahibin tipi, yanacaq, sürətlər qutusu, minimum oturacaq sayı və depozitsiz kirayə filtrləri birlikdə işləyir. Hər səhifədə 12 elan göstərilir; əlavə filtrlər ayrıca açılır. AZ/EN/RU, seçilmişlər və kart/siyahı görünüşü saxlanılıb.
 
 İstifadəçi 3 avtomobilədək seçərək qiymət, depozit, yürüş limiti, yaş/staj və digər göstəriciləri yan-yana müqayisə edə bilər. Yalnız fərqləri göstərmək, seçimdən çıxarmaq və elana keçmək mümkündür. Müqayisə seçimi brauzerdə saxlanır.
 

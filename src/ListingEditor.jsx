@@ -2,14 +2,16 @@ import { t } from "./i18n";
 import React, { useState } from "react";
 import { Building2, Car, ShieldCheck, Camera, Check } from "lucide-react";
 import { brands, categories, cities } from "./catalog";
+import CatalogSelect from "./CatalogSelect";
 const Field = ({ label, ...props }) => (
   <label>
     {t(label)}
     <input {...props} />
   </label>
 );
-const Select = ({ label, options, ...props }) => (
-  <label>
+const Select = ({ label, options, ...props }) => {
+  if (["brand", "city"].includes(props.name)) return <CatalogSelect label={label} options={options} {...props} />;
+  return <label>
     {t(label)}
     <select {...props}>
       {t(
@@ -25,8 +27,8 @@ const Select = ({ label, options, ...props }) => (
         }),
       )}
     </select>
-  </label>
-);
+  </label>;
+};
 export default function ListingEditor({
   listing,
   owners,

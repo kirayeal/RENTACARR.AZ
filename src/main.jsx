@@ -45,8 +45,9 @@ import {
 } from "lucide-react";
 import "./style.css";
 import "./catalogue.css";
-import "@fontsource-variable/inter";
+import "@fontsource-variable/manrope";
 import ListingEditor from "./ListingEditor";
+import CatalogSelect from "./CatalogSelect";
 import RentalDetail from "./RentalDetail";
 import CompareCars from "./CompareCars";
 import ProfileEditor from "./ProfileEditor";
@@ -232,7 +233,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
           ...(dialog?.querySelectorAll(
             "button,a[href],input,select,textarea",
           ) || []),
-        ].filter((el) => !el.disabled);
+        ].filter((el) => !el.disabled && el.tabIndex >= 0);
         const first = elements[0],
           last = elements.at(-1);
         if (e.shiftKey && document.activeElement === first) {
@@ -974,42 +975,8 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                     });
                   }}
                 >
-                  <label>
-                    <span>
-                      <MapPin size={15} />
-                      {t("Şəhər")}
-                    </span>
-                    <select
-                      value={city}
-                      onChange={(e) => setCity(e.target.value)}
-                    >
-                      {t(
-                        ["Bütün şəhərlər", ...cities].map((x) => (
-                          <option key={x} value={x}>
-                            {t(x)}
-                          </option>
-                        )),
-                      )}
-                    </select>
-                  </label>
-                  <label>
-                    <span>
-                      <Car size={15} />
-                      {t("Marka")}
-                    </span>
-                    <select
-                      value={brand}
-                      onChange={(e) => setBrand(e.target.value)}
-                    >
-                      {t(
-                        ["Bütün markalar", ...brands].map((x) => (
-                          <option key={x} value={x}>
-                            {t(x)}
-                          </option>
-                        )),
-                      )}
-                    </select>
-                  </label>
+                  <CatalogSelect label="Şəhər" value={city} onChange={setCity} options={["Bütün şəhərlər",...cities]} />
+                  <CatalogSelect label="Marka" value={brand} onChange={setBrand} options={["Bütün markalar",...brands]} />
                   <label>
                     <span>{t("Günlük büdcə")}</span>
                     <div className="budget">
@@ -1097,6 +1064,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                   </button>
                   <span>{t(`${filtered.length} avtomobil mövcuddur`)}</span>
                 </div>
+                <div className="popular-brands" aria-label={t("Populyar markalar")}><span>{t("Tez seçim")}</span>{["Toyota","Hyundai","Kia","Mercedes-Benz","BMW"].map(make=><button key={make} aria-pressed={filters.brand === make} onClick={()=>{setBrand(make);setFilters({...filters,brand:make});setCategory("Hamısı");setPage(1);}}>{make}</button>)}</div>
                 {filtered.some(car => car.demo) && <p className="catalogue-demo-note">{t("Nümunə elanlar real kirayə təklifi deyil.")}</p>}
                 <div className="catalogue-toolbar">
                   <div className="results-description">
@@ -1414,6 +1382,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                       )}
                     </div>
                     <ListingEditor
+                      key={editing?.id || "new"}
                       saving={saving}
                       listing={editing}
                       owners={owners}
