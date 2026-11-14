@@ -36,6 +36,7 @@ import {
   Camera,
   Clock3,
   Phone,
+  Mail,
 } from "lucide-react";
 import "./style.css";
 import "./catalogue.css";
@@ -341,29 +342,15 @@ function App({ user, onAuthenticated, onLogout, authError }) {
             {t("Partnyorlar")}
           </button>
           <button onClick={() => setModal("how")}>{t("Necə işləyir?")}</button>
-          <button
-            aria-label={t("Seçilmiş elanlar")}
-            onClick={() => {
-              setFavorites(!favorites);
-              document.getElementById("cars")?.scrollIntoView({
-                behavior: "smooth",
-              });
-            }}
-          >
-            <Heart size={16} fill={favorites ? "currentColor" : "none"} />
-          </button>
         </nav>
         <div className="header-right">
-          <select
-            className="language"
-            aria-label="Language"
-            value={language}
-            onChange={(e) => setLanguage(e.target.value)}
-          >
-            <option value="az">AZ</option>
-            <option value="en">EN</option>
-            <option value="ru">RU</option>
-          </select>
+          <div className="language-switch" role="group" aria-label={t("Dil seçimi")}>
+            {[["az", "Azərbaycan dili"], ["en", "English"], ["ru", "Русский"]].map(([value, label]) => (
+              <button key={value} type="button" lang={value} title={label} aria-label={label} aria-pressed={language === value} onClick={() => setLanguage(value)}>
+                {value.toUpperCase()}
+              </button>
+            ))}
+          </div>
           <button
             className="heart-top"
             aria-label={t("Seçilmiş elanlar")}
@@ -373,7 +360,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
               document.getElementById("cars")?.scrollIntoView();
             }}
           >
-            <Heart size={20} fill={favorites ? "#155e46" : "none"} />
+            <Heart size={20} fill={favorites ? "currentColor" : "none"} />
           </button>
           <button
             className="login"
@@ -860,13 +847,6 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                   {t("Rentakar şirkətləri və şəxsi sahiblərdən günlük, həftəlik və aylıq avtomobil kirayəsi.")}
                 </p>
               </div>
-              <div className="hero-visual">
-                <img
-                  src="/photos/porsche-road.jpg"
-                  alt="Porsche Panamera"
-                  fetchPriority="high"
-                />
-              </div>
             </section>
             <div className="marketplace-layout">
               <aside
@@ -1088,6 +1068,14 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                       <article
                         className="car-card"
                         key={c.id}
+                        tabIndex={0}
+                        aria-label={t(c.name + " elanı aç")}
+                        onKeyDown={(e) => {
+                          if (e.target === e.currentTarget && (e.key === "Enter" || e.key === " ")) {
+                            e.preventDefault();
+                            setSelected(c);
+                          }
+                        }}
                         onClick={() => setSelected(c)}
                       >
                         <div className="car-image">
@@ -1124,7 +1112,8 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                             )}
                           </div>
                           <button
-                            aria-label={t("Elanı bəyən")}
+                            aria-label={t(liked.includes(c.id) ? "Seçilmişlərdən çıxar" : "Seçilmişlərə əlavə et")}
+                            aria-pressed={liked.includes(c.id)}
                             className={
                               "like " + (liked.includes(c.id) ? "liked" : "")
                             }
@@ -1180,18 +1169,6 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                               </strong>
                               <small>{t("/ gün")}</small>
                             </div>
-                            <button
-                              aria-label={t("Elana bax")}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSelected(c);
-                              }}
-                            >
-                              <span className="card-detail-label">
-                                {t("Ətraflı bax")}
-                              </span>
-                              <ArrowUpRight size={17} />
-                            </button>
                           </div>
                           <div className="owner">
                             <span className="owner-icon">
@@ -1428,6 +1405,14 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                         {t("yer")}
                       </span>
                     </div>
+                    <button
+                      className="detail-save outline"
+                      aria-pressed={liked.includes(selected.id)}
+                      onClick={() => setLiked(liked.includes(selected.id) ? liked.filter(id => id !== selected.id) : [...liked, selected.id])}
+                    >
+                      <Heart size={17} fill={liked.includes(selected.id) ? "currentColor" : "none"} />
+                      {t(liked.includes(selected.id) ? "Seçilmişlərdən çıxar" : "Seçilmişlərə əlavə et")}
+                    </button>
                     <h3>{t("Ətraflı məlumat")}</h3>
                     <p className="detail-owner">
                       <Building2 size={17} />
@@ -1458,8 +1443,9 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                     {t(
                       selected.phone ? (
                         <div className="contact">
-                          <a className="primary" href={"tel:" + selected.phone}>
-                            {selected.phone}
+                          <a className="primary contact-call" href={"tel:" + selected.phone}>
+                            <Phone size={17} />
+                            <span>{t("Zəng et")}<small>{selected.phone}</small></span>
                           </a>
                           <a
                             className="outline"
@@ -1481,6 +1467,20 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                           )}
                         </div>
                       ),
+                    )}
+                    {publicCars.some(car => car.ownerId && car.ownerId === selected.ownerId && car.id !== selected.id) && (
+                      <section className="related-listings">
+                        <h3>{t("Sahibin digər avtomobilləri")}</h3>
+                        <div>
+                          {publicCars.filter(car => car.ownerId && car.ownerId === selected.ownerId && car.id !== selected.id).slice(0, 3).map(car => (
+                            <button key={car.id} onClick={() => { setSelected(car); document.querySelector(".modal")?.scrollTo(0, 0); }}>
+                              <img src={car.image} alt="" loading="lazy" />
+                              <span>{car.name}<small>{car.price} ₼ {t("/ gün")}</small></span>
+                              <ArrowUpRight size={16} />
+                            </button>
+                          ))}
+                        </div>
+                      </section>
                     )}
                   </>
                 ) : modal === "listing" || editing ? (
@@ -1591,22 +1591,25 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                     <div className="modal-emblem">
                       <UserRound size={25} />
                     </div>
-                    <h2>{t(user ? user.name : "Qeydiyyat və giriş")}</h2>
+                    <h2>{t(user ? "Hesabım" : "Qeydiyyat və giriş")}</h2>
                     {t(
                       user ? (
                         <>
-                          <p>{t(user.email)}</p>
+                          <dl className="account-details">
+                            <div><dt><UserRound size={16} />{t("Ad və soyad")}</dt><dd>{user.name}</dd></div>
+                            {user.profile?.kind === "company" && <div><dt><Building2 size={16} />{t("Firma adı")}</dt><dd>{user.profile.name}</dd></div>}
+                            <div><dt><Mail size={16} />{t("E-poçt")}</dt><dd>{user.email}</dd></div>
+                            <div><dt><Phone size={16} />{t("Telefon nömrəsi")}</dt><dd>{user.profile?.phone || user.phone || t("Qeyd edilməyib")}</dd></div>
+                            <div><dt><Building2 size={16} />{t("Hesab növü")}</dt><dd>{t(user.profile?.kind === "company" ? "Rentakar şirkəti" : "Şəxsi sahib")}</dd></div>
+                          </dl>
+                          <div className="account-summary">
+                            <button onClick={() => setModal("my-listings")}><Car size={18} /><span>{t("Elanlarım")}</span><strong>{[...cars, ...pending].filter(c => owners.some(o => o.id === c.ownerId && o.accountId === user.id)).length}</strong></button>
+                            <button onClick={() => {setFavorites(true);setAdmin(false);setModal(null);setTimeout(() => document.getElementById("cars")?.scrollIntoView(), 0);}}><Heart size={18} /><span>{t("Seçilmişlər")}</span><strong>{liked.length}</strong></button>
+                          </div>
                           <div className="account-role">
                             {t(user.isAdmin ? "Admin hesabı" : "Şəxsi hesab")}
                           </div>
                           <div className="account-actions">
-                            <button
-                              className="outline"
-                              onClick={() => setModal("my-listings")}
-                            >
-                              <Car size={16} />
-                              {t("Elanlarım")}
-                            </button>
                             <button
                               className="primary"
                               onClick={() => setModal("listing")}

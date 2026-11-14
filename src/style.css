@@ -3,15 +3,15 @@
   font-size: 15px;
   font-weight: 400;
   font-synthesis: none;
-  color: #293139;
-  background: #f6f6f4;
-  --ink: #293139;
+  color: #1c2d3a;
+  background: #f5f7f9;
+  --ink: #1c2d3a;
   --muted: #64748b;
   --line: #e6e7e4;
   --soft: #f4f1eb;
   --paper: #fff;
-  --accent: #ba572c;
-  --green: #ba572c;
+  --accent: #156a73;
+  --green: #156a73;
 }
 * {
   box-sizing: border-box;
@@ -113,7 +113,7 @@ header {
 .logo-mark {
   width: 37px;
   height: 37px;
-  background: #ba572c;
+  background: #156a73;
   color: white;
   display: grid;
   place-items: center;
@@ -176,10 +176,10 @@ header nav > button:has(svg) {
   line-height: 1.5;
 }
 .primary {
-  background: #ba572c;
-  border: 1px solid #ba572c;
+  background: #156a73;
+  border: 1px solid #156a73;
   color: white;
-  box-shadow: 0 3px 8px #ba572c12;
+  box-shadow: 0 3px 8px #156a7312;
 }
 .primary:hover {
   background: #9f4420;
@@ -533,7 +533,7 @@ main#cars {
 }
 .like:hover,
 .like.liked {
-  color: #ba572c;
+  color: #156a73;
   background: #f4f1eb;
 }
 .card-body {
@@ -587,7 +587,7 @@ main#cars {
   font-size: 27px;
   font-weight: 450;
   letter-spacing: -1px;
-  color: #293139;
+  color: #1c2d3a;
 }
 .card-bottom strong span {
   font-size: 18px;
@@ -828,7 +828,7 @@ footer small {
 }
 .detail-price {
   font-size: 30px !important;
-  color: #293139;
+  color: #1c2d3a;
   font-weight: 450;
   letter-spacing: -1px;
   margin: 8px 0 19px;
@@ -1054,8 +1054,8 @@ footer small {
   color: #69716e;
 }
 .auth-mode-tabs .active {
-  border-color: #ba572c;
-  color: #ba572c;
+  border-color: #156a73;
+  color: #156a73;
 }
 .email-form {
   display: grid;

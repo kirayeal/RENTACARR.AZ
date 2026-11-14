@@ -24,6 +24,13 @@ export function useLanguage() {
   );
 }
 const rows = [
+  ["Sahibin digər avtomobilləri", "More cars from this owner", "Другие автомобили владельца"],
+  ["Dil seçimi", "Language", "Язык"],
+  ["Seçilmişlərdən çıxar", "Remove from favorites", "Удалить из избранного"],
+  ["Seçilmişlərə əlavə et", "Add to favorites", "Добавить в избранное"],
+  ["E-poçt", "Email", "Электронная почта"],
+  ["Hesab növü", "Account type", "Тип аккаунта"],
+  ["Qeyd edilməyib", "Not provided", "Не указано"],
   ["Günlük, həftəlik və aylıq avtomobil kirayəsi", "Daily, weekly and monthly car rental", "Аренда автомобилей на день, неделю и месяц"],
   ["Yüklənir", "Loading", "Загрузка"],
   ["Rentakar şirkətləri və şəxsi sahiblərdən günlük, həftəlik və aylıq avtomobil kirayəsi.", "Daily, weekly and monthly car rental from rental companies and private owners.", "Аренда автомобилей на день, неделю и месяц у компаний и частных владельцев."],
