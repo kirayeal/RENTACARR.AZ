@@ -396,3 +396,98 @@ footer small { margin-left: auto; font-size: 10px; color: #757575; }
  .loading-progress::after { animation: none; }
  .car-card:hover img { transform: none; }
 }
+
+/* Compact browsing and a clear distinction between examples and real offers. */
+.hero { padding-top: 18px; padding-bottom: 18px; }
+.hero h1 { font-size: 30px; }
+.hero p { font-size: 12px; margin-top: 8px; color: #63738b; }
+.hero-periods { display: none; }
+.marketplace-layout { gap: 20px; }
+.search-box { padding-top: 14px; padding-bottom: 14px; }
+main#cars > .section-title { margin-bottom: 14px; }
+.section-title h2 { font-size: 24px; }
+.tabs button { min-height: 42px; padding: 10px; }
+.tabs button svg { width: 18px; height: 18px; }
+.catalogue-toolbar { padding: 10px 0 14px; }
+.catalogue-demo-note { font-size: 11px; color: #6b7890; line-height: 1.5; margin: 11px 0 0; }
+.car-image { aspect-ratio: 1.85; }
+.card-body { padding: 15px 18px 0; }
+.car-name { font-size: 20px; margin-bottom: 13px; }
+.card-bottom { padding: 18px 0; }
+.card-bottom strong { font-size: 28px; }
+.owner { min-height: 41px; padding: 11px 0; }
+.owner-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sample-ribbon { position: absolute; bottom: 10px; left: 12px; padding: 4px 8px; border-radius: 4px; background: #ffffffed; color: #52627a; font-size: 10px; line-height: 1.4; pointer-events: none; }
+.pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin: 26px 0; }
+.pagination button { min-width: 38px; min-height: 38px; padding: 8px; display: grid; place-items: center; color: #526783; border: 1px solid #e0e7f4; border-radius: 7px; background: #fff; font-size: 13px; }
+.pagination [aria-current="page"] { color: white; background: #3457d5; border-color: #3457d5; }
+.pagination button:disabled { opacity: .35; cursor: default; }
+.catalogue-service-note { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 18px 0 25px; font-size: 12px; color: #6b7890; border-top: 1px solid #edf1f7; }
+.catalogue-service-note button { display: flex; align-items: center; gap: 6px; white-space: nowrap; font-size: 12px; color: #3457d5; padding: 8px 0; }
+.footer-links { display: flex; gap: 22px; align-items: center; flex-wrap: wrap; }
+.footer-links button, .footer-links a { margin: 0; font-size: 12px; min-height: 36px; display: flex; align-items: center; color: #63738b; padding: 0; }
+footer { padding-top: 20px; padding-bottom: 20px; gap: 25px; }
+.rental-heading { margin-bottom: 18px; }
+.rental-heading h1 { font-size: 31px; }
+.vehicle-section-nav { display: flex; gap: 25px; border-bottom: 1px solid #e6ebf4; margin-bottom: 24px; overflow-x: auto; }
+.vehicle-section-nav a { padding: 12px 0; font-size: 12px; color: #63738b; white-space: nowrap; }
+.vehicle-section-nav a:hover { color: #3457d5; }
+.rental-photo img { max-height: 420px; }
+.rental-section, .rental-enquiry { scroll-margin-top: 20px; }
+.rental-section { padding: 23px 0; }
+.rental-section h2 { font-size: 21px; margin-bottom: 14px; }
+.rental-calculator { padding: 0; border-bottom: 0; border-top: 1px solid #e6ebf4; margin-top: 22px; }
+.rental-calculator summary { display: flex; align-items: center; gap: 8px; cursor: pointer; color: #3457d5; font-size: 13px; min-height: 48px; list-style: none; }
+.rental-calculator summary::-webkit-details-marker { display: none; }
+.rental-calculator summary::after { content: '+'; margin-left: auto; font-size: 19px; font-weight: 400; }
+.rental-calculator[open] summary::after { content: '−'; }
+.rental-calculator .estimate-note { margin-bottom: 0; }
+.enquiry-deposit { display: flex; justify-content: space-between; gap: 15px; font-size: 12px; margin-top: 17px; color: #63738b; }
+.enquiry-deposit strong { font-size: 13px; font-weight: 400; color: #3e5372; }
+@media (max-width: 900px) {
+ footer { flex-wrap: wrap; }
+ footer small { margin-left: 0; }
+}
+@media (max-width: 640px) {
+ .hero { padding: 18px; }
+ .hero h1 { font-size: 26px; }
+ .hero p { font-size: 12px; line-height: 1.6; }
+ .marketplace-layout { gap: 0; }
+ main#cars { margin-top: 20px; }
+ .tabs button { min-width: 85px; min-height: 41px; font-size: 11px; }
+ .section-title h2 { font-size: 22px; }
+ .catalogue-demo-note { font-size: 10px; }
+ .grid { gap: 14px; }
+ .grid .car-card { display: grid; grid-template-columns: 38% minmax(0,1fr); border-radius: 9px; }
+ .grid .car-image { height: 100%; min-height: 180px; aspect-ratio: auto; background: #f5f7fc; }
+ .grid .car-image img { object-fit: contain; }
+ .grid .card-body { padding: 12px 12px 0; }
+ .grid .card-location { font-size: 11px; }
+ .grid .car-name { font-size: 17px; line-height: 1.3; margin: 8px 0 10px; }
+ .grid .specs { gap: 7px; font-size: 11px; }
+ .grid .specs svg { display: none; }
+ .grid .card-bottom { padding: 15px 0 12px; gap: 6px; }
+ .grid .card-bottom strong { font-size: 24px; }
+ .grid .card-bottom strong span { font-size: 15px; }
+ .grid .card-bottom small { font-size: 9px; }
+ .grid .card-deposit { font-size: 9px; gap: 4px; }
+ .grid .card-deposit span:last-child { font-size: 10px; }
+ .grid .owner { font-size: 11px; padding: 9px 0; min-height: 34px; gap: 5px; }
+ .grid .badges { left: 7px; top: 8px; }
+ .grid .badges span { font-size: 8px; padding: 5px 6px; gap: 4px; }
+ .grid .badges svg { width: 10px; height: 10px; }
+ .grid .like { top: auto; bottom: 10px; right: 8px; width: 29px; height: 29px; }
+ .grid .like svg { width: 16px; height: 16px; }
+ .grid .sample-ribbon { left: 7px; bottom: 10px; font-size: 8px; padding: 4px; }
+ .catalogue-service-note { flex-direction: column; align-items: flex-start; gap: 8px; font-size: 11px; padding-bottom: 18px; }
+ .footer-links { width: 100%; gap: 20px; }
+ .footer-links a,.footer-links button { font-size: 11px; }
+ .rental-heading h1 { font-size: 27px; }
+ .vehicle-section-nav { gap: 20px; margin-bottom: 20px; }
+ .vehicle-section-nav a { font-size: 11px; }
+ .rental-photo img { max-height: 250px; }
+ .rental-price > div { font-size: 34px; }
+ .rental-rate-options { padding: 16px 0; }
+ .rental-seller { padding: 18px 0; }
+ .rental-page .rental-facts > div { padding: 12px 0; }
+}

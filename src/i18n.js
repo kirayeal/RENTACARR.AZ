@@ -24,6 +24,16 @@ export function useLanguage() {
   );
 }
 const rows = [
+  ["Elan səhifələri", "Listing pages", "Страницы объявлений"],
+  ["Əvvəlki səhifə", "Previous page", "Предыдущая страница"],
+  ["Növbəti səhifə", "Next page", "Следующая страница"],
+  ["Səhifə", "Page", "Страница"],
+  ["Elanı seçin, şərtləri oxuyun, sahibi ilə əlaqə saxlayın.", "Choose a listing, read the terms and contact the owner.", "Выберите объявление, прочтите условия и свяжитесь с владельцем."],
+  ["Nümunə elanlar real kirayə təklifi deyil.", "Sample listings are not actual rental offers.", "Примеры объявлений не являются реальными предложениями аренды."],
+  ["Məxfilik", "Privacy", "Конфиденциальность"],
+  ["Bizimlə əlaqə", "Contact us", "Связаться с нами"],
+  ["Hesab məlumatlarınız yalnız öz hesabınızda və səlahiyyətli idarəetmə bölməsində görünür. Elan sahibinin adı və əlaqə nömrəsi elanda açıq göstərilir.", "Account information is visible in your account and to authorized administrators. The listing owner’s name and contact number are public in the listing.", "Данные аккаунта доступны вам и уполномоченным администраторам. Имя и контактный номер владельца открыто указаны в объявлении."],
+  ["Giriş üçün sessiya kukisi, dil və seçilmiş elanlar üçün brauzer yaddaşı istifadə olunur. Şifrələr açıq formada saxlanmır.", "A session cookie is used for login; browser storage keeps your language and favorites. Passwords are not stored as plain text.", "Для входа используется сессионный cookie, для языка и избранного — память браузера. Пароли не хранятся в открытом виде."],
   ["Elan tapılmadı", "Listing not found", "Объявление не найдено"],
   ["Kirayə avtomobilinizi seçin", "Find your next rental car", "Выберите автомобиль в аренду"],
   ["Bütün elanlar", "All listings", "Все объявления"],

@@ -32,11 +32,15 @@ import {
   Play,
   Trash2,
   ArrowLeft,
+  ArrowRight,
   UserRound,
   Camera,
   Clock3,
   Phone,
   Mail,
+  Truck,
+  BriefcaseBusiness,
+  Coins,
 } from "lucide-react";
 import "./style.css";
 import "./catalogue.css";
@@ -110,6 +114,9 @@ function App({ user, onAuthenticated, onLogout, authError }) {
       );
     } catch {}
   }, [liked, user?.id]);
+  const [page, setPage] = useState(1);
+  const pageSize = 6;
+  useEffect(() => setPage(1), [filters, category, favorites, modelQuery, sort]);
   const admin = Boolean(user?.isAdmin && user?.profile?.complete && adminMode);
   const editing = modal?.startsWith("edit:")
     ? [...cars, ...pending].find((c) => String(c.id) === modal.slice(5))
@@ -251,6 +258,13 @@ function App({ user, onAuthenticated, onLogout, authError }) {
           ? b.price - a.price
           : promotionRank(b) - promotionRank(a),
     );
+  const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const currentPage = Math.min(page, pageCount);
+  const visibleCars = filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+  function changePage(next) {
+    setPage(next);
+    document.getElementById("cars")?.scrollIntoView({ behavior: "smooth" });
+  }
   async function submit(e) {
     e.preventDefault();
     if (!user) {
@@ -1043,7 +1057,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                           className={category === x ? "active" : ""}
                           onClick={() => setCategory(x)}
                         >
-                          {React.createElement(({Hamısı: Car, Ekonom: Gauge, Sedan: Car, SUV: ShieldCheck, Biznes: Building2, Premium: Crown, Miniven: Users})[x] || Car, {size: 20})} {t(x)}
+                          {React.createElement(({Hamısı: Car, Ekonom: Coins, Sedan: Car, SUV: Truck, Biznes: BriefcaseBusiness, Premium: Crown, Miniven: Users})[x] || Car, {size: 20})} {t(x)}
                         </button>
                       )),
                     )}
@@ -1051,9 +1065,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
 
                 </div>
 
-                <div className="demo-note">
-                  {t("Təqdimat kataloqu · Real fotolar, nümunə qiymətlər")}
-                </div>
+                {filtered.some(car => car.demo) && <p className="catalogue-demo-note">{t("Nümunə elanlar real kirayə təklifi deyil.")}</p>}
                 <div className="catalogue-toolbar">
                   <div className="results-description">
                     {favorites ? <Heart size={16} /> : <Car size={16} />}
@@ -1099,7 +1111,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                   }
                 >
                   {t(
-                    filtered.map((c, index) => (
+                    visibleCars.map((c, index) => (
                       <article
                         className="car-card"
                         key={c.id}
@@ -1129,6 +1141,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                               decoding="async"
                             />
                           </button>
+                          {c.demo && <span className="sample-ribbon">{t("Nümunə elan")}</span>}
                           <div className="badges">
                             {t(
                               c.promotion === "premium" ? (
@@ -1216,7 +1229,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                                 ),
                               )}
                             </span>
-                            {t(c.owner)}
+                            <span className="owner-name">{t(c.owner)}</span>
                           </div>
                         </div>
                       </article>
@@ -1247,67 +1260,15 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                     </div>
                   ),
                 )}
-                <div className="bottom-banner">
-                  <div className="banner-icon">
-                    <Car size={38} />
-                  </div>
-                  <div>
-                    <span>{t("ŞİRKƏTLƏR VƏ ŞƏXSİ SAHİBLƏR ÜÇÜN")}</span>
-                    <h2>{t("Avtomobillərinizi kataloqa əlavə edin.")}</h2>
-                    <p>
-                      {t(
-                        "İlk elanını pulsuz yerləşdir, yeni müştərilər qazan.",
-                      )}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() =>
-                      setModal(
-                        user
-                          ? user.profile?.complete
-                            ? "listing"
-                            : "register"
-                          : "account",
-                      )
-                    }
-                  >
-                    {t("Pulsuz elan yerləşdir")}
-                    <ArrowUpRight size={18} />
-                  </button>
-                </div>
+                {pageCount > 1 && <nav className="pagination" aria-label={t("Elan səhifələri")}>
+                  <button disabled={currentPage === 1} onClick={() => changePage(currentPage - 1)} aria-label={t("Əvvəlki səhifə")}><ArrowLeft size={17} /></button>
+                  {Array.from({length: pageCount}, (_, i) => <button key={i} aria-label={t("Səhifə") + " " + (i+1)} aria-current={currentPage === i+1 ? "page" : undefined} onClick={() => changePage(i+1)}>{i+1}</button>)}
+                  <button disabled={currentPage === pageCount} onClick={() => changePage(currentPage + 1)} aria-label={t("Növbəti səhifə")}><ArrowRight size={17} /></button>
+                </nav>}
+                <div className="catalogue-service-note"><span>{t("Elanı seçin, şərtləri oxuyun, sahibi ilə əlaqə saxlayın.")}</span><button onClick={() => setModal("how")}>{t("Necə işləyir?")}<ArrowUpRight size={14}/></button></div>
               </main>
             </div>
-            <section className="how">
-              <span className="eyebrow">{t("CƏMİ 3 ADDIM")}</span>
-              <h2>{t("Avtomobili necə kirayə götürmək olar?")}</h2>
-              <div>
-                {t(
-                  [
-                    [
-                      "01",
-                      "Avtomobilini seç",
-                      "Şəhər, marka və büdcənə görə axtar.",
-                    ],
-                    [
-                      "02",
-                      "Sahibi ilə danış",
-                      "Şərtləri telefon və ya WhatsApp ilə dəqiqləşdir.",
-                    ],
-                    [
-                      "03",
-                      "Yolun dadını çıxar",
-                      "Avtomobili təhvil al və səyahətə başla.",
-                    ],
-                  ].map(([n, title, p]) => (
-                    <article key={n}>
-                      <span>{t(n)}</span>
-                      <h3>{t(title)}</h3>
-                      <p>{t(p)}</p>
-                    </article>
-                  )),
-                )}
-              </div>
-            </section>
+
           </>
         ),
       )}
@@ -1316,7 +1277,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
           {t("rentacarr")}
           <span className="logo-az">{t(".az")}</span>
         </a>
-        <span>{t("Avtomobil kirayəsi")}</span>
+        <div className="footer-links"><button onClick={() => setModal("how")}>{t("Necə işləyir?")}</button><button onClick={() => setModal("privacy")}>{t("Məxfilik")}</button><a href="mailto:rentacarr.az@gmail.com">{t("Bizimlə əlaqə")}</a></div>
         {t(
           user?.isAdmin && user?.profile?.complete && (
             <button
@@ -1627,6 +1588,8 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                       {t("Elan yerləşdir")}
                     </button>
                   </>
+                ) : modal === "privacy" ? (
+                  <><span className="eyebrow">RENTACARR.AZ</span><h2>{t("Məxfilik")}</h2><p>{t("Hesab məlumatlarınız yalnız öz hesabınızda və səlahiyyətli idarəetmə bölməsində görünür. Elan sahibinin adı və əlaqə nömrəsi elanda açıq göstərilir.")}</p><p>{t("Giriş üçün sessiya kukisi, dil və seçilmiş elanlar üçün brauzer yaddaşı istifadə olunur. Şifrələr açıq formada saxlanmır.")}</p><a className="outline" href="mailto:rentacarr.az@gmail.com">rentacarr.az@gmail.com</a></>
                 ) : modal === "partners" ? (
                   <>
                     <span className="eyebrow">{t("BİRLİKDƏ BÖYÜYƏK")}</span>
