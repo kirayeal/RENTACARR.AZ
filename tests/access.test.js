@@ -553,3 +553,43 @@ test("admin email requires proof of ownership and recovery codes have a five-att
   assert.equal(result.status, 200);
   assert.equal(result.data.user.isAdmin, true);
 });
+
+test('admin login resumes email verification without issuing an admin session first', async () => {
+  await sql`UPDATE rc_credentials SET email_verified=FALSE WHERE user_id=${admin.sub}`;
+  const sent=[];
+  const disabled=createAccount({getDb:async()=>sql,canMail:()=>false});
+  const blocked=await call(disabled,{method:'POST',url:'/?action=login',input:{email:admin.email,password:'AdminSecure123'}});
+  assert.equal(blocked.status,503);
+  assert.equal(blocked.headers['set-cookie'],undefined);
+  const handler=createAccount({getDb:async()=>sql,canMail:()=>true,deliver:async(email,code)=>sent.push({email,code})});
+  const wrong=await call(handler,{method:'POST',url:'/?action=login',input:{email:admin.email,password:'WrongPassword123'}});
+  assert.equal(wrong.status,401);assert.equal(sent.length,0);
+  const login=await call(handler,{method:'POST',url:'/?action=login',input:{email:admin.email,password:'AdminSecure123'}});
+  assert.equal(login.status,200);assert.equal(login.data.verifyRequired,true);assert.equal(login.headers['set-cookie'],undefined);assert.equal(sent.length,1);
+  const verified=await call(handler,{method:'POST',url:'/?action=verify',input:{email:admin.email,code:sent[0].code}});
+  assert.equal(verified.status,200);assert.equal(verified.data.user.isAdmin,true);
+});
+
+test('submitted listings stay private until an admin approves; pause and rejection persist in SQL', async () => {
+  const member=actor('moderation-member','moderation@example.test');
+  await sql`INSERT INTO rc_users(id,email,name) VALUES(${member.sub},${member.email},'Moderation Member')`;
+  await sql`INSERT INTO rc_registrations(user_id,name,phone,kind) VALUES(${member.sub},'Moderation Member','+994559999999','person')`;
+  const [{session_version}]=await sql`SELECT session_version FROM rc_users WHERE id=${admin.sub}`;
+  const moderator={...admin,sessionVersion:session_version};
+  const created=await call(listings,{method:'POST',user:member,input:form('Moderation Fleet',member.email)});
+  assert.equal(created.status,201);
+  const id=created.data.id;
+  assert(!(await call(listings)).data.listings.some(car=>car.id===id));
+  assert((await call(workspace,{user:moderator})).data.pending.some(car=>car.id===id));
+  assert.equal((await call(listings,{method:'PATCH',user:member,input:{id,status:'active'}})).status,403);
+  assert.equal((await call(listings,{method:'PATCH',user:moderator,input:{id,status:'active'}})).status,200);
+  assert((await call(listings)).data.listings.some(car=>car.id===id));
+  assert((await call(workspace,{user:member})).data.cars.some(car=>car.id===id));
+  assert.equal((await call(listings,{method:'PATCH',user:moderator,input:{id,status:'paused'}})).status,200);
+  assert(!(await call(listings)).data.listings.some(car=>car.id===id));
+  assert.equal((await call(listings,{method:'DELETE',user:moderator,input:{id}})).status,200);
+  const another=await call(listings,{method:'POST',user:member,input:form('Second Submission',member.email)});
+  assert.equal(another.status,201);
+  assert.equal((await call(listings,{method:'DELETE',user:moderator,input:{id:another.data.id}})).status,200);
+  assert(!(await call(workspace,{user:member})).data.pending.some(car=>car.id===another.data.id));
+});

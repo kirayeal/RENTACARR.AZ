@@ -150,11 +150,11 @@ export function createHandler({
       );
       if (!user?.password_hash || !ok)
         throw httpError(401, "E-poçt və ya şifrə düzgün deyil.");
-      if (isAdminEmail(email) && !user.email_verified)
-        throw httpError(
-          403,
-          "Admin e-poçtu təsdiqlənməlidir. Şifrə bərpasından istifadə edin.",
-        );
+      if (isAdminEmail(email) && !user.email_verified) {
+        if (!canMail()) throw httpError(503, "Admin e-poçtunun təsdiqi üçün poçt xidməti qoşulmalıdır.");
+        await deliverCode("verify");
+        return json(res, 200, { verifyRequired: true, email });
+      }
       return issue(user, user.email_verified);
     }
     if (action === "forgot") {

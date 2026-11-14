@@ -24,6 +24,19 @@ export function useLanguage() {
   );
 }
 const rows = [
+  ["Sahibin e-poçtu əlavə edilməyib", "Owner email not provided", "Почта владельца не указана"],
+  ["Yoxlanış gözləyən elan yoxdur. Sahibin adından yeni elan yarada bilərsiniz.", "No listings are awaiting review. You can create a listing for an owner.", "Нет объявлений на проверке. Можно создать объявление от имени владельца."],
+  ["Daha çox filtr", "More filters", "Больше фильтров"],
+  ["Ayarlar", "Settings", "Настройки"],
+  ["Hesabım / Ayarlar", "Account / Settings", "Аккаунт / Настройки"],
+  ["Elanı yoxla", "Inspect listing", "Проверить объявление"],
+  ["Yoxlanış gözləyən elan", "Listing pending review", "Объявление на проверке"],
+  ["Sahib", "Owner", "Владелец"],
+  ["Hesabı tamamla", "Complete profile", "Заполнить профиль"],
+  ["Yeni elan yaratmaq üçün hesabın əlaqə məlumatlarını tamamlayın. Mövcud elanları yoxlaya və təsdiqləyə bilərsiniz.", "Complete your contact profile to create a listing. You can already review and approve existing submissions.", "Заполните контактные данные для создания объявлений. Проверка и подтверждение уже доступны."],
+  ["Bu hesab idarəetmə üçündür. E-poçt təsdiqindən sonra admin paneli açılır.", "This is the administrator account. Verify the email to access the panel.", "Это аккаунт администратора. Подтвердите почту для доступа к панели."],
+  ["Admin hesabı tanındı. Poçt xidməti qoşulmadığı üçün e-poçt təsdiqi tamamlanmır. Vercel-də SMTP_USER və SMTP_PASSWORD və ya Resend bağlantısını tamamlayın.", "Administrator account recognized. Email verification is unavailable until email delivery is configured. Set SMTP_USER and SMTP_PASSWORD or connect Resend in Vercel.", "Аккаунт администратора распознан. Подтверждение почты недоступно без настройки отправки. Укажите SMTP_USER и SMTP_PASSWORD или подключите Resend в Vercel."],
+  ["Admin e-poçtunun təsdiqi üçün poçt xidməti qoşulmalıdır.", "Email delivery must be configured to verify the administrator email.", "Для подтверждения почты администратора нужно настроить отправку писем."],
   ["Avtomobil seçimi, aydın şərtlər.", "Find your car. Know the terms.", "Выберите автомобиль. Сравните условия."],
   ["Müqayisə", "Compare", "Сравнение"],
   ["Müqayisə et", "Compare cars", "Сравнить"],

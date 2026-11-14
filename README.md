@@ -4,7 +4,7 @@ Azərbaycan, ingilis və rus dillərində avtomobil kirayəsi platforması. Reac
 
 ## Yeni görünüş və seçim imkanları
 
-Tünd naviqasiya, neytral açıq fon, tünd qırmızı vurğu və axtarış sütunu olan rentakar kataloqu. Sahibin tipi, yanacaq, sürətlər qutusu, minimum oturacaq sayı və depozitsiz kirayə filtrləri birlikdə işləyir. Hər səhifədə 6 elan göstərilir; mobil filtrlər ayrıca açılır. AZ/EN/RU, seçilmişlər və kart/siyahı görünüşü saxlanılıb.
+RENTACARR.AZ brendi ilə sıx elan kataloqu: yuxarıda ümumi filtrlər, kompüterdə 4, telefonda 2 sütun, kartın ilk sətrində günlük kirayə qiyməti. Satışa aid kredit, barter və satış yürüşü əvəzinə kirayə depoziti və şərtlər göstərilir. Sahibin tipi, yanacaq, sürətlər qutusu, minimum oturacaq sayı və depozitsiz kirayə filtrləri birlikdə işləyir. Hər səhifədə 12 elan göstərilir; əlavə filtrlər ayrıca açılır. AZ/EN/RU, seçilmişlər və kart/siyahı görünüşü saxlanılıb.
 
 İstifadəçi 3 avtomobilədək seçərək qiymət, depozit, yürüş limiti, yaş/staj və digər göstəriciləri yan-yana müqayisə edə bilər. Yalnız fərqləri göstərmək, seçimdən çıxarmaq və elana keçmək mümkündür. Müqayisə seçimi brauzerdə saxlanır.
 
@@ -17,6 +17,8 @@ Təqdimat elanları real kirayə təklifi deyil; nümunələrə uydurma telefon 
 **Ad + e-poçt + telefon + şifrə.** Şirkət üçün əlavə firma adı. Telefon giriş üsulu deyil. Təkrar nömrə və e-poçt bazada qəbul edilmir. Şifrələr scrypt ilə hash olunur.
 
 Şifrə unudulduqda e-poçta 6 rəqəmli, 10 dəqiqəlik, bir dəfə istifadə olunan kod göndərilir. Səhv cəhd limiti var; şifrə yenilənəndə köhnə sessiyalar ləğv edilir. Adminin e-poçt sahibliyi ayrıca təsdiqlənir. Google girişi standart olaraq gizlidir.
+
+Admin üçün keçid: `?panel=admin` və Hesabım → Ayarlar → İdarəetmə paneli. Yalnız serverdə təsdiqlənmiş admin rolu panelə giriş verir. Profilin əlaqə məlumatı tamamlanmasa da admin elanları yoxlaya və təsdiqləyə bilər. [Admin girişinin tamamlanması](docs/ADMIN_ACCESS.md).
 
 **Canlı qeydiyyat üçün `DATABASE_URL` və `AUTH_SECRET` lazımdır. Bərpa məktubu üçün Gmail SMTP və ya Resend bağlantısı da lazımdır. Vercel özlüyündə poçt hesabı deyil.**
 

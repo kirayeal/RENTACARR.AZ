@@ -215,6 +215,7 @@ export default function EmailAccess({ onAuthenticated }) {
             {t(error)}
           </p>
         )}
+        {email.trim().toLowerCase() === "rentacarr.az@gmail.com" && ready?.enabled && <p className="admin-access-note" role="status">{t(ready.recoveryEnabled ? "Bu hesab idarəetmə üçündür. E-poçt təsdiqindən sonra admin paneli açılır." : "Admin hesabı tanındı. Poçt xidməti qoşulmadığı üçün e-poçt təsdiqi tamamlanmır. Vercel-də SMTP_USER və SMTP_PASSWORD və ya Resend bağlantısını tamamlayın.")}</p>}
         {ready?.enabled === false && (
           <p className="service-note">
             {t("Qeydiyyat üçün server bağlantısı hələ tamamlanmayıb.")}

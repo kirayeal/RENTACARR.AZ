@@ -50,6 +50,7 @@ import ListingEditor from "./ListingEditor";
 import RentalDetail from "./RentalDetail";
 import CompareCars from "./CompareCars";
 import ProfileEditor from "./ProfileEditor";
+import ReviewListing from "./ReviewListing";
 import {emptyCriteria, matchesCriteria, toggleCompared} from "./discovery";
 import Registration from "./Registration";
 import EmailAccess from "./EmailAccess";
@@ -65,6 +66,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
   const [catalogLoaded, setCatalogLoaded] = useState(false);
   const [catalogueView, setCatalogueView] = useState("grid");
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [advancedOpen, setAdvancedOpen] = useState(false);
   const [criteria, setCriteria] = useState({...emptyCriteria});
   const [compared, setCompared] = useState(() => {
     try { const ids = JSON.parse(localStorage.getItem("rentacarr.compare") || "[]"); return Array.isArray(ids) ? [...new Set(ids.filter(id => typeof id === "string"))].slice(0,3) : []; } catch { return []; }
@@ -105,9 +107,9 @@ function App({ user, onAuthenticated, onLogout, authError }) {
     [favorites, setFavorites] = useState(false),
     [selected, updateSelected] = useState(null),
     [modal, setModal] = useState(
-      user && !user.profile?.complete ? "register" : null,
+      user && !user.isAdmin && !user.profile?.complete ? "register" : null,
     ),
-    [adminMode, setAdmin] = useState(false),
+    [adminMode, updateAdmin] = useState(() => Boolean(user?.isAdmin && new URL(location.href).searchParams.get("panel") === "admin")),
     [pending, setPending] = useState(workspace.pending),
     [sort, setSort] = useState("Seçilmiş elanlar"),
     [toast, setToast] = useState(""),
@@ -124,12 +126,19 @@ function App({ user, onAuthenticated, onLogout, authError }) {
     } catch {}
   }, [liked, user?.id]);
   const [page, setPage] = useState(1);
-  const pageSize = 6;
+  const pageSize = 12;
   useEffect(() => setPage(1), [filters, category, favorites, modelQuery, sort, criteria]);
-  const admin = Boolean(user?.isAdmin && user?.profile?.complete && adminMode);
+  const admin = Boolean(user?.isAdmin && adminMode);
   const editing = modal?.startsWith("edit:")
     ? [...cars, ...pending].find((c) => String(c.id) === modal.slice(5))
     : null;
+  function setAdmin(active) {
+    updateAdmin(Boolean(active && user?.isAdmin));
+    const url = new URL(location.href);
+    if (active && user?.isAdmin) url.searchParams.set("panel", "admin");
+    else url.searchParams.delete("panel");
+    history.replaceState({}, "", url);
+  }
   function setSelected(car) {
     const url = new URL(location.href);
     if (car) url.searchParams.set("elan", String(car.id));
@@ -144,6 +153,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
     const restore = () => {
       const id = new URL(location.href).searchParams.get("elan");
       setRequestedListingId(id);
+      updateAdmin(Boolean(user?.isAdmin && new URL(location.href).searchParams.get("panel") === "admin"));
       updateSelected(publicCars.find(c => String(c.id) === id) || null);
     };
     restore();
@@ -181,8 +191,10 @@ function App({ user, onAuthenticated, onLogout, authError }) {
       });
       await refreshWorkspace();
       note("Dəyişiklik saxlanıldı.");
+      return true;
     } catch (e) {
       note(e.message);
+      return false;
     }
   }
   async function removeListing(id) {
@@ -400,6 +412,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
             {t("Partnyorlar")}
           </button>
           <button onClick={() => setModal("how")}>{t("Necə işləyir?")}</button>
+          {user?.isAdmin && <button className="header-admin" onClick={()=>{setModal(null);setAdmin(true);setSelected(null);window.scrollTo(0,0);}}><LayoutDashboard size={16}/>{t("İdarəetmə paneli")}{pending.length > 0 && <span>{pending.length}</span>}</button>}
         </nav>
         <div className="header-right">
           <div className="language-switch" role="group" aria-label={t("Dil seçimi")}>
@@ -427,7 +440,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
             onClick={() => setModal("account")}
           >
             <UserRound size={17} />
-            <span>{t(user ? "Hesabım" : "Qeydiyyat / Giriş")}</span>
+            <span>{t(user ? "Hesabım / Ayarlar" : "Qeydiyyat / Giriş")}</span>
           </button>
           <button
             className="primary add"
@@ -500,6 +513,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                 {t("Sayta qayıt")}
               </button>
             </div>
+            {!user.profile?.complete && <div className="workspace-notice"><p>{t("Yeni elan yaratmaq üçün hesabın əlaqə məlumatlarını tamamlayın. Mövcud elanları yoxlaya və təsdiqləyə bilərsiniz.")}</p><button className="outline" onClick={()=>setModal("register")}>{t("Hesabı tamamla")}</button></div>}
             <nav className="admin-nav" aria-label={t("İdarəetmə bölmələri")}>
               {t(
                 [
@@ -680,7 +694,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                           <p>
                             {t(
                               o.expectedEmail ||
-                                "Google hesabı üçün e-poçt əlavə edilməyib",
+                                "Sahibin e-poçtu əlavə edilməyib",
                             )}
                           </p>
                         </div>
@@ -728,7 +742,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                 !pending.length ? (
                   <div className="empty">
                     {t(
-                      "Yeni elan yoxdur. “Elan yerləşdir” vasitəsilə nümunə elan göndərə bilərsiniz.",
+                      "Yoxlanış gözləyən elan yoxdur. Sahibin adından yeni elan yarada bilərsiniz.",
                     )}
                   </div>
                 ) : (
@@ -745,6 +759,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                           {t("₼ / gün")}
                         </p>
                       </div>
+                      <button className="outline" onClick={()=>setModal("review:"+c.id)}>{t("Elanı yoxla")}</button>
                       <button
                         className="primary"
                         onClick={() =>
@@ -757,7 +772,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                       </button>
                       <button
                         className="outline"
-                        onClick={() => removeListing(c.id)}
+                        onClick={() => setDeleteId(c.id)}
                       >
                         {t("Rədd et")}
                       </button>
@@ -1016,12 +1031,16 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                       placeholder={t("Məsələn: RAV4, Panamera, GLS…")}
                     />
                   </label>
+                  <label className="category-field"><span>{t("Kateqoriya")}</span><select value={category} onChange={e=>setCategory(e.target.value)}>{["Hamısı",...categories].map(value=><option key={value} value={value}>{t(value)}</option>)}</select></label>
+                  <label className="owner-field"><span>{t("Sahibin tipi")}</span><select value={criteria.owner} onChange={e=>setCriteria({...criteria,owner:e.target.value})}><option value="all">{t("Hamısı")}</option><option value="company">{t("Rentakar şirkəti")}</option><option value="person">{t("Şəxsi sahib")}</option></select></label>
+                  <button type="button" className="criteria-reset search-reset" onClick={resetSearch}>{t("Filtrləri təmizlə")}</button>
+                  <button type="button" className="advanced-toggle" aria-expanded={advancedOpen} onClick={()=>setAdvancedOpen(!advancedOpen)}><SlidersHorizontal size={16}/>{t("Daha çox filtr")}</button>
                   <button className="primary search-submit">
                     <Search size={18} />
                     {t("Avtomobil tap")}
                   </button>
                 </form>
-                <div className="criteria-panel">
+                <div className={"criteria-panel " + (advancedOpen ? "is-open" : "")}>
                   <h3>{t("Kirayə seçimləri")}</h3>
                   <label>{t("Sahibin tipi")}<select value={criteria.owner} onChange={e=>setCriteria({...criteria,owner:e.target.value})}><option value="all">{t("Hamısı")}</option><option value="company">{t("Rentakar şirkəti")}</option><option value="person">{t("Şəxsi sahib")}</option></select></label>
                   <label>{t("Sürətlər qutusu")}<select value={criteria.transmission} onChange={e=>setCriteria({...criteria,transmission:e.target.value})}>{["","Avtomat","Mexaniki"].map(value=><option key={value} value={value}>{t(value || "Hamısı")}</option>)}</select></label>
@@ -1039,13 +1058,13 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                 <div className="section-title">
                   <div>
                     <span className="eyebrow">{t("SEÇİM SƏNİNDİR")}</span>
-                    <h2>
+                    <h1 className="catalogue-title">
                       {t(
                         favorites
                           ? "Bəyəndiyin avtomobillər"
                           : "Avtomobil elanları",
                       )}
-                    </h2>
+                    </h1>
                     <p>
                       {t("Planına və büdcənə uyğun avtomobilləri kəşf et.")}
                     </p>
@@ -1078,23 +1097,6 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                   </button>
                   <span>{t(`${filtered.length} avtomobil mövcuddur`)}</span>
                 </div>
-                <div className="filter-bar">
-                  <div className="tabs">
-                    {t(
-                      ["Hamısı", ...categories].map((x) => (
-                        <button
-                          key={x}
-                          className={category === x ? "active" : ""}
-                          onClick={() => setCategory(x)}
-                        >
-                          {React.createElement(({Hamısı: Car, Ekonom: Coins, Sedan: Car, SUV: Truck, Biznes: BriefcaseBusiness, Premium: Crown, Miniven: Users})[x] || Car, {size: 20})} {t(x)}
-                        </button>
-                      )),
-                    )}
-                  </div>
-
-                </div>
-
                 {filtered.some(car => car.demo) && <p className="catalogue-demo-note">{t("Nümunə elanlar real kirayə təklifi deyil.")}</p>}
                 <div className="catalogue-toolbar">
                   <div className="results-description">
@@ -1213,6 +1215,16 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                           </button>
                         </div>
                         <div className="card-body">
+                          <div className="card-bottom">
+                            <div>
+                              <strong>
+                                {t(c.price)} <span>{t("₼")}</span>
+                              </strong>
+                              <small>{t("/ gün")}</small>
+                            </div>
+                            {c.deposit != null && <div className="card-deposit"><span>{t("Depozit")}</span><span>{c.deposit} ₼</span></div>}
+                          </div>
+
                           <div className="card-location">
                             <MapPin size={12} />
                             {t(c.city)}
@@ -1239,15 +1251,6 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                               <Users size={14} /> {t(c.seats || 5)}
                               {t("yer")}
                             </span>
-                          </div>
-                          <div className="card-bottom">
-                            <div>
-                              <strong>
-                                {t(c.price)} <span>{t("₼")}</span>
-                              </strong>
-                              <small>{t("/ gün")}</small>
-                            </div>
-                            {c.deposit != null && <div className="card-deposit"><span>{t("Depozit")}</span><span>{c.deposit} ₼</span></div>}
                           </div>
                           <div className="owner">
                             <span className="owner-icon">
@@ -1312,7 +1315,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
         </a>
         <div className="footer-links"><button onClick={() => setModal("how")}>{t("Necə işləyir?")}</button><button onClick={() => setModal("privacy")}>{t("Məxfilik")}</button><a href="mailto:rentacarr.az@gmail.com">{t("Bizimlə əlaqə")}</a></div>
         {t(
-          user?.isAdmin && user?.profile?.complete && (
+          user?.isAdmin && (
             <button
               onClick={() => {
                 setAdmin(true);
@@ -1341,7 +1344,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
             >
               <h2>{t("Elan silinsin?")}</h2>
               <p>
-                {t(cars.find((c) => c.id === deleteId)?.name)}
+                {t([...cars,...pending].find((c) => c.id === deleteId)?.name)}
                 {t(
                   "kataloqdan və serverdən silinəcək. Elanı sadəcə gizlətmək üçün dayandırma funksiyasından istifadə edə bilərsiniz.",
                 )}
@@ -1478,7 +1481,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                   })()
                 ) : (modal === "register" || modal === "account") &&
                   user &&
-                  !user.profile?.complete ? (
+                  !user.profile?.complete && (modal === "register" || !user.isAdmin) ? (
                   <Registration
                     user={user}
                     onComplete={async (account) => {
@@ -1513,6 +1516,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                             {t(user.isAdmin ? "Admin hesabı" : "Şəxsi hesab")}
                           </div>
                           <div className="account-actions">
+                            <button className="outline" onClick={()=>setModal("settings")}><SlidersHorizontal size={16}/>{t("Ayarlar")}</button>
                             <button className="outline" onClick={()=>setModal("profile-edit")}><Pencil size={16}/>{t("Hesab məlumatlarını redaktə et")}</button>
                             <button
                               className="primary"
@@ -1622,6 +1626,10 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                       {t("Elan yerləşdir")}
                     </button>
                   </>
+                ) : modal === "settings" && user ? (
+                  <><span className="eyebrow">RENTACARR.AZ</span><h2>{t("Ayarlar")}</h2><p>{user.email}</p><div className="account-actions"><button className="outline" onClick={()=>setModal("profile-edit")}>{t("Hesab məlumatlarını redaktə et")}</button>{user.isAdmin && <button className="primary" onClick={()=>{setModal(null);setSelected(null);setAdmin(true);setAdminView("review");window.scrollTo(0,0);}}><LayoutDashboard size={17}/>{t("İdarəetmə paneli")} · {pending.length} {t("yoxlanışda")}</button>}<button className="outline" onClick={()=>setModal("privacy")}>{t("Məxfilik")}</button></div></>
+                ) : modal?.startsWith("review:") && admin ? (
+                  (() => {const car = pending.find(c=>String(c.id)===modal.slice(7));return car ? <ReviewListing car={car} onEdit={()=>setModal("edit:"+car.id)} onApprove={async()=>{if(await mutateListing(car.id,{status:"active"}))setModal(null);}} onReject={()=>{setModal(null);setDeleteId(car.id);}}/> : <div className="empty">{t("Elan tapılmadı")}</div>;})()
                 ) : modal === "compare" ? (
                   <CompareCars cars={comparedCars} onRemove={compareCar} onClear={()=>setCompared([])} onSelect={setSelected}/>
                 ) : modal === "profile-edit" && user ? (
