@@ -4,7 +4,7 @@ import { db, listingRow, ownerRow } from "../server/db.js";
 export function createHandler({ getDb = db } = {}) {
   return endpoint(async (req, res) => {
     if (req.method !== "GET") throw httpError(405, "Əməliyyat dəstəklənmir.");
-    const user = requireUser(req);
+    const user = await requireUser(req, getDb);
     const sql = await getDb();
     const owners = user.isAdmin
       ? await sql`SELECT * FROM rc_owners ORDER BY created_at DESC`

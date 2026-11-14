@@ -105,7 +105,7 @@ export default function ListingEditor({
           placeholder={t("050 123 45 67")}
         />
         <Field
-          label={t("Sahibin Google e-poçtu (istəyə bağlı)")}
+          label={t("Sahibin e-poçtu (istəyə bağlı)")}
           name="ownerEmail"
           type="email"
           maxLength="254"

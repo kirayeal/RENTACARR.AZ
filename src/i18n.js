@@ -596,12 +596,99 @@ rows.push(
     "Войдите, чтобы разместить объявление.",
   ],
 );
+rows.push(
+  ...[
+    ["E-poçt ünvanı", "Email address", "Электронная почта"],
+    ["Şifrə", "Password", "Пароль"],
+    ["Yeni şifrə", "New password", "Новый пароль"],
+    ["Ən az 8 simvol", "At least 8 characters", "Не менее 8 символов"],
+    ["Qeydiyyatdan keç", "Create account", "Зарегистрироваться"],
+    ["Şifrəni unutmusunuz?", "Forgot your password?", "Забыли пароль?"],
+    [
+      "Bərpa kodunu göndər",
+      "Send recovery code",
+      "Отправить код восстановления",
+    ],
+    ["Şifrəni yenilə", "Reset password", "Изменить пароль"],
+    ["E-poçtu təsdiqlə", "Verify email", "Подтвердить email"],
+    ["6 rəqəmli kod", "6-digit code", "6-значный код"],
+    ["Girişə qayıt", "Back to login", "Вернуться ко входу"],
+    [
+      "E-poçtunu yaz. Şifrəni yeniləmək üçün 6 rəqəmli kod göndərəcəyik.",
+      "Enter your email to receive a 6-digit password recovery code.",
+      "Введите email, чтобы получить 6-значный код восстановления.",
+    ],
+    [
+      "E-poçtuna göndərilən 6 rəqəmli kodu daxil et.",
+      "Enter the 6-digit code sent to your email.",
+      "Введите 6-значный код из письма.",
+    ],
+    [
+      "Telefon əlaqə üçündür. Giriş e-poçt və şifrə ilədir.",
+      "Your phone is for contact. Log in using email and password.",
+      "Телефон используется для связи. Вход по email и паролю.",
+    ],
+    [
+      "Qeydiyyat üçün server bağlantısı hələ tamamlanmayıb.",
+      "The registration server is not connected yet.",
+      "Сервер регистрации ещё не подключён.",
+    ],
+    [
+      "Ad, e-poçt və telefon məlumatlarını yaz, şifrə seç və hesabını yarat.",
+      "Enter your name, email and phone, then choose a password.",
+      "Укажите имя, email, телефон и придумайте пароль.",
+    ],
+    [
+      "Hər sahibin elanları öz profilinə bağlanır. Hesaba e-poçt və şifrə ilə daxil olunur.",
+      "Listings are linked to their owner. Sign in using email and password.",
+      "Объявления привязаны к владельцу. Вход по email и паролю.",
+    ],
+    [
+      "E-poçt və ya şifrə düzgün deyil.",
+      "Incorrect email or password.",
+      "Неверный email или пароль.",
+    ],
+    [
+      "Bu e-poçt və ya telefon artıq qeydiyyatdan keçib.",
+      "This email or phone is already registered.",
+      "Этот email или телефон уже зарегистрирован.",
+    ],
+    [
+      "Kod düzgün deyil və ya vaxtı bitib.",
+      "The code is incorrect or expired.",
+      "Код неверный или срок действия истёк.",
+    ],
+  ],
+);
+rows.push(
+  [
+    "Sahibin e-poçtu (istəyə bağlı)",
+    "Owner email (optional)",
+    "Email владельца (необязательно)",
+  ],
+  [
+    "Eyni sahibin yeni avtomobili üçün mövcud profili seçin. Sahibin təsdiqlənmiş e-poçtu həmin profilə bağlanır.",
+    "Choose the existing profile for another car. The owner account is linked after email verification.",
+    "Для нового автомобиля выбирайте существующий профиль. Аккаунт привязывается после подтверждения email.",
+  ],
+);
 const map = new Map(rows.map(([az, en, ru]) => [az, { en, ru }]));
 export function t(value) {
   if (value === "yer")
     return language === "en" ? " seats" : language === "ru" ? " мест" : " yer";
   if (typeof value !== "string" || language === "az") return value;
-  if(["aktiv elan","yoxlanışda","elan","profil və onlara aid avtomobillər.","elan qərarını gözləyir."].includes(value))return " "+(language==="az"?value:map.get(value)?.[language]||value);
+  if (
+    [
+      "aktiv elan",
+      "yoxlanışda",
+      "elan",
+      "profil və onlara aid avtomobillər.",
+      "elan qərarını gözləyir.",
+    ].includes(value)
+  )
+    return (
+      " " + (language === "az" ? value : map.get(value)?.[language] || value)
+    );
   const exact = map.get(value.trim());
   if (exact) return exact[language];
   const numeric = value.match(

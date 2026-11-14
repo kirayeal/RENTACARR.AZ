@@ -11,7 +11,7 @@ import { normalizePhone } from "../src/ownership.js";
 export function createHandler({ getDb = db } = {}) {
   return endpoint(async (req, res) => {
     if (req.method !== "PATCH") throw httpError(405, "Əməliyyat dəstəklənmir.");
-    const user = requireUser(req);
+    const user = await requireUser(req, getDb);
     assertOrigin(req);
     const input = await body(req),
       sql = await getDb();

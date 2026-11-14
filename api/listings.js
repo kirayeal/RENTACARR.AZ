@@ -23,7 +23,7 @@ export function createHandler({ getDb = db } = {}) {
         listings: rows.map(listingRow),
       });
     }
-    const user = requireUser(req);
+    const user = await requireUser(req, getDb);
     assertOrigin(req);
     const input = await body(req);
     const sql = await getDb();

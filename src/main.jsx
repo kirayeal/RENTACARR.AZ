@@ -37,7 +37,7 @@ import "./style.css";
 import "@fontsource-variable/inter";
 import ListingEditor from "./ListingEditor";
 import Registration from "./Registration";
-import PhoneLogin from "./PhoneLogin";
+import EmailAccess from "./EmailAccess";
 import { initial, brands, categories, cities, promotionRank } from "./catalog";
 function App({ user, onAuthenticated, onLogout, authError }) {
   const language = useLanguage();
@@ -581,7 +581,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
               <h2>{t("Avtomobil sahibləri")}</h2>
               <p>
                 {t(
-                  "Hər sahibin elanları öz profilinə bağlanır. Telefonla giriş SMS kodu ilə təsdiqlənir.",
+                  "Hər sahibin elanları öz profilinə bağlanır. Hesaba e-poçt və şifrə ilə daxil olunur.",
                 )}
               </p>
               <input
@@ -832,7 +832,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
               <p>
                 <b>{t("Sahiblər:")}</b>
                 {t(
-                  "Eyni sahibin yeni avtomobili üçün mövcud profili seçin. Sahibin təsdiqlənmiş Google hesabı profilə bağlanır.",
+                  "Eyni sahibin yeni avtomobili üçün mövcud profili seçin. Sahibin təsdiqlənmiş e-poçtu həmin profilə bağlanır.",
                 )}
               </p>
               <p>
@@ -1426,7 +1426,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                     </p>
                     <div className="form-hint">
                       {t(
-                        "Hər sahibin elanları öz profilinə bağlanır. Telefonla giriş SMS kodu ilə təsdiqlənir.",
+                        "Hər sahibin elanları öz profilinə bağlanır. Hesaba e-poçt və şifrə ilə daxil olunur.",
                       )}
                     </div>
                     <ListingEditor
@@ -1465,7 +1465,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                         )}
                         <div className="form-hint">
                           {t(
-                            "Hər sahibin elanları öz profilinə bağlanır. Telefonla giriş SMS kodu ilə təsdiqlənir.",
+                            "Hər sahibin elanları öz profilinə bağlanır. Hesaba e-poçt və şifrə ilə daxil olunur.",
                           )}
                         </div>
                         {t(
@@ -1565,10 +1565,10 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                         <>
                           <p>
                             {t(
-                              "Telefon nömrənə gələn kodla hesabını təsdiqlə.",
+                              "Ad, e-poçt və telefon məlumatlarını yaz, şifrə seç və hesabını yarat.",
                             )}
                           </p>
-                          <PhoneLogin onAuthenticated={onAuthenticated} />
+                          <EmailAccess onAuthenticated={onAuthenticated} />
                           <GoogleLogin onAuthenticated={onAuthenticated} />
                         </>
                       ),

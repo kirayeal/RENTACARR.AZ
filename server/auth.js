@@ -57,7 +57,11 @@ export function session(req) {
     email: value.email.endsWith("@phone.invalid") ? "" : value.email,
     phone: value.phone || null,
     name: value.name || "",
-    isAdmin: value.method === "google" && isAdminEmail(value.email),
+    isAdmin:
+      (value.method === "google" ||
+        (value.method === "password" && value.emailVerified === true)) &&
+      isAdminEmail(value.email),
+    sessionVersion: value.sessionVersion || 0,
   };
 }
 export function setCookie(res, name, value, maxAge) {
@@ -81,16 +85,23 @@ export function issueNonce(res) {
   );
   return nonce;
 }
-export function requireUser(req) {
+export async function requireUser(req, getDb) {
   const user = session(req);
   if (!user)
     throw Object.assign(new Error("Daxil olmaq tələb olunur."), {
       status: 401,
     });
+  const sql = await (getDb ? getDb() : (await import("./db.js")).db());
+  const rows =
+    await sql`SELECT session_version FROM rc_users WHERE id=${user.id}`;
+  if (!rows[0] || rows[0].session_version !== user.sessionVersion)
+    throw Object.assign(new Error("Sessiya bitib. Yenidən daxil olun."), {
+      status: 401,
+    });
   return user;
 }
-export function requireAdmin(req) {
-  const user = requireUser(req);
+export async function requireAdmin(req) {
+  const user = await requireUser(req);
   if (!user.isAdmin)
     throw Object.assign(new Error("Bu əməliyyat yalnız admin üçündür."), {
       status: 403,

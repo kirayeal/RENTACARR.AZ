@@ -8,7 +8,7 @@ import { createHandler as createAuth } from "../api/auth.js";
 import { createHandler as createListings } from "../api/listings.js";
 import { createHandler as createWorkspace } from "../api/workspace.js";
 import { createHandler as createOwners } from "../api/owners.js";
-import { createHandler as createPhone } from "../api/phone.js";
+import { createHandler as createAccount } from "../api/account.js";
 import { createHandler as createProfile } from "../api/profile.js";
 process.env.AUTH_SECRET = "test-only-secret-for-isolated-tests-1234567890";
 process.env.GOOGLE_LOGIN_ENABLED = "true";
@@ -337,72 +337,213 @@ test("registration requires identity and reserves each normalized phone for one 
   assert.equal(read.data.profile.complete, true);
 });
 
-test("SMS verification is required and phone access never grants the Google admin role", async () => {
-  process.env.TWILIO_ACCOUNT_SID = "test-sid";
-  process.env.TWILIO_AUTH_TOKEN = "test-token";
-  process.env.TWILIO_VERIFY_SERVICE_SID = "test-service";
-  let sends = 0;
-  const phone = createPhone({
+test("email/password registration, unique phone and private password storage", async () => {
+  const account = createAccount({
     getDb: async () => sql,
-    sendVerification: async (path, data) => {
-      if (path === "Verifications") {
-        sends++;
-        return { status: "pending" };
-      }
-      return { status: data.Code === "654321" ? "approved" : "pending" };
-    },
+    canMail: () => true,
+    deliver: async () => {},
   });
-  const start = await call(phone, {
+  const input = {
+    name: "Password User",
+    email: "password-user@example.test",
+    phone: "070 111 22 33",
+    password: "OriginalPass123",
+    kind: "person",
+  };
+  const result = await call(account, {
     method: "POST",
-    url: "/?action=start",
-    input: { phone: "0501234560" },
+    url: "/?action=signup",
+    input,
   });
-  assert.equal(start.status, 200);
-  assert.equal(sends, 1);
-  const challenge = [].concat(start.headers["set-cookie"])[0].split(";")[0];
-  const bad = await call(phone, {
+  assert.equal(result.status, 200);
+  assert.equal(result.data.user.isAdmin, false);
+  const stored =
+    await sql`SELECT c.password_hash FROM rc_credentials c JOIN rc_users u ON u.id=c.user_id WHERE u.email=${input.email}`;
+  assert.ok(stored[0].password_hash.startsWith("scrypt:"));
+  assert.notEqual(stored[0].password_hash, input.password);
+  assert.equal(
+    (
+      await call(account, {
+        method: "POST",
+        url: "/?action=signup",
+        input: { ...input, email: "another-password@example.test" },
+      })
+    ).status,
+    409,
+  );
+  assert.equal(
+    (
+      await call(account, {
+        method: "POST",
+        url: "/?action=login",
+        input: { email: input.email, password: "WrongPass123" },
+      })
+    ).status,
+    401,
+  );
+  const login = await call(account, {
     method: "POST",
-    url: "/?action=verify",
-    cookie: challenge,
-    input: { phone: "0501234560", code: "000000" },
+    url: "/?action=login",
+    input: { email: input.email, password: input.password },
   });
-  assert.equal(bad.status, 401);
-  assert.equal(bad.headers["set-cookie"], undefined);
-  const missing = await call(phone, {
+  assert.equal(login.status, 200);
+  const token = []
+    .concat(login.headers["set-cookie"])
+    .find((v) => v.startsWith("rc_session="))
+    .split(";")[0];
+  assert.equal((await call(workspace, { cookie: token })).status, 200);
+});
+
+test("six digit recovery codes expire, are single use, and revoke previous sessions", async () => {
+  const sent = [];
+  const account = createAccount({
+    getDb: async () => sql,
+    canMail: () => true,
+    deliver: async (email, code, purpose) =>
+      sent.push({ email, code, purpose }),
+  });
+  const email = "password-user@example.test";
+  const before = await call(account, {
     method: "POST",
-    url: "/?action=verify",
-    input: { phone: "0501234560", code: "654321" },
+    url: "/?action=login",
+    input: { email, password: "OriginalPass123" },
   });
-  assert.equal(missing.status, 401);
-  const good = await call(phone, {
+  const oldCookie = [].concat(before.headers["set-cookie"])[0].split(";")[0];
+  const known = await call(account, {
     method: "POST",
-    url: "/?action=verify",
-    cookie: challenge,
-    input: { phone: "0501234560", code: "654321" },
+    url: "/?action=forgot",
+    input: { email },
   });
-  assert.equal(good.status, 200);
-  assert.equal(good.data.user.id, admin.sub);
-  assert.equal(good.data.user.isAdmin, false);
-  for (let i = 0; i < 4; i++)
+  const unknown = await call(account, {
+    method: "POST",
+    url: "/?action=forgot",
+    input: { email: "unknown@example.test" },
+  });
+  assert.deepEqual(known.data, unknown.data);
+  assert.equal(sent.length, 1);
+  assert.match(sent[0].code, /^\d{6}$/);
+  const rows =
+    await sql`SELECT code_hash FROM rc_email_codes WHERE email=${email} AND purpose='reset'`;
+  assert.notEqual(rows[0].code_hash, sent[0].code);
+  await sql`UPDATE rc_email_codes SET expires_at=NOW()-INTERVAL '1 minute' WHERE email=${email}`;
+  assert.equal(
+    (
+      await call(account, {
+        method: "POST",
+        url: "/?action=reset",
+        input: { email, code: sent[0].code, password: "ChangedPass123" },
+      })
+    ).status,
+    401,
+  );
+  await call(account, {
+    method: "POST",
+    url: "/?action=forgot",
+    input: { email },
+  });
+  const code = sent.at(-1).code;
+  const reset = await call(account, {
+    method: "POST",
+    url: "/?action=reset",
+    input: { email, code, password: "ChangedPass123" },
+  });
+  assert.equal(reset.status, 200);
+  assert.equal((await call(workspace, { cookie: oldCookie })).status, 401);
+  assert.equal(
+    (
+      await call(account, {
+        method: "POST",
+        url: "/?action=reset",
+        input: { email, code, password: "AnotherPass123" },
+      })
+    ).status,
+    401,
+  );
+  assert.equal(
+    (
+      await call(account, {
+        method: "POST",
+        url: "/?action=login",
+        input: { email, password: "OriginalPass123" },
+      })
+    ).status,
+    401,
+  );
+  assert.equal(
+    (
+      await call(account, {
+        method: "POST",
+        url: "/?action=login",
+        input: { email, password: "ChangedPass123" },
+      })
+    ).status,
+    200,
+  );
+});
+
+test("admin email requires proof of ownership and recovery codes have a five-attempt limit", async () => {
+  assert.equal(
+    session({
+      headers: {
+        cookie:
+          "rc_session=" +
+          sign({ ...admin, method: "password", emailVerified: false }),
+      },
+    }).isAdmin,
+    false,
+  );
+  const sent = [];
+  const account = createAccount({
+    getDb: async () => sql,
+    canMail: () => true,
+    deliver: async (email, code) => sent.push({ email, code }),
+  });
+  await call(account, {
+    method: "POST",
+    url: "/?action=forgot",
+    input: { email: admin.email },
+  });
+  const code = sent.at(-1).code;
+  const wrong = code === "111111" ? "222222" : "111111";
+  for (let i = 0; i < 5; i++)
     assert.equal(
       (
-        await call(phone, {
+        await call(account, {
           method: "POST",
-          url: "/?action=start",
-          input: { phone: "0501234560" },
+          url: "/?action=reset",
+          input: {
+            email: admin.email,
+            code: wrong,
+            password: "AdminSecure123",
+          },
         })
       ).status,
-      200,
+      401,
     );
   assert.equal(
     (
-      await call(phone, {
+      await call(account, {
         method: "POST",
-        url: "/?action=start",
-        input: { phone: "0501234560" },
+        url: "/?action=reset",
+        input: { email: admin.email, code, password: "AdminSecure123" },
       })
     ).status,
-    429,
+    401,
   );
-  assert.equal(sends, 5);
+  await call(account, {
+    method: "POST",
+    url: "/?action=forgot",
+    input: { email: admin.email },
+  });
+  const result = await call(account, {
+    method: "POST",
+    url: "/?action=reset",
+    input: {
+      email: admin.email,
+      code: sent.at(-1).code,
+      password: "AdminSecure123",
+    },
+  });
+  assert.equal(result.status, 200);
+  assert.equal(result.data.user.isAdmin, true);
 });

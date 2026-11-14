@@ -8,6 +8,7 @@ import {
   setCookie,
   session,
   isAdminEmail,
+  requireUser,
 } from "../server/auth.js";
 import {
   endpoint,
@@ -43,8 +44,15 @@ export function createHandler({
         nonce: enabled ? issueNonce(res) : null,
       });
     }
-    if (req.method === "GET" && action === "session")
-      return json(res, 200, { user: session(req) });
+    if (req.method === "GET" && action === "session") {
+      if (!session(req)) return json(res, 200, { user: null });
+      try {
+        return json(res, 200, { user: await requireUser(req, getDb) });
+      } catch (e) {
+        if (e.status === 401) return json(res, 200, { user: null });
+        throw e;
+      }
+    }
     if (req.method !== "POST") throw httpError(405, "Əməliyyat dəstəklənmir.");
     assertOrigin(req);
     if (action === "logout") {
@@ -78,16 +86,20 @@ export function createHandler({
     const email = payload.email.toLowerCase(),
       name = String(payload.name || email).slice(0, 100);
     const sql = await getDb();
-    await sql`INSERT INTO rc_users(id,email,name) VALUES(${payload.sub},${email},${name}) ON CONFLICT(id) DO UPDATE SET email=EXCLUDED.email,name=EXCLUDED.name`;
-    // Only profiles explicitly pre-authorized by the admin can attach by verified email.
-    await sql`UPDATE rc_owners SET account_user_id=${payload.sub} WHERE account_user_id IS NULL AND admin_managed=TRUE AND LOWER(expected_email)=${email}`;
+    const existing = await sql`SELECT * FROM rc_users WHERE email=${email}`;
+    const accountId = existing[0]?.id || payload.sub;
+    if (!existing[0])
+      await sql`INSERT INTO rc_users(id,email,name) VALUES(${accountId},${email},${name})`;
+    await sql`UPDATE rc_credentials SET email_verified=TRUE WHERE user_id=${accountId}`;
+    await sql`UPDATE rc_owners SET account_user_id=${accountId} WHERE account_user_id IS NULL AND admin_managed=TRUE AND LOWER(expected_email)=${email}`;
     setCookie(
       res,
       "rc_session",
       sign({
         purpose: "session",
         method: "google",
-        sub: payload.sub,
+        sub: accountId,
+        sessionVersion: existing[0]?.session_version || 0,
         email,
         name,
         exp: Date.now() + 24 * 60 * 60 * 1000,
@@ -96,7 +108,7 @@ export function createHandler({
     );
     setCookie(res, "rc_nonce", "", 0);
     return json(res, 200, {
-      user: { id: payload.sub, email, name, isAdmin: isAdminEmail(email) },
+      user: { id: accountId, email, name, isAdmin: isAdminEmail(email) },
     });
   });
 }

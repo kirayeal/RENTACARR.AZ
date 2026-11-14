@@ -5,7 +5,7 @@ import listings from "../api/listings.js";
 import workspace from "../api/workspace.js";
 import owners from "../api/owners.js";
 import profile from "../api/profile.js";
-import phone from "../api/phone.js";
+import account from "../api/account.js";
 Object.assign(process.env, loadEnv("development", process.cwd(), ""));
 const handlers = {
   "/api/auth": auth,
@@ -13,7 +13,7 @@ const handlers = {
   "/api/workspace": workspace,
   "/api/owners": owners,
   "/api/profile": profile,
-  "/api/phone": phone,
+  "/api/account": account,
 };
 let vite;
 const server = createServer((req, res) => {

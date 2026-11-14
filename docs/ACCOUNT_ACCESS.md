@@ -1,5 +1,5 @@
 # Hesab girişi
 
-Google girişi, server icazələri, admin hesabı və Vercel parametrləri üçün [GOOGLE_SETUP.md](GOOGLE_SETUP.md) sənədinə baxın.
+Əsas üsul e-poçt və şifrədir. Telefon əlaqə üçündür. Aktivləşdirmə və təhlükəsizlik qaydaları: [EMAIL_ACCESS.md](EMAIL_ACCESS.md).
 
-Yalnız Google tərəfindən təsdiqlənmiş rentacarr.az@gmail.com admin olur. İctimai demo paneli çıxarılıb. Adi hesabın şəxsi məlumatları server sorğularında həmin Google istifadəçi ID-si ilə məhdudlaşdırılır.
+Admin ünvanı rentacarr.az@gmail.com-dur. Admin səlahiyyəti üçün həmin e-poçtun sahibliyi təsdiqlənməlidir. Adi istifadəçi yalnız öz şəxsi məlumatlarını və elanlarını idarə edir.

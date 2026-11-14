@@ -10,7 +10,7 @@ import { db } from "../server/db.js";
 import { normalizePhone } from "../src/ownership.js";
 export function createHandler({ getDb = db } = {}) {
   return endpoint(async (req, res) => {
-    const user = requireUser(req),
+    const user = await requireUser(req, getDb),
       sql = await getDb();
     if (req.method === "GET") {
       const rows =
@@ -28,11 +28,6 @@ export function createHandler({ getDb = db } = {}) {
     } catch {
       throw httpError(400, "Mobil nömrəni düzgün daxil edin.");
     }
-    if (user.phone && phone !== user.phone)
-      throw httpError(
-        400,
-        "Yalnız SMS ilə təsdiqlədiyiniz nömrəni istifadə edin.",
-      );
     const name = String(input.name || "").trim();
     if (!name || name.length > 100)
       throw httpError(400, "Ad və ya firma adını daxil edin.");
