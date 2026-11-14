@@ -41,12 +41,16 @@ import {
   Truck,
   BriefcaseBusiness,
   Coins,
+  ArrowLeftRight,
 } from "lucide-react";
 import "./style.css";
 import "./catalogue.css";
 import "@fontsource-variable/inter";
 import ListingEditor from "./ListingEditor";
 import RentalDetail from "./RentalDetail";
+import CompareCars from "./CompareCars";
+import ProfileEditor from "./ProfileEditor";
+import {emptyCriteria, matchesCriteria, toggleCompared} from "./discovery";
 import Registration from "./Registration";
 import EmailAccess from "./EmailAccess";
 import { initial, brands, categories, cities, promotionRank } from "./catalog";
@@ -61,6 +65,11 @@ function App({ user, onAuthenticated, onLogout, authError }) {
   const [catalogLoaded, setCatalogLoaded] = useState(false);
   const [catalogueView, setCatalogueView] = useState("grid");
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [criteria, setCriteria] = useState({...emptyCriteria});
+  const [compared, setCompared] = useState(() => {
+    try { const ids = JSON.parse(localStorage.getItem("rentacarr.compare") || "[]"); return Array.isArray(ids) ? [...new Set(ids.filter(id => typeof id === "string"))].slice(0,3) : []; } catch { return []; }
+  });
+  useEffect(() => {try {localStorage.setItem("rentacarr.compare",JSON.stringify(compared));} catch {}},[compared]);
   const workspace = {
     cars: [],
     pending: [],
@@ -116,7 +125,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
   }, [liked, user?.id]);
   const [page, setPage] = useState(1);
   const pageSize = 6;
-  useEffect(() => setPage(1), [filters, category, favorites, modelQuery, sort]);
+  useEffect(() => setPage(1), [filters, category, favorites, modelQuery, sort, criteria]);
   const admin = Boolean(user?.isAdmin && user?.profile?.complete && adminMode);
   const editing = modal?.startsWith("edit:")
     ? [...cars, ...pending].find((c) => String(c.id) === modal.slice(5))
@@ -243,6 +252,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
           .toLocaleLowerCase("az")
           .includes(modelQuery.toLocaleLowerCase("az")),
     )
+    .filter(c => matchesCriteria(c, criteria))
     .filter(
       (c) =>
         (filters.city === "Bütün şəhərlər" || c.city === filters.city) &&
@@ -258,6 +268,16 @@ function App({ user, onAuthenticated, onLogout, authError }) {
           ? b.price - a.price
           : promotionRank(b) - promotionRank(a),
     );
+  const comparedCars = publicCars.filter(car => compared.includes(String(car.id)));
+  function compareCar(id) {
+    const ids = comparedCars.map(car => String(car.id));
+    if (!ids.includes(String(id)) && ids.length >= 3) {note("Ən çox 3 avtomobil müqayisə edə bilərsiniz.");return;}
+    setCompared(toggleCompared(ids, id));
+  }
+  function resetSearch() {
+    setCity("Bütün şəhərlər");setBrand("Bütün markalar");setMax("");setModelQuery("");setCategory("Hamısı");setFavorites(false);setCriteria({...emptyCriteria});
+    setFilters({city:"Bütün şəhərlər",brand:"Bütün markalar",max:""});
+  }
   const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
   const currentPage = Math.min(page, pageCount);
   const visibleCars = filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize);
@@ -886,7 +906,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
             <section className="hero">
               <div className="hero-content">
                 <div className="hero-tag">{t("Avtomobil kirayəsi")}</div>
-                <h1>{t("Kirayə avtomobilinizi seçin")}</h1>
+                <h1>{t("Avtomobil seçimi, aydın şərtlər.")}</h1>
                 <p>
                   {t("Rentakar şirkətləri və şəxsi sahiblərdən günlük, həftəlik və aylıq avtomobil kirayəsi.")}
                 </p>
@@ -907,6 +927,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                   <button
                     aria-label={t("Filtrləri təmizlə")}
                     onClick={() => {
+                      setCriteria({...emptyCriteria});
                       setCity("Bütün şəhərlər");
                       setBrand("Bütün markalar");
                       setMax("");
@@ -1000,6 +1021,15 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                     {t("Avtomobil tap")}
                   </button>
                 </form>
+                <div className="criteria-panel">
+                  <h3>{t("Kirayə seçimləri")}</h3>
+                  <label>{t("Sahibin tipi")}<select value={criteria.owner} onChange={e=>setCriteria({...criteria,owner:e.target.value})}><option value="all">{t("Hamısı")}</option><option value="company">{t("Rentakar şirkəti")}</option><option value="person">{t("Şəxsi sahib")}</option></select></label>
+                  <label>{t("Sürətlər qutusu")}<select value={criteria.transmission} onChange={e=>setCriteria({...criteria,transmission:e.target.value})}>{["","Avtomat","Mexaniki"].map(value=><option key={value} value={value}>{t(value || "Hamısı")}</option>)}</select></label>
+                  <label>{t("Yanacaq")}<select value={criteria.fuel} onChange={e=>setCriteria({...criteria,fuel:e.target.value})}>{["","Benzin","Dizel","Hibrid","Elektrik"].map(value=><option key={value} value={value}>{t(value || "Hamısı")}</option>)}</select></label>
+                  <label>{t("Minimum oturacaq sayı")}<select value={criteria.seats} onChange={e=>setCriteria({...criteria,seats:e.target.value})}>{["",2,5,7,9].map(value=><option key={value} value={value}>{value ? `${value}+` : t("Hamısı")}</option>)}</select></label>
+                  <label className="criteria-check"><input type="checkbox" checked={criteria.noDeposit} onChange={e=>setCriteria({...criteria,noDeposit:e.target.checked})}/>{t("Depozitsiz avtomobillər")}</label>
+                  <button className="criteria-reset" onClick={resetSearch}><RotateCcw size={14}/>{t("Filtrləri təmizlə")}</button>
+                </div>
                 <div className="filter-panel-note">
                   <Phone size={17} />
                   <p>{t("Elanı seç, sahibi ilə birbaşa əlaqə saxla.")}</p>
@@ -1230,6 +1260,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                               )}
                             </span>
                             <span className="owner-name">{t(c.owner)}</span>
+                            <button className="compare-select" aria-label={t("Müqayisə") + ": " + c.name} aria-pressed={compared.includes(String(c.id))} onClick={e=>{e.stopPropagation();compareCar(c.id);}}><ArrowLeftRight size={16}/><span>{t("Müqayisə")}</span></button>
                           </div>
                         </div>
                       </article>
@@ -1247,7 +1278,8 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                             brand: "Bütün markalar",
                             max: "",
                           });
-                          setCity("Bütün şəhərlər");
+                          setCriteria({...emptyCriteria});
+                      setCity("Bütün şəhərlər");
                           setBrand("Bütün markalar");
                           setMax("");
                           setCategory("Hamısı");
@@ -1272,6 +1304,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
           </>
         ),
       )}
+      {comparedCars.length > 0 && !admin && modal !== "compare" && <aside className="compare-tray" aria-label={t("Müqayisə")}><div><ArrowLeftRight size={18}/><span>{comparedCars.length}/3 {t("avtomobil seçilib")}</span></div><div className="compare-thumbs">{comparedCars.map(car=><img key={car.id} src={car.image} alt={car.name}/>)}</div><button className="primary" disabled={comparedCars.length < 2} onClick={()=>setModal("compare")}>{t("Müqayisə et")}</button><button className="tray-clear" aria-label={t("Seçimi təmizlə")} onClick={()=>setCompared([])}><X size={18}/></button></aside>}
       <footer>
         <a className="logo" href="#">
           {t("rentacarr")}
@@ -1466,7 +1499,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                       user ? (
                         <>
                           <dl className="account-details">
-                            <div><dt><UserRound size={16} />{t("Ad və soyad")}</dt><dd>{user.name}</dd></div>
+                            <div><dt><UserRound size={16} />{t("Ad və soyad")}</dt><dd>{user.profile?.kind === "person" ? user.profile.name : user.name}</dd></div>
                             {user.profile?.kind === "company" && <div><dt><Building2 size={16} />{t("Firma adı")}</dt><dd>{user.profile.name}</dd></div>}
                             <div><dt><Mail size={16} />{t("E-poçt")}</dt><dd>{user.email}</dd></div>
                             <div><dt><Phone size={16} />{t("Telefon nömrəsi")}</dt><dd>{user.profile?.phone || user.phone || t("Qeyd edilməyib")}</dd></div>
@@ -1480,6 +1513,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                             {t(user.isAdmin ? "Admin hesabı" : "Şəxsi hesab")}
                           </div>
                           <div className="account-actions">
+                            <button className="outline" onClick={()=>setModal("profile-edit")}><Pencil size={16}/>{t("Hesab məlumatlarını redaktə et")}</button>
                             <button
                               className="primary"
                               onClick={() => setModal("listing")}
@@ -1588,6 +1622,10 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                       {t("Elan yerləşdir")}
                     </button>
                   </>
+                ) : modal === "compare" ? (
+                  <CompareCars cars={comparedCars} onRemove={compareCar} onClear={()=>setCompared([])} onSelect={setSelected}/>
+                ) : modal === "profile-edit" && user ? (
+                  <ProfileEditor user={user} onSaved={async()=>{await onAuthenticated(user);setModal("account");note("Dəyişiklik saxlanıldı.");}}/>
                 ) : modal === "privacy" ? (
                   <><span className="eyebrow">RENTACARR.AZ</span><h2>{t("Məxfilik")}</h2><p>{t("Hesab məlumatlarınız yalnız öz hesabınızda və səlahiyyətli idarəetmə bölməsində görünür. Elan sahibinin adı və əlaqə nömrəsi elanda açıq göstərilir.")}</p><p>{t("Giriş üçün sessiya kukisi, dil və seçilmiş elanlar üçün brauzer yaddaşı istifadə olunur. Şifrələr açıq formada saxlanmır.")}</p><a className="outline" href="mailto:rentacarr.az@gmail.com">rentacarr.az@gmail.com</a></>
                 ) : modal === "partners" ? (

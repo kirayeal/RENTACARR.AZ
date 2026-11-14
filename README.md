@@ -2,11 +2,13 @@
 
 Azərbaycan, ingilis və rus dillərində avtomobil kirayəsi platforması. React/Vite frontend, Vercel Node API və Neon Postgres.
 
-## Yeni görünüş
+## Yeni görünüş və seçim imkanları
 
-Açıq fon, mavi vurğu, üfüqi axtarış və avtomobil kateqoriyaları ilə kataloq. Telefonda filtrlər ayrıca açılır. Kataloq hər səhifədə 6 elan göstərir; filtrlər və sıralama dəyişəndə birinci səhifəyə qayıdır. Mobil kartlar yığcam üfüqi görünüşdədir. Kart və siyahı görünüşü, AZ/EN/RU dilləri və hesab üzrə saxlanan seçilmişlər mövcuddur.
+Tünd naviqasiya, neytral açıq fon, tünd qırmızı vurğu və axtarış sütunu olan rentakar kataloqu. Sahibin tipi, yanacaq, sürətlər qutusu, minimum oturacaq sayı və depozitsiz kirayə filtrləri birlikdə işləyir. Hər səhifədə 6 elan göstərilir; mobil filtrlər ayrıca açılır. AZ/EN/RU, seçilmişlər və kart/siyahı görünüşü saxlanılıb.
 
-Hər elan `?elan=ID` ünvanında ayrıca səhifə kimi açılır; paylaşma, səhifəni yeniləmə və brauzerin geri/irəli keçidi işləyir. Foto, gündəlik/həftəlik/aylıq qiymətlər, depozit, yürüş limiti, yaş və staj tələbləri, sahibin əlaqəsi bir yerdə göstərilir. Tarix seçimi günlük qiymətlə təxmini məbləği hesablayır və WhatsApp sorğusuna əlavə olunur; rezervasiya yaratmır və mövcudluğu təsdiqləmir. Hesablayıcı istəyə görə açılır; depozit və sahibin əlaqəsi əvvəl göstərilir. Nümunə elanlar ayrıca işarələnir, məxfilik məlumatı və dəstək üçün e-poçt keçidi mövcuddur.
+İstifadəçi 3 avtomobilədək seçərək qiymət, depozit, yürüş limiti, yaş/staj və digər göstəriciləri yan-yana müqayisə edə bilər. Yalnız fərqləri göstərmək, seçimdən çıxarmaq və elana keçmək mümkündür. Müqayisə seçimi brauzerdə saxlanır.
+
+Hər elan `?elan=ID` ünvanında ayrıca səhifə kimi açılır. Tarix seçimi günlük qiymətlə təxmini məbləği hesablayır və WhatsApp sorğusuna əlavə olunur; rezervasiya yaratmır. Hesab bölməsindən profil adı, telefon və hesab tipi serverdə yenilənir. E-poçt bu formada dəyişdirilmir; elanların əlaqə məlumatları elan redaktorunda ayrıca idarə olunur.
 
 Təqdimat elanları real kirayə təklifi deyil; nümunələrə uydurma telefon nömrəsi verilmir. Foto mənbələri public/photos/SOURCES.txt faylındadır.
 
