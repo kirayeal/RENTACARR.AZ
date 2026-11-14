@@ -4,7 +4,9 @@ Azərbaycan, ingilis və rus dillərində avtomobil kirayəsi platforması. Reac
 
 ## Yeni görünüş
 
-Qrafit, ağ və təmkinli bürünc rəng palitrası, kompüterdə sol filtr paneli, geniş ekranda üç sütunlu, kart və siyahı görünüşlü avtomobil kataloqu və eyni dizayn qaydaları ilə hesab / admin ekranları. Yüngül Inter şrifti, Lucide ikonları, real yerli foto faylları. İctimai kataloq kompakt qurulub, kartın bütün sahəsindən və klaviatura ilə detal pəncərəsi açılır. Sadə AZ/EN/RU dil düymələri, davamlı seçilmişlər və sahibin digər avtomobillərinə keçid var. Hesab bölməsi yalnız daxil olmuş istifadəçinin öz adını, e-poçtunu, telefonunu və firma məlumatlarını göstərir. Günlük qiymət, istəyə bağlı həftəlik/aylıq qiymətlər, depozit, yürüş limiti, minimum yaş, sürücülük stajı, sahibin şərtləri və əlaqə məlumatları göstərilir.
+Açıq fon, mavi vurğu, üfüqi axtarış və avtomobil kateqoriyaları ilə kataloq. Telefonda filtrlər ayrıca açılır. Kart və siyahı görünüşü, AZ/EN/RU dilləri və hesab üzrə saxlanan seçilmişlər mövcuddur.
+
+Hər elan `?elan=ID` ünvanında ayrıca səhifə kimi açılır; paylaşma, səhifəni yeniləmə və brauzerin geri/irəli keçidi işləyir. Foto, gündəlik/həftəlik/aylıq qiymətlər, depozit, yürüş limiti, yaş və staj tələbləri, sahibin əlaqəsi bir yerdə göstərilir. Tarix seçimi günlük qiymətlə təxmini məbləği hesablayır və WhatsApp sorğusuna əlavə olunur; rezervasiya yaratmır və mövcudluğu təsdiqləmir.
 
 Təqdimat elanları real kirayə təklifi deyil; nümunələrə uydurma telefon nömrəsi verilmir. Foto mənbələri public/photos/SOURCES.txt faylındadır.
 

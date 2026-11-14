@@ -42,6 +42,7 @@ import "./style.css";
 import "./catalogue.css";
 import "@fontsource-variable/inter";
 import ListingEditor from "./ListingEditor";
+import RentalDetail from "./RentalDetail";
 import Registration from "./Registration";
 import EmailAccess from "./EmailAccess";
 import { initial, brands, categories, cities, promotionRank } from "./catalog";
@@ -52,6 +53,8 @@ function App({ user, onAuthenticated, onLogout, authError }) {
     document.title = "RENTACARR.AZ — " + t("Avtomobil kirayəsi");
   }, [language]);
   const [adminView, setAdminView] = useState("overview");
+  const [requestedListingId, setRequestedListingId] = useState(() => new URL(location.href).searchParams.get("elan"));
+  const [catalogLoaded, setCatalogLoaded] = useState(false);
   const [catalogueView, setCatalogueView] = useState("grid");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const workspace = {
@@ -87,7 +90,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
       }
     }),
     [favorites, setFavorites] = useState(false),
-    [selected, setSelected] = useState(null),
+    [selected, updateSelected] = useState(null),
     [modal, setModal] = useState(
       user && !user.profile?.complete ? "register" : null,
     ),
@@ -111,6 +114,30 @@ function App({ user, onAuthenticated, onLogout, authError }) {
   const editing = modal?.startsWith("edit:")
     ? [...cars, ...pending].find((c) => String(c.id) === modal.slice(5))
     : null;
+  function setSelected(car) {
+    const url = new URL(location.href);
+    if (car) url.searchParams.set("elan", String(car.id));
+    else url.searchParams.delete("elan");
+    if (url.href !== location.href) history.pushState({}, "", url);
+    setRequestedListingId(car ? String(car.id) : null);
+    updateSelected(car);
+    setModal(null);
+    window.scrollTo(0, 0);
+  }
+  useEffect(() => {
+    const restore = () => {
+      const id = new URL(location.href).searchParams.get("elan");
+      setRequestedListingId(id);
+      updateSelected(publicCars.find(c => String(c.id) === id) || null);
+    };
+    restore();
+    window.addEventListener("popstate", restore);
+    return () => window.removeEventListener("popstate", restore);
+  }, [publicCars]);
+  useEffect(() => {
+    if (selected) document.title = selected.name + " — RENTACARR.AZ";
+    else document.title = "RENTACARR.AZ — " + t("Avtomobil kirayəsi");
+  }, [selected, language]);
   async function refreshWorkspace() {
     const [publicData, privateData] = await Promise.all([
       request("/api/listings"),
@@ -125,7 +152,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
     setServiceError("");
   }
   useEffect(() => {
-    refreshWorkspace().catch((e) => setServiceError(e.message));
+    refreshWorkspace().catch((e) => setServiceError(e.message)).finally(() => setCatalogLoaded(true));
   }, [user?.id]);
   async function mutateListing(id, patch) {
     try {
@@ -158,7 +185,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
     }
   }
   useEffect(() => {
-    if (!selected && !modal && deleteId === null) return;
+    if (!modal && deleteId === null) return;
     const previous = document.activeElement;
     const oldOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -168,7 +195,6 @@ function App({ user, onAuthenticated, onLogout, authError }) {
     );
     const keydown = (e) => {
       if (e.key === "Escape") {
-        setSelected(null);
         setModal(null);
         setDeleteId(null);
       }
@@ -197,7 +223,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
       document.removeEventListener("keydown", keydown);
       previous?.focus?.();
     };
-  }, [selected, modal, deleteId]);
+  }, [modal, deleteId]);
   function note(t) {
     setToast(t);
     setTimeout(() => setToast(""), 4000);
@@ -325,6 +351,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
           href="#"
           onClick={() => {
             setAdmin(false);
+            setSelected(null);
             setFavorites(false);
           }}
         >
@@ -332,7 +359,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
           <span className="logo-az">{t(".az")}</span>
         </a>
         <nav>
-          <a href="#cars" onClick={() => setAdmin(false)}>
+          <a href="#cars" onClick={() => {setAdmin(false);setSelected(null);}}>
             {t("Avtomobillər")}
           </a>
           <button onClick={() => setModal("partners")}>
@@ -353,6 +380,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
             aria-label={t("Seçilmiş elanlar")}
             onClick={() => {
               setFavorites(!favorites);
+              setSelected(null);
               setAdmin(false);
               document.getElementById("cars")?.scrollIntoView();
             }}
@@ -387,7 +415,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
       {t(
         !admin && (
           <nav className="mobile-nav" aria-label={t("Əsas menyu")}>
-            <a href="#cars">{t("Avtomobillər")}</a>
+            <a href="#cars" onClick={() => setSelected(null)}>{t("Avtomobillər")}</a>
             <button onClick={() => setModal("partners")}>
               {t("Partnyorlar")}
             </button>
@@ -398,6 +426,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
               aria-label={t("Seçilmiş elanlar")}
               onClick={() => {
                 setFavorites(!favorites);
+                setSelected(null);
                 document.getElementById("cars")?.scrollIntoView({
                   behavior: "smooth",
                 });
@@ -416,7 +445,11 @@ function App({ user, onAuthenticated, onLogout, authError }) {
         ),
       )}
       {t(
-        admin ? (
+        requestedListingId && !selected && !admin ? (
+          <main className="rental-page"><section className="empty" role="status"><h1>{t(catalogLoaded ? "Elan tapılmadı" : "Yüklənir")}</h1>{catalogLoaded && <button onClick={() => setSelected(null)}>{t("Bütün elanlar")}</button>}</section></main>
+        ) : selected && !admin ? (
+          <RentalDetail key={selected.id} car={selected} cars={publicCars} liked={liked.includes(selected.id)} onLike={() => setLiked(liked.includes(selected.id) ? liked.filter(id => id !== selected.id) : [...liked, selected.id])} onBack={() => setSelected(null)} onSelect={setSelected} onNotify={note} />
+        ) : admin ? (
           <main className="admin" data-view={adminView}>
             <div className="section-title">
               <div>
@@ -839,7 +872,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
             <section className="hero">
               <div className="hero-content">
                 <div className="hero-tag">{t("Avtomobil kirayəsi")}</div>
-                <h1>{t("Azərbaycanda avtomobil kirayəsi")}</h1>
+                <h1>{t("Kirayə avtomobilinizi seçin")}</h1>
                 <p>
                   {t("Rentakar şirkətləri və şəxsi sahiblərdən günlük, həftəlik və aylıq avtomobil kirayəsi.")}
                 </p>
@@ -1010,7 +1043,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                           className={category === x ? "active" : ""}
                           onClick={() => setCategory(x)}
                         >
-                          {t(x === "Hamısı" && <Car size={16} />)} {t(x)}
+                          {React.createElement(({Hamısı: Car, Ekonom: Gauge, Sedan: Car, SUV: ShieldCheck, Biznes: Building2, Premium: Crown, Miniven: Users})[x] || Car, {size: 20})} {t(x)}
                         </button>
                       )),
                     )}
@@ -1335,11 +1368,10 @@ function App({ user, onAuthenticated, onLogout, authError }) {
         ),
       )}
       {t(
-        (selected || modal) && (
+        modal && (
           <div
             className="overlay"
             onClick={() => {
-              setSelected(null);
               setModal(null);
             }}
           >
@@ -1354,131 +1386,13 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                 className="close"
                 aria-label={t("Bağla")}
                 onClick={() => {
-                  setSelected(null);
                   setModal(null);
                 }}
               >
                 <X />
               </button>
               {t(
-                selected ? (
-                  <>
-                    <img
-                      className="detail-image"
-                      src={selected.image}
-                      decoding="async"
-                      alt={selected.name}
-                    />
-                    <span className="eyebrow">
-                      {t(selected.city)}
-                      {t("·")}
-                      {t(selected.year)}
-                      {t(selected.demo ? "· NÜMUNƏ ELAN" : "ELAN")}
-                    </span>
-                    <h2>{t(selected.name)}</h2>
-                    <p className="detail-price">
-                      {t(selected.price)}{" "}
-                      {t("₼")}
-                      <small>{t("/ gün")}</small>
-                    </p>
-                    <div className="rental-periods">
-                      <span>{t("Həftəlik")}<strong>{selected.weeklyPrice ? `${selected.weeklyPrice} ₼` : t("Razılaşma ilə")}</strong></span>
-                      <span>{t("Aylıq")}<strong>{selected.monthlyPrice ? `${selected.monthlyPrice} ₼` : t("Razılaşma ilə")}</strong></span>
-                    </div>
-                    <div className="detail-specs">
-                      <span>
-                        <Gauge size={16} />
-                        {t(selected.transmission || "Avtomat")}
-                      </span>
-                      <span>
-                        <Fuel size={16} />
-                        {t(selected.fuel || "Benzin")}
-                      </span>
-                      <span>
-                        <Users size={16} />
-                        {t(selected.seats || 5)}
-                        {t("yer")}
-                      </span>
-                    </div>
-                    <button
-                      className="detail-save outline"
-                      aria-pressed={liked.includes(selected.id)}
-                      onClick={() => setLiked(liked.includes(selected.id) ? liked.filter(id => id !== selected.id) : [...liked, selected.id])}
-                    >
-                      <Heart size={17} fill={liked.includes(selected.id) ? "currentColor" : "none"} />
-                      {t(liked.includes(selected.id) ? "Seçilmişlərdən çıxar" : "Seçilmişlərə əlavə et")}
-                    </button>
-                    <h3>{t("Ətraflı məlumat")}</h3>
-                    <p className="detail-owner">
-                      <Building2 size={17} />
-                      {selected.owner} · {t(selected.city)}
-                    </p>
-                    <p className="listing-description">
-                      {t(
-                        selected.description ||
-                          "Şərtləri sahibi ilə dəqiqləşdirin.",
-                      )}
-                    </p>
-                    <section className="rental-terms">
-                      <h3>{t("Kirayə şərtləri")}</h3>
-                      <dl className="rental-facts">
-                        <div><dt>{t("Depozit")}</dt><dd>{selected.deposit != null ? `${selected.deposit} ₼` : t("Sahiblə dəqiqləşdirin")}</dd></div>
-                        <div><dt>{t("Günlük yürüş limiti")}</dt><dd>{selected.mileage != null ? `${selected.mileage} ${t("km")}` : t("Sahiblə dəqiqləşdirin")}</dd></div>
-                        <div><dt>{t("Minimum yaş")}</dt><dd>{selected.minAge != null ? `${selected.minAge} ${t("yaş")}` : t("Sahiblə dəqiqləşdirin")}</dd></div>
-                        <div><dt>{t("Sürücülük stajı")}</dt><dd>{selected.experience != null ? `${selected.experience} ${t("il")}` : t("Sahiblə dəqiqləşdirin")}</dd></div>
-                      </dl>
-                      <p>
-                        {t(
-                          selected.terms ||
-                            "Qiymət gündəlik kirayə üçündür. Təhvil yeri, müddət və ödəniş şərtləri sahibi ilə dəqiqləşdirilir.",
-                        )}
-                      </p>
-                    </section>
-                    <h3>{t("Əlaqə")}</h3>
-                    {t(
-                      selected.phone ? (
-                        <div className="contact">
-                          <a className="primary contact-call" href={"tel:" + selected.phone}>
-                            <Phone size={17} />
-                            <span>{t("Zəng et")}<small>{selected.phone}</small></span>
-                          </a>
-                          <a
-                            className="outline"
-                            href={
-                              "https://wa.me/" +
-                              selected.phone.replace(/\D/g, "")
-                            }
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {t("WhatsApp")}
-                          </a>
-                        </div>
-                      ) : (
-                        <div className="empty">
-                          <Phone size={19} />
-                          {t(
-                            "Bu nümunə elanda real əlaqə nömrəsi göstərilmir.",
-                          )}
-                        </div>
-                      ),
-                    )}
-                    {publicCars.some(car => car.ownerId && car.ownerId === selected.ownerId && car.id !== selected.id) && (
-                      <section className="related-listings">
-                        <h3>{t("Sahibin digər avtomobilləri")}</h3>
-                        <div>
-                          {publicCars.filter(car => car.ownerId && car.ownerId === selected.ownerId && car.id !== selected.id).slice(0, 3).map(car => (
-                            <button key={car.id} onClick={() => { setSelected(car); document.querySelector(".modal")?.scrollTo(0, 0); }}>
-                              <img src={car.image} alt="" loading="lazy" />
-                              <span>{car.name}<small>{car.price} ₼ {t("/ gün")}</small></span>
-                              <ArrowUpRight size={16} />
-                            </button>
-                          ))}
-                        </div>
-                      </section>
-                    )}
-                  </>
-                ) : modal === "listing" || editing ? (
+                modal === "listing" || editing ? (
                   <>
                     <span className="eyebrow">{t("İLK ELANIN PULSUZDUR")}</span>
                     <h2>
@@ -1599,7 +1513,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                           </dl>
                           <div className="account-summary">
                             <button onClick={() => setModal("my-listings")}><Car size={18} /><span>{t("Elanlarım")}</span><strong>{[...cars, ...pending].filter(c => owners.some(o => o.id === c.ownerId && o.accountId === user.id)).length}</strong></button>
-                            <button onClick={() => {setFavorites(true);setAdmin(false);setModal(null);setTimeout(() => document.getElementById("cars")?.scrollIntoView(), 0);}}><Heart size={18} /><span>{t("Seçilmişlər")}</span><strong>{liked.length}</strong></button>
+                            <button onClick={() => {setFavorites(true);setSelected(null);setAdmin(false);setModal(null);setTimeout(() => document.getElementById("cars")?.scrollIntoView(), 0);}}><Heart size={18} /><span>{t("Seçilmişlər")}</span><strong>{liked.length}</strong></button>
                           </div>
                           <div className="account-role">
                             {t(user.isAdmin ? "Admin hesabı" : "Şəxsi hesab")}

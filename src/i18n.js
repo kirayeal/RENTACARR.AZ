@@ -24,6 +24,21 @@ export function useLanguage() {
   );
 }
 const rows = [
+  ["Elan tapılmadı", "Listing not found", "Объявление не найдено"],
+  ["Kirayə avtomobilinizi seçin", "Find your next rental car", "Выберите автомобиль в аренду"],
+  ["Bütün elanlar", "All listings", "Все объявления"],
+  ["gün", "days", "дней"],
+  ["Günlük qiymət", "Daily price", "Цена за день"],
+  ["Paylaş", "Share", "Поделиться"],
+  ["Link kopyalandı.", "Link copied.", "Ссылка скопирована."],
+  ["Linki brauzerin ünvan sətrindən köçürün.", "Copy the link from your browser address bar.", "Скопируйте ссылку из адресной строки."],
+  ["Kirayə müddətini seçin", "Choose your rental dates", "Выберите даты аренды"],
+  ["Başlama tarixi", "Start date", "Дата начала"],
+  ["Bitmə tarixi", "End date", "Дата окончания"],
+  ["Təxmini kirayə məbləği", "Estimated rental cost", "Примерная стоимость аренды"],
+  ["Bitmə tarixi başlama tarixindən sonra olmalıdır.", "End date must be after the start date.", "Дата окончания должна быть позже даты начала."],
+  ["Hesab günlük qiymətə əsaslanır. Depozit və əlavə xidmətlər daxil deyil. Mövcudluğu və yekun qiyməti sahibi ilə dəqiqləşdirin.", "Calculated at the daily rate, excluding deposit and extras. Confirm availability and the final price with the owner.", "Расчёт по суточной цене, без депозита и доплат. Уточните наличие и итоговую цену у владельца."],
+  ["WhatsApp ilə yaz", "Message on WhatsApp", "Написать в WhatsApp"],
   ["Azərbaycanda avtomobil kirayəsi", "Car rental in Azerbaijan", "Аренда автомобилей в Азербайджане"],
   ["Kirayə müddəti", "Rental period", "Срок аренды"],
   ["Günlük", "Daily", "На день"],
