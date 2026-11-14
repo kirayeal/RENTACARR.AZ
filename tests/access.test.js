@@ -92,6 +92,8 @@ const form = (name, email) => ({
   model: "Camry",
   year: 2023,
   price: 80,
+  weeklyPrice: 500,
+  monthlyPrice: 1800,
   city: "Bakı",
   type: "Sedan",
   fuel: "Benzin",
@@ -190,6 +192,10 @@ test("private workspaces are isolated and public catalog excludes private emails
   assert.equal(catalog.data.listings.length, 1);
   assert.ok(!JSON.stringify(catalog.data).includes(alice.email));
   assert.equal(catalog.data.listings[0].status, "active");
+  assert.equal(catalog.data.listings[0].weeklyPrice, 500);
+  assert.equal(catalog.data.listings[0].monthlyPrice, 1800);
+  assert.equal(catalog.data.listings[0].deposit, 200);
+  assert.equal(catalog.data.listings[0].experience, 2);
   const attack = await call(listings, {
     method: "PATCH",
     user: bob,

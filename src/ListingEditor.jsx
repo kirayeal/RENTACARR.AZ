@@ -209,6 +209,18 @@ export default function ListingEditor({
           max="10000"
           defaultValue={listing?.price}
         />
+        <div className="form-pair">
+          <Field label={t("Həftəlik qiymət (₼, istəyə bağlı)")} name="weeklyPrice" type="number" min="1" max="70000" defaultValue={listing?.weeklyPrice || ""} />
+          <Field label={t("Aylıq qiymət (₼, istəyə bağlı)")} name="monthlyPrice" type="number" min="1" max="300000" defaultValue={listing?.monthlyPrice || ""} />
+        </div>
+        <div className="form-pair">
+          <Field label={t("Depozit (₼)")} name="deposit" type="number" required min="0" max="100000" defaultValue={listing?.deposit ?? 0} />
+          <Field label={t("Günlük yürüş limiti (km)")} name="mileage" type="number" required min="1" max="10000" defaultValue={listing?.mileage ?? 250} />
+        </div>
+        <div className="form-pair">
+          <Field label={t("Minimum sürücü yaşı")} name="minAge" type="number" required min="18" max="80" defaultValue={listing?.minAge ?? 18} />
+          <Field label={t("Minimum sürücülük stajı (il)")} name="experience" type="number" required min="0" max="60" defaultValue={listing?.experience ?? 0} />
+        </div>
         {t(
           admin && (
             <Select
@@ -244,7 +256,7 @@ export default function ListingEditor({
           maxLength="2000"
           defaultValue={listing?.terms || ""}
           placeholder={t(
-            "Təhvil yeri, kirayə müddəti və ödəniş haqqında məlumat…",
+            "Tələb olunan sənədlər, təhvil yeri, ödəniş və digər kirayə şərtləri…",
           )}
         />
       </label>

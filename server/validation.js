@@ -16,6 +16,10 @@ export function cleanListing(input) {
       throw httpError(400, "Qiymət və şərtlər düzgün deyil.");
     return n;
   };
+  const optionalPrice = (key, max) =>
+    input[key] === undefined || input[key] === null || input[key] === ""
+      ? null
+      : num(key, 1, max);
   const brand = text("brand", 60),
     model = text("model", 60),
     image = String(input.image || "");
@@ -27,6 +31,8 @@ export function cleanListing(input) {
     name: `${brand} ${model}`,
     year: num("year", 1980, new Date().getFullYear() + 1),
     price: num("price", 1, 10000),
+    weeklyPrice: optionalPrice("weeklyPrice", 70000),
+    monthlyPrice: optionalPrice("monthlyPrice", 300000),
     city: text("city", 60),
     type: text("type", 60),
     fuel: text("fuel", 30),

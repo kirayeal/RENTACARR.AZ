@@ -7,6 +7,10 @@ import {
   Search,
   MapPin,
   ChevronDown,
+  SlidersHorizontal,
+  LayoutGrid,
+  List,
+  RotateCcw,
   Heart,
   ShieldCheck,
   Fuel,
@@ -34,6 +38,7 @@ import {
   Phone,
 } from "lucide-react";
 import "./style.css";
+import "./catalogue.css";
 import "@fontsource-variable/inter";
 import ListingEditor from "./ListingEditor";
 import Registration from "./Registration";
@@ -46,6 +51,8 @@ function App({ user, onAuthenticated, onLogout, authError }) {
     document.title = "RENTACARR.AZ — " + t("Avtomobil kirayəsi");
   }, [language]);
   const [adminView, setAdminView] = useState("overview");
+  const [catalogueView, setCatalogueView] = useState("grid");
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const workspace = {
     cars: [],
     pending: [],
@@ -850,9 +857,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                 <div className="hero-tag">{t("Avtomobil kirayəsi")}</div>
                 <h1>{t("Azərbaycanda kirayə avtomobil tap")}</h1>
                 <p>
-                  {t(
-                    "Rentakar şirkətlərinin və şəxsi sahiblərin elanları. Qiyməti müqayisə et, sahibi ilə birbaşa danış.",
-                  )}
+                  {t("Rentakar şirkətləri və şəxsi sahiblərdən günlük, həftəlik və aylıq avtomobil kirayəsi.")}
                 </p>
               </div>
               <div className="hero-visual">
@@ -863,344 +868,407 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                 />
               </div>
             </section>
-            <div className="search-wrap">
-              <form
-                className="search-box"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  setFilters({
-                    city,
-                    brand,
-                    max,
-                  });
-                  document.getElementById("cars").scrollIntoView({
-                    behavior: "smooth",
-                  });
-                }}
+            <div className="marketplace-layout">
+              <aside
+                className={"search-wrap " + (filtersOpen ? "filters-open" : "")}
               >
-                <label>
+                <div className="filter-panel-heading">
                   <span>
-                    <MapPin size={15} />
-                    {t("Şəhər")}
+                    <SlidersHorizontal size={18} />
+                    {t("Axtarış filtrləri")}
                   </span>
-                  <select
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
+                  <button
+                    aria-label={t("Filtrləri təmizlə")}
+                    onClick={() => {
+                      setCity("Bütün şəhərlər");
+                      setBrand("Bütün markalar");
+                      setMax("");
+                      setModelQuery("");
+                      setCategory("Hamısı");
+                      setFilters({
+                        city: "Bütün şəhərlər",
+                        brand: "Bütün markalar",
+                        max: "",
+                      });
+                    }}
                   >
-                    {t(
-                      ["Bütün şəhərlər", ...cities].map((x) => (
-                        <option key={x} value={x}>
-                          {t(x)}
-                        </option>
-                      )),
-                    )}
-                  </select>
-                </label>
-                <label>
-                  <span>
-                    <Car size={15} />
-                    {t("Marka")}
-                  </span>
-                  <select
-                    value={brand}
-                    onChange={(e) => setBrand(e.target.value)}
-                  >
-                    {t(
-                      ["Bütün markalar", ...brands].map((x) => (
-                        <option key={x} value={x}>
-                          {t(x)}
-                        </option>
-                      )),
-                    )}
-                  </select>
-                </label>
-                <label>
-                  <span>{t("Günlük büdcə")}</span>
-                  <div className="budget">
+                    <RotateCcw size={15} />
+                  </button>
+                </div>
+                <form
+                  className="search-box"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    setFilters({
+                      city,
+                      brand,
+                      max,
+                    });
+                    setFiltersOpen(false);
+                    document.getElementById("cars").scrollIntoView({
+                      behavior: "smooth",
+                    });
+                  }}
+                >
+                  <label>
+                    <span>
+                      <MapPin size={15} />
+                      {t("Şəhər")}
+                    </span>
+                    <select
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                    >
+                      {t(
+                        ["Bütün şəhərlər", ...cities].map((x) => (
+                          <option key={x} value={x}>
+                            {t(x)}
+                          </option>
+                        )),
+                      )}
+                    </select>
+                  </label>
+                  <label>
+                    <span>
+                      <Car size={15} />
+                      {t("Marka")}
+                    </span>
+                    <select
+                      value={brand}
+                      onChange={(e) => setBrand(e.target.value)}
+                    >
+                      {t(
+                        ["Bütün markalar", ...brands].map((x) => (
+                          <option key={x} value={x}>
+                            {t(x)}
+                          </option>
+                        )),
+                      )}
+                    </select>
+                  </label>
+                  <label>
+                    <span>{t("Günlük büdcə")}</span>
+                    <div className="budget">
+                      <input
+                        type="number"
+                        min="1"
+                        placeholder={t("Maksimum qiymət")}
+                        value={max}
+                        onChange={(e) => setMax(e.target.value)}
+                      />
+                      <b>{t("₼")}</b>
+                    </div>
+                  </label>
+                  <label className="model-search">
+                    {t("Model axtar")}
                     <input
-                      type="number"
-                      min="1"
-                      placeholder={t("Maksimum qiymət")}
-                      value={max}
-                      onChange={(e) => setMax(e.target.value)}
+                      value={modelQuery}
+                      onChange={(e) => setModelQuery(e.target.value)}
+                      placeholder={t("Məsələn: RAV4, Panamera, GLS…")}
                     />
-                    <b>{t("₼")}</b>
+                  </label>
+                  <button className="primary search-submit">
+                    <Search size={18} />
+                    {t("Avtomobil tap")}
+                  </button>
+                </form>
+                <div className="filter-panel-note">
+                  <Phone size={17} />
+                  <p>{t("Elanı seç, sahibi ilə birbaşa əlaqə saxla.")}</p>
+                </div>
+              </aside>
+              <main id="cars">
+                <div className="section-title">
+                  <div>
+                    <span className="eyebrow">{t("SEÇİM SƏNİNDİR")}</span>
+                    <h2>
+                      {t(
+                        favorites
+                          ? "Bəyəndiyin avtomobillər"
+                          : "Kirayə avtomobillər",
+                      )}
+                    </h2>
+                    <p>
+                      {t("Planına və büdcənə uyğun avtomobilləri kəşf et.")}
+                    </p>
                   </div>
-                </label>
-                <button className="primary search-submit">
-                  <Search size={18} />
-                  {t("Avtomobil tap")}
-                </button>
-              </form>
-            </div>
-            <section className="benefits">
-              <div>
-                <ShieldCheck />
-                <span>
-                  {t("Yoxlanılmış elanlar")}
-                  <small>{t("Daha rahat seçim üçün")}</small>
-                </span>
-              </div>
-              <div>
-                <Car />
-                <span>
-                  {t("Hər zövqə uyğun seçim")}
-                  <small>{t("Ekonomdan premiuma")}</small>
-                </span>
-              </div>
-              <div>
-                <Phone />
-                <span>
-                  {t("Sahiblə birbaşa əlaqə")}
-                  <small>{t("Vasitəçisiz, əlavə xərcsiz")}</small>
-                </span>
-              </div>
-              <div>
-                <Plus />
-                <span>
-                  {t("İlk elanın pulsuzdur")}
-                  <small>{t("Avtomobilindən gəlir qazan")}</small>
-                </span>
-              </div>
-            </section>
-            <main id="cars">
-              <div className="section-title">
-                <div>
-                  <span className="eyebrow">{t("SEÇİM SƏNİNDİR")}</span>
-                  <h2>
+                  <span className="listing-count">
+                    {t(`${filtered.length} avtomobil mövcuddur`)}
+                  </span>
+                </div>
+                <div className="mobile-catalogue-tools">
+                  <button
+                    className="outline"
+                    aria-expanded={filtersOpen}
+                    onClick={() => {
+                      setFiltersOpen(!filtersOpen);
+                      if (!filtersOpen)
+                        setTimeout(
+                          () =>
+                            document
+                              .querySelector(".search-wrap")
+                              ?.scrollIntoView({
+                                behavior: "smooth",
+                                block: "start",
+                              }),
+                          0,
+                        );
+                    }}
+                  >
+                    <SlidersHorizontal size={17} />
+                    {t("Filtrlər")}
+                  </button>
+                  <span>{t(`${filtered.length} avtomobil mövcuddur`)}</span>
+                </div>
+                <div className="filter-bar">
+                  <div className="tabs">
                     {t(
-                      favorites
-                        ? "Bəyəndiyin avtomobillər"
-                        : "Kirayə avtomobillər",
+                      ["Hamısı", ...categories].map((x) => (
+                        <button
+                          key={x}
+                          className={category === x ? "active" : ""}
+                          onClick={() => setCategory(x)}
+                        >
+                          {t(x === "Hamısı" && <Car size={16} />)} {t(x)}
+                        </button>
+                      )),
                     )}
-                  </h2>
-                  <p>{t("Planına və büdcənə uyğun avtomobilləri kəşf et.")}</p>
+                  </div>
+                  <select
+                    aria-label={t("Elan sıralaması")}
+                    value={sort}
+                    onChange={(e) => setSort(e.target.value)}
+                  >
+                    {t(
+                      [
+                        "Seçilmiş elanlar",
+                        "Əvvəlcə ucuz",
+                        "Əvvəlcə bahalı",
+                      ].map((x) => (
+                        <option key={x} value={x}>
+                          {t(x)}
+                        </option>
+                      )),
+                    )}
+                  </select>
                 </div>
-                <span className="listing-count">
-                  {t(`${filtered.length} avtomobil mövcuddur`)}
-                </span>
-              </div>
-              <div className="filter-bar">
-                <div className="tabs">
-                  {t(
-                    ["Hamısı", ...categories].map((x) => (
-                      <button
-                        key={x}
-                        className={category === x ? "active" : ""}
-                        onClick={() => setCategory(x)}
-                      >
-                        {t(x === "Hamısı" && <Car size={16} />)} {t(x)}
-                      </button>
-                    )),
-                  )}
+
+                <div className="demo-note">
+                  {t("Təqdimat kataloqu · Real fotolar, nümunə qiymətlər")}
                 </div>
-                <select
-                  aria-label={t("Elan sıralaması")}
-                  value={sort}
-                  onChange={(e) => setSort(e.target.value)}
+                <div className="catalogue-toolbar">
+                  <div className="results-description">
+                    {favorites ? <Heart size={16} /> : <Car size={16} />}
+                    <span>{t(`${filtered.length} avtomobil mövcuddur`)}</span>
+                  </div>
+                  <div className="view-switch" aria-label={t("Görünüş")}>
+                    <button
+                      aria-label={t("Kart görünüşü")}
+                      aria-pressed={catalogueView === "grid"}
+                      onClick={() => setCatalogueView("grid")}
+                    >
+                      <LayoutGrid size={17} />
+                    </button>
+                    <button
+                      aria-label={t("Siyahı görünüşü")}
+                      aria-pressed={catalogueView === "list"}
+                      onClick={() => setCatalogueView("list")}
+                    >
+                      <List size={19} />
+                    </button>
+                  </div>
+                </div>
+                <div
+                  className={
+                    "grid " + (catalogueView === "list" ? "catalogue-list" : "")
+                  }
                 >
                   {t(
-                    ["Seçilmiş elanlar", "Əvvəlcə ucuz", "Əvvəlcə bahalı"].map(
-                      (x) => (
-                        <option key={x} value={x}>
-                          {t(x)}
-                        </option>
-                      ),
-                    ),
-                  )}
-                </select>
-              </div>
-              <label className="model-search">
-                {t("Model axtar")}
-                <input
-                  value={modelQuery}
-                  onChange={(e) => setModelQuery(e.target.value)}
-                  placeholder={t("Məsələn: RAV4, Panamera, GLS…")}
-                />
-              </label>
-              <div className="demo-note">
-                {t("Təqdimat kataloqu · Real fotolar, nümunə qiymətlər")}
-              </div>
-              <div className="grid">
-                {t(
-                  filtered.map((c) => (
-                    <article
-                      className="car-card"
-                      key={c.id}
-                      onClick={() => setSelected(c)}
-                    >
-                      <div className="car-image">
-                        <button
-                          className="image-open"
-                          aria-label={t(c.name + " elanı aç")}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelected(c);
-                          }}
-                        >
-                          <img
-                            src={c.image}
-                            alt={c.name}
-                            loading="lazy"
-                            decoding="async"
-                          />
-                        </button>
-                        <div className="badges">
-                          {t(
-                            c.promotion === "premium" ? (
-                              <span className="premium">
-                                <Crown size={12} />
-                                {t("Premium")}
-                              </span>
-                            ) : (
-                              c.vip && (
-                                <span className="vip">
-                                  <Sparkles size={12} />
-                                  {t("VIP")}
-                                </span>
-                              )
-                            ),
-                          )}
-                          <span className="kind">
-                            {t(c.company ? "Şirkət" : "Şəxsi sahib")}
-                          </span>
-                        </div>
-                        <button
-                          aria-label={t("Elanı bəyən")}
-                          className={
-                            "like " + (liked.includes(c.id) ? "liked" : "")
-                          }
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setLiked(
-                              liked.includes(c.id)
-                                ? liked.filter((x) => x !== c.id)
-                                : [...liked, c.id],
-                            );
-                          }}
-                        >
-                          <Heart
-                            size={18}
-                            fill={
-                              liked.includes(c.id) ? "currentColor" : "none"
-                            }
-                          />
-                        </button>
-                      </div>
-                      <div className="card-body">
-                        <div className="card-location">
-                          <MapPin size={12} />
-                          {t(c.city)}
-                          <span>{t(c.year)}</span>
-                        </div>
-                        <button
-                          className="car-name"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelected(c);
-                          }}
-                        >
-                          {t(c.name)}
-                        </button>
-                        <div className="specs">
-                          <span>
-                            <Gauge size={14} /> {t(c.transmission || "Avtomat")}
-                          </span>
-                          <span>
-                            <Fuel size={14} /> {t(c.fuel || "Benzin")}
-                          </span>
-                          <span>
-                            <Users size={14} /> {t(c.seats || 5)}
-                            {t("yer")}
-                          </span>
-                        </div>
-                        <div className="card-bottom">
-                          <div>
-                            <strong>
-                              {t(c.price)} <span>{t("₼")}</span>
-                            </strong>
-                            <small>{t("/ gün")}</small>
-                          </div>
+                    filtered.map((c, index) => (
+                      <article
+                        className="car-card"
+                        key={c.id}
+                        onClick={() => setSelected(c)}
+                      >
+                        <div className="car-image">
                           <button
-                            aria-label={t("Elana bax")}
+                            className="image-open"
+                            aria-label={t(c.name + " elanı aç")}
                             onClick={(e) => {
                               e.stopPropagation();
                               setSelected(c);
                             }}
                           >
-                            <ArrowUpRight size={19} />
+                            <img
+                              src={c.image}
+                              alt={c.name}
+                              loading={index < 2 ? "eager" : "lazy"}
+                              decoding="async"
+                            />
                           </button>
-                        </div>
-                        <div className="owner">
-                          <span className="owner-icon">
+                          <div className="badges">
                             {t(
-                              c.company ? (
-                                <Car size={13} />
+                              c.promotion === "premium" ? (
+                                <span className="premium">
+                                  <Crown size={12} />
+                                  {t("Premium")}
+                                </span>
                               ) : (
-                                <Users size={13} />
+                                c.vip && (
+                                  <span className="vip">
+                                    <Sparkles size={12} />
+                                    {t("VIP")}
+                                  </span>
+                                )
                               ),
                             )}
-                          </span>
-                          {t(c.owner)}
-                          {t(
-                            c.company && (
-                              <ShieldCheck size={13} color="#267357" />
-                            ),
-                          )}
+                          </div>
+                          <button
+                            aria-label={t("Elanı bəyən")}
+                            className={
+                              "like " + (liked.includes(c.id) ? "liked" : "")
+                            }
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setLiked(
+                                liked.includes(c.id)
+                                  ? liked.filter((x) => x !== c.id)
+                                  : [...liked, c.id],
+                              );
+                            }}
+                          >
+                            <Heart
+                              size={18}
+                              fill={
+                                liked.includes(c.id) ? "currentColor" : "none"
+                              }
+                            />
+                          </button>
                         </div>
-                      </div>
-                    </article>
-                  )),
+                        <div className="card-body">
+                          <div className="card-location">
+                            <MapPin size={12} />
+                            {t(c.city)}
+                            <span>{t(c.year)}</span>
+                          </div>
+                          <button
+                            className="car-name"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelected(c);
+                            }}
+                          >
+                            {t(c.name)}
+                          </button>
+                          <div className="specs">
+                            <span>
+                              <Gauge size={14} />{" "}
+                              {t(c.transmission || "Avtomat")}
+                            </span>
+                            <span>
+                              <Fuel size={14} /> {t(c.fuel || "Benzin")}
+                            </span>
+                            <span>
+                              <Users size={14} /> {t(c.seats || 5)}
+                              {t("yer")}
+                            </span>
+                          </div>
+                          <div className="card-bottom">
+                            <div>
+                              <strong>
+                                {t(c.price)} <span>{t("₼")}</span>
+                              </strong>
+                              <small>{t("/ gün")}</small>
+                            </div>
+                            <button
+                              aria-label={t("Elana bax")}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelected(c);
+                              }}
+                            >
+                              <span className="card-detail-label">
+                                {t("Ətraflı bax")}
+                              </span>
+                              <ArrowUpRight size={17} />
+                            </button>
+                          </div>
+                          <div className="owner">
+                            <span className="owner-icon">
+                              {t(
+                                c.company ? (
+                                  <Car size={13} />
+                                ) : (
+                                  <Users size={13} />
+                                ),
+                              )}
+                            </span>
+                            {t(c.owner)}
+                            {t(
+                              c.company && (
+                                <ShieldCheck size={13} color="#267357" />
+                              ),
+                            )}
+                          </div>
+                        </div>
+                      </article>
+                    )),
+                  )}
+                </div>
+                {t(
+                  !filtered.length && (
+                    <div className="empty">
+                      {t("Bu seçimə uyğun avtomobil yoxdur.")}
+                      <button
+                        onClick={() => {
+                          setFilters({
+                            city: "Bütün şəhərlər",
+                            brand: "Bütün markalar",
+                            max: "",
+                          });
+                          setCity("Bütün şəhərlər");
+                          setBrand("Bütün markalar");
+                          setMax("");
+                          setCategory("Hamısı");
+                          setModelQuery("");
+                          setFavorites(false);
+                        }}
+                      >
+                        {t("Filtrləri təmizlə")}
+                      </button>
+                    </div>
+                  ),
                 )}
-              </div>
-              {t(
-                !filtered.length && (
-                  <div className="empty">
-                    {t("Bu seçimə uyğun avtomobil yoxdur.")}
-                    <button
-                      onClick={() => {
-                        setFilters({
-                          city: "Bütün şəhərlər",
-                          brand: "Bütün markalar",
-                          max: "",
-                        });
-                        setCategory("Hamısı");
-                        setModelQuery("");
-                        setFavorites(false);
-                      }}
-                    >
-                      {t("Filtrləri təmizlə")}
-                    </button>
+                <div className="bottom-banner">
+                  <div className="banner-icon">
+                    <Car size={38} />
                   </div>
-                ),
-              )}
-              <div className="bottom-banner">
-                <div className="banner-icon">
-                  <Car size={38} />
+                  <div>
+                    <span>{t("SƏNİN AVTOMOBİLİN, SƏNİN QAZANCIN")}</span>
+                    <h2>{t("Avtomobilin boş dayanmasın.")}</h2>
+                    <p>
+                      {t(
+                        "İlk elanını pulsuz yerləşdir, yeni müştərilər qazan.",
+                      )}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() =>
+                      setModal(
+                        user
+                          ? user.profile?.complete
+                            ? "listing"
+                            : "register"
+                          : "account",
+                      )
+                    }
+                  >
+                    {t("Pulsuz elan yerləşdir")}
+                    <ArrowUpRight size={18} />
+                  </button>
                 </div>
-                <div>
-                  <span>{t("SƏNİN AVTOMOBİLİN, SƏNİN QAZANCIN")}</span>
-                  <h2>{t("Avtomobilin boş dayanmasın.")}</h2>
-                  <p>
-                    {t("İlk elanını pulsuz yerləşdir, yeni müştərilər qazan.")}
-                  </p>
-                </div>
-                <button
-                  onClick={() =>
-                    setModal(
-                      user
-                        ? user.profile?.complete
-                          ? "listing"
-                          : "register"
-                        : "account",
-                    )
-                  }
-                >
-                  {t("Pulsuz elan yerləşdir")}
-                  <ArrowUpRight size={18} />
-                </button>
-              </div>
-            </main>
+              </main>
+            </div>
             <section className="how">
               <span className="eyebrow">{t("CƏMİ 3 ADDIM")}</span>
               <h2>{t("Yola çıxmaq bu qədər asandır.")}</h2>
@@ -1337,10 +1405,14 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                     </span>
                     <h2>{t(selected.name)}</h2>
                     <p className="detail-price">
-                      {t(selected.price)}
+                      {t(selected.price)}{" "}
                       {t("₼")}
                       <small>{t("/ gün")}</small>
                     </p>
+                    <div className="rental-periods">
+                      <span>{t("Həftəlik")}<strong>{selected.weeklyPrice ? `${selected.weeklyPrice} ₼` : t("Razılaşma ilə")}</strong></span>
+                      <span>{t("Aylıq")}<strong>{selected.monthlyPrice ? `${selected.monthlyPrice} ₼` : t("Razılaşma ilə")}</strong></span>
+                    </div>
                     <div className="detail-specs">
                       <span>
                         <Gauge size={16} />
@@ -1369,6 +1441,12 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                     </p>
                     <section className="rental-terms">
                       <h3>{t("Kirayə şərtləri")}</h3>
+                      <dl className="rental-facts">
+                        <div><dt>{t("Depozit")}</dt><dd>{selected.deposit != null ? `${selected.deposit} ₼` : t("Sahiblə dəqiqləşdirin")}</dd></div>
+                        <div><dt>{t("Günlük yürüş limiti")}</dt><dd>{selected.mileage != null ? `${selected.mileage} ${t("km")}` : t("Sahiblə dəqiqləşdirin")}</dd></div>
+                        <div><dt>{t("Minimum yaş")}</dt><dd>{selected.minAge != null ? `${selected.minAge} ${t("yaş")}` : t("Sahiblə dəqiqləşdirin")}</dd></div>
+                        <div><dt>{t("Sürücülük stajı")}</dt><dd>{selected.experience != null ? `${selected.experience} ${t("il")}` : t("Sahiblə dəqiqləşdirin")}</dd></div>
+                      </dl>
                       <p>
                         {t(
                           selected.terms ||

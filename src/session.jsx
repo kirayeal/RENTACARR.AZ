@@ -133,8 +133,9 @@ export function SessionBoundary({ children }) {
   if (loading)
     return (
       <div className="session-loading">
-        {t("RENTACARR")}
-        <span>{t("Sayt açılır…")}</span>
+        <div className="loading-brand">rentacarr<span>.az</span></div>
+        <p>{t("Günlük, həftəlik və aylıq avtomobil kirayəsi")}</p>
+        <div className="loading-progress" role="status" aria-label={t("Yüklənir")} />
       </div>
     );
   return children({

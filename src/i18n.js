@@ -24,6 +24,27 @@ export function useLanguage() {
   );
 }
 const rows = [
+  ["Günlük, həftəlik və aylıq avtomobil kirayəsi", "Daily, weekly and monthly car rental", "Аренда автомобилей на день, неделю и месяц"],
+  ["Yüklənir", "Loading", "Загрузка"],
+  ["Rentakar şirkətləri və şəxsi sahiblərdən günlük, həftəlik və aylıq avtomobil kirayəsi.", "Daily, weekly and monthly car rental from rental companies and private owners.", "Аренда автомобилей на день, неделю и месяц у компаний и частных владельцев."],
+  ["Həftəlik qiymət (₼, istəyə bağlı)", "Weekly price (₼, optional)", "Цена за неделю (₼, необязательно)"],
+  ["Aylıq qiymət (₼, istəyə bağlı)", "Monthly price (₼, optional)", "Цена за месяц (₼, необязательно)"],
+  ["Depozit (₼)", "Deposit (₼)", "Депозит (₼)"],
+  ["Günlük yürüş limiti (km)", "Daily mileage limit (km)", "Суточный лимит пробега (км)"],
+  ["Minimum sürücü yaşı", "Minimum driver age", "Минимальный возраст водителя"],
+  ["Minimum sürücülük stajı (il)", "Minimum driving experience (years)", "Минимальный стаж вождения (лет)"],
+  ["Tələb olunan sənədlər, təhvil yeri, ödəniş və digər kirayə şərtləri…", "Required documents, pickup location, payment and other rental terms…", "Необходимые документы, место передачи, оплата и другие условия аренды…"],
+  ["Həftəlik", "Weekly", "За неделю"],
+  ["Aylıq", "Monthly", "За месяц"],
+  ["Razılaşma ilə", "By agreement", "По договорённости"],
+  ["Sahiblə dəqiqləşdirin", "Confirm with owner", "Уточните у владельца"],
+  ["Depozit", "Deposit", "Депозит"],
+  ["Günlük yürüş limiti", "Daily mileage limit", "Суточный лимит пробега"],
+  ["Minimum yaş", "Minimum age", "Минимальный возраст"],
+  ["Sürücülük stajı", "Driving experience", "Стаж вождения"],
+  ["km", "km", "км"],
+  ["yaş", "years old", "лет"],
+  ["il", "years", "лет"],
   ["Avtomobil kirayəsi", "Car rental", "Аренда автомобилей"],
   [
     "Azərbaycanda kirayə avtomobil tap",
@@ -670,6 +691,24 @@ rows.push(
     "Eyni sahibin yeni avtomobili üçün mövcud profili seçin. Sahibin təsdiqlənmiş e-poçtu həmin profilə bağlanır.",
     "Choose the existing profile for another car. The owner account is linked after email verification.",
     "Для нового автомобиля выбирайте существующий профиль. Аккаунт привязывается после подтверждения email.",
+  ],
+);
+rows.push(
+  ["Axtarış filtrləri", "Search filters", "Фильтры поиска"],
+  ["Filtrlər", "Filters", "Фильтры"],
+  ["Görünüş", "View", "Вид"],
+  ["Kart görünüşü", "Grid view", "Карточки"],
+  ["Siyahı görünüşü", "List view", "Список"],
+  ["Ətraflı bax", "View details", "Подробнее"],
+  [
+    "Elanı seç, sahibi ilə birbaşa əlaqə saxla.",
+    "Choose a listing and contact the owner directly.",
+    "Выберите объявление и свяжитесь с владельцем.",
+  ],
+  [
+    "Şirkətlərdən və şəxsi sahiblərdən kirayə avtomobillər.",
+    "Rental cars from companies and private owners.",
+    "Автомобили в аренду от компаний и частных владельцев.",
   ],
 );
 const map = new Map(rows.map(([az, en, ru]) => [az, { en, ru }]));
