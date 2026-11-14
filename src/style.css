@@ -3,15 +3,15 @@
   font-size: 15px;
   font-weight: 400;
   font-synthesis: none;
-  color: #1c2d3a;
-  background: #f5f7f9;
-  --ink: #1c2d3a;
-  --muted: #64748b;
-  --line: #e6e7e4;
+  color: #202426;
+  background: #f7f7f4;
+  --ink: #202426;
+  --muted: #565e59;
+  --line: #e1e2de;
   --soft: #f4f1eb;
   --paper: #fff;
-  --accent: #156a73;
-  --green: #156a73;
+  --accent: #565e59;
+  --green: #565e59;
 }
 * {
   box-sizing: border-box;
@@ -54,7 +54,7 @@ a:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: 2px solid #5d94fc;
+  outline: 2px solid #727775;
   outline-offset: 3px;
 }
 button:disabled {
@@ -113,7 +113,7 @@ header {
 .logo-mark {
   width: 37px;
   height: 37px;
-  background: #156a73;
+  background: #565e59;
   color: white;
   display: grid;
   place-items: center;
@@ -121,7 +121,7 @@ header {
   margin-right: 10px;
 }
 .logo-az {
-  color: #5281dd;
+  color: #727775;
 }
 .header-right {
   display: flex;
@@ -132,7 +132,7 @@ header nav {
   display: flex;
   gap: 25px;
   font-size: 13px;
-  color: #52637a;
+  color: #565e59;
 }
 header nav button {
   padding: 0;
@@ -153,7 +153,7 @@ header nav > button:has(svg) {
 .heart-top {
   display: flex;
   padding: 7px;
-  color: #536b88;
+  color: #565e59;
 }
 .login {
   display: inline-flex;
@@ -176,10 +176,10 @@ header nav > button:has(svg) {
   line-height: 1.5;
 }
 .primary {
-  background: #156a73;
-  border: 1px solid #156a73;
+  background: #565e59;
+  border: 1px solid #565e59;
   color: white;
-  box-shadow: 0 3px 8px #156a7312;
+  box-shadow: 0 3px 8px #565e5912;
 }
 .primary:hover {
   background: #9f4420;
@@ -188,11 +188,11 @@ header nav > button:has(svg) {
 .outline {
   border: 1px solid var(--line);
   background: #fff;
-  color: #425775;
+  color: #565e59;
 }
 .outline:hover {
   background: #f4f1eb;
-  border-color: #69716e;
+  border-color: #565e59;
 }
 .add {
   font-size: 12px;
@@ -209,8 +209,8 @@ header nav > button:has(svg) {
   max-width: 1280px;
   margin: 22px auto 0;
   padding: 25px 34px 40px;
-  background: #252c32;
-  border: 1px solid #243c60;
+  background: #202426;
+  border: 1px solid #202426;
   border-radius: 16px;
   color: #fff;
   position: relative;
@@ -224,7 +224,7 @@ header nav > button:has(svg) {
   width: 350px;
   height: 350px;
   border-radius: 50%;
-  border: 60px solid #4678b410;
+  border: 60px solid #565e5910;
   pointer-events: none;
 }
 .hero-content {
@@ -234,7 +234,7 @@ header nav > button:has(svg) {
 .hero-tag {
   font-size: 10px;
   letter-spacing: 1.3px;
-  color: #69716e;
+  color: #565e59;
   line-height: 1.7;
 }
 .hero h1 {
@@ -248,7 +248,7 @@ header nav > button:has(svg) {
 .hero p {
   font-size: 13px;
   line-height: 1.8;
-  color: #69716e;
+  color: #565e59;
   margin: 0;
   max-width: 690px;
 }
@@ -256,10 +256,10 @@ header nav > button:has(svg) {
   height: 120px;
   border-radius: 10px;
   overflow: hidden;
-  border: 1px solid #56739a;
+  border: 1px solid #565e59;
   position: relative;
   transform: rotate(-1deg);
-  background: #213a5e;
+  background: #202426;
 }
 .hero-visual > img {
   height: 100%;
@@ -272,7 +272,7 @@ header nav > button:has(svg) {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, #252c3240, transparent);
+  background: linear-gradient(90deg, #20242640, transparent);
 }
 .search-wrap {
   position: relative;
@@ -286,10 +286,10 @@ header nav > button:has(svg) {
   gap: 22px;
   align-items: center;
   background: white;
-  border: 1px solid #e6e7e4;
+  border: 1px solid #e1e2de;
   border-radius: 11px;
   padding: 18px 25px;
-  box-shadow: 0 8px 26px #1e36540b;
+  box-shadow: 0 8px 26px #2024260b;
 }
 .search-box label {
   border-right: 1px solid var(--line);
@@ -301,7 +301,7 @@ header nav > button:has(svg) {
   gap: 6px;
   align-items: center;
   font-size: 11px;
-  color: #69716e;
+  color: #565e59;
   margin-bottom: 7px;
 }
 .search-box select,
@@ -362,12 +362,12 @@ main#cars {
 }
 .listing-count {
   font-size: 12px;
-  color: #69716e;
+  color: #565e59;
 }
 .eyebrow {
   font-size: 11px;
   letter-spacing: 1.2px;
-  color: #6583ac;
+  color: #727775;
 }
 .filter-bar {
   display: flex;
@@ -375,7 +375,7 @@ main#cars {
   justify-content: space-between;
   gap: 22px;
   margin: 19px 0 13px;
-  border-bottom: 1px solid #dce4ee;
+  border-bottom: 1px solid #e1e2de;
   padding-bottom: 14px;
 }
 .tabs {
@@ -389,28 +389,28 @@ main#cars {
   gap: 7px;
   align-items: center;
   white-space: nowrap;
-  border: 1px solid #dbe4ef;
+  border: 1px solid #e1e2de;
   background: #fff;
   padding: 10px 15px;
   min-height: 39px;
   border-radius: 7px;
   font-size: 12px;
-  color: #607089;
+  color: #565e59;
 }
 .tabs button:hover {
-  background: #e9f1ff;
+  background: #f7f7f4;
 }
 .tabs .active {
-  background: #252c32;
+  background: #202426;
   color: #fff;
-  border-color: #252c32;
+  border-color: #202426;
 }
 .filter-bar select {
   border: 0;
   background: transparent;
   padding: 8px;
   font-size: 12px;
-  color: #647792;
+  color: #565e59;
   max-width: 190px;
 }
 .model-search {
@@ -418,14 +418,14 @@ main#cars {
   gap: 13px;
   align-items: center;
   font-size: 12px;
-  color: #6d7e95;
+  color: #727775;
   margin-bottom: 12px;
 }
 .model-search input {
   min-width: 0;
   width: min(100%, 360px);
   min-height: 42px;
-  border: 1px solid #e6e7e4;
+  border: 1px solid #e1e2de;
   background: white;
   border-radius: 7px;
   padding: 10px 13px;
@@ -433,7 +433,7 @@ main#cars {
 }
 .demo-note {
   font-size: 11px;
-  color: #69716e;
+  color: #565e59;
   line-height: 1.7;
   margin-bottom: 15px;
 }
@@ -444,11 +444,11 @@ main#cars {
 }
 .car-card {
   background: #fff;
-  border: 1px solid #e6e7e4;
+  border: 1px solid #e1e2de;
   border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
-  box-shadow: 0 2px 5px #1a355103;
+  box-shadow: 0 2px 5px #20242603;
   transition:
     transform 0.2s,
     box-shadow 0.2s,
@@ -456,14 +456,14 @@ main#cars {
 }
 .car-card:hover {
   transform: translateY(-3px);
-  border-color: #69716e;
-  box-shadow: 0 12px 28px #1c3e6d10;
+  border-color: #565e59;
+  box-shadow: 0 12px 28px #20242610;
 }
 .car-image {
   aspect-ratio: 1.55;
   position: relative;
   overflow: hidden;
-  background: #e7edf5;
+  background: #e1e2de;
 }
 .image-open {
   display: block;
@@ -499,22 +499,22 @@ main#cars {
   line-height: 1.4;
   padding: 6px 8px;
   border-radius: 5px;
-  box-shadow: 0 2px 8px #10233b10;
+  box-shadow: 0 2px 8px #20242610;
   font-weight: 400;
 }
 .premium {
-  background: #252c32;
+  background: #202426;
   color: #f8dfa2;
   border: 1px solid #d7b76c55;
 }
 .vip {
   background: #fff1c9;
-  color: #69716e;
+  color: #565e59;
   border: 1px solid #fff5dc;
 }
 .kind {
   background: white;
-  color: #4e627e;
+  color: #565e59;
   border: 1px solid white;
 }
 .like {
@@ -526,14 +526,14 @@ main#cars {
   width: 35px;
   height: 35px;
   background: white;
-  color: #6a7f9d;
-  border: 1px solid #e4eaf3;
+  color: #727775;
+  border: 1px solid #e1e2de;
   border-radius: 50%;
-  box-shadow: 0 3px 12px #1b314b18;
+  box-shadow: 0 3px 12px #20242618;
 }
 .like:hover,
 .like.liked {
-  color: #156a73;
+  color: #565e59;
   background: #f4f1eb;
 }
 .card-body {
@@ -544,7 +544,7 @@ main#cars {
   align-items: center;
   gap: 4px;
   font-size: 12px;
-  color: #69716e;
+  color: #565e59;
 }
 .card-location > span {
   margin-left: auto;
@@ -565,7 +565,7 @@ main#cars {
   align-items: center;
   gap: 18px;
   font-size: 12px;
-  color: #69716e;
+  color: #565e59;
 }
 .specs span {
   display: flex;
@@ -587,14 +587,14 @@ main#cars {
   font-size: 27px;
   font-weight: 450;
   letter-spacing: -1px;
-  color: #1c2d3a;
+  color: #202426;
 }
 .card-bottom strong span {
   font-size: 18px;
 }
 .card-bottom small {
   font-size: 12px;
-  color: #69716e;
+  color: #565e59;
 }
 .card-bottom button {
   display: grid;
@@ -603,17 +603,17 @@ main#cars {
   width: 35px;
   height: 35px;
   background: #f4f1eb;
-  color: #4175c9;
+  color: #727775;
   border: 1px solid #e9dfd2;
 }
 .owner {
   display: flex;
   align-items: center;
   gap: 7px;
-  border-top: 1px solid #ecf0f6;
+  border-top: 1px solid #f7f7f4;
   padding: 12px 0;
   min-height: 48px;
-  color: #69716e;
+  color: #565e59;
   font-size: 11px;
 }
 .owner-icon {
@@ -623,7 +623,7 @@ main#cars {
   height: 23px;
   background: #f4f1eb;
   border-radius: 6px;
-  color: #69716e;
+  color: #565e59;
 }
 .owner > svg {
   margin-left: auto;
@@ -632,9 +632,9 @@ main#cars {
   display: flex;
   align-items: center;
   gap: 25px;
-  background: #252c32;
+  background: #202426;
   color: #fff;
-  border: 1px solid #29466e;
+  border: 1px solid #202426;
   border-radius: 13px;
   padding: 31px 35px;
   margin: 42px 0 55px;
@@ -642,9 +642,9 @@ main#cars {
 .banner-icon {
   width: 60px;
   height: 60px;
-  border: 1px solid #547498;
-  background: #23426b;
-  color: #69716e;
+  border: 1px solid #565e59;
+  background: #202426;
+  color: #565e59;
   border-radius: 12px;
   display: grid;
   place-items: center;
@@ -652,7 +652,7 @@ main#cars {
 .bottom-banner span {
   font-size: 10px;
   letter-spacing: 1.5px;
-  color: #69716e;
+  color: #565e59;
 }
 .bottom-banner h2 {
   font-size: 26px;
@@ -661,7 +661,7 @@ main#cars {
 }
 .bottom-banner p {
   font-size: 13px;
-  color: #69716e;
+  color: #565e59;
   margin: 0;
 }
 .bottom-banner > button {
@@ -672,7 +672,7 @@ main#cars {
   margin-left: auto;
   white-space: nowrap;
   background: #fff;
-  color: #244c83;
+  color: #565e59;
   min-height: 44px;
   padding: 13px 18px;
   border-radius: 7px;
@@ -700,11 +700,11 @@ main#cars {
   width: 38px;
   height: 38px;
   border-radius: 10px;
-  background: #e6effe;
-  color: #6995d5;
+  background: #f7f7f4;
+  color: #727775;
   font-size: 12px;
   margin: auto;
-  border: 1px solid #d8e5fa;
+  border: 1px solid #e1e2de;
 }
 .how h3 {
   font-size: 16px;
@@ -712,7 +712,7 @@ main#cars {
 }
 .how p {
   font-size: 13px;
-  color: #69716e;
+  color: #565e59;
   margin: 0;
 }
 footer {
@@ -721,13 +721,13 @@ footer {
   gap: 28px;
   padding: 30px max(28px, calc((100vw - 1280px) / 2));
   background: white;
-  border-top: 1px solid #dce5f0;
+  border-top: 1px solid #e1e2de;
   font-size: 12px;
-  color: #69716e;
+  color: #565e59;
 }
 footer .logo {
   font-size: 23px;
-  color: #314f78;
+  color: #565e59;
 }
 footer .logo-mark {
   width: 32px;
@@ -748,7 +748,7 @@ footer small {
   position: fixed;
   inset: 0;
   z-index: 30;
-  background: #0b1d366e;
+  background: #2024266e;
   backdrop-filter: blur(7px);
   display: flex;
   align-items: center;
@@ -758,7 +758,7 @@ footer small {
 .modal {
   position: relative;
   background: white;
-  border: 1px solid #e0e8f3;
+  border: 1px solid #e1e2de;
   border-radius: 15px;
   padding: 32px;
   max-width: 650px;
@@ -766,7 +766,7 @@ footer small {
   max-height: 92dvh;
   overflow: auto;
   overscroll-behavior: contain;
-  box-shadow: 0 25px 100px #0e244b38;
+  box-shadow: 0 25px 100px #20242638;
 }
 .modal h2 {
   font-size: 28px;
@@ -792,8 +792,8 @@ footer small {
   width: 37px;
   height: 37px;
   background: #fffffff5;
-  border: 1px solid #dde6f1;
-  color: #627d9e;
+  border: 1px solid #e1e2de;
+  color: #565e59;
   border-radius: 50%;
   z-index: 2;
 }
@@ -807,7 +807,7 @@ footer small {
   width: 48px;
   height: 48px;
   background: #f4f1eb;
-  color: #5686d1;
+  color: #727775;
   border: 1px solid #e9dfd2;
   border-radius: 12px;
   margin: 20px 0;
@@ -824,11 +824,11 @@ footer small {
   margin: -32px -32px 25px;
   aspect-ratio: 1.55;
   object-fit: contain;
-  background: #edf1f7;
+  background: #f7f7f4;
 }
 .detail-price {
   font-size: 30px !important;
-  color: #1c2d3a;
+  color: #202426;
   font-weight: 450;
   letter-spacing: -1px;
   margin: 8px 0 19px;
@@ -836,7 +836,7 @@ footer small {
 .detail-price small {
   font-size: 13px;
   font-weight: 400;
-  color: #69716e;
+  color: #565e59;
   letter-spacing: 0;
 }
 .detail-specs {
@@ -847,7 +847,7 @@ footer small {
   padding: 0 0 22px;
   margin-bottom: 23px;
   font-size: 13px;
-  color: #6e86a6;
+  color: #727775;
 }
 .detail-specs span {
   display: flex;
@@ -858,7 +858,7 @@ footer small {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #69716e;
+  color: #565e59;
 }
 .listing-description {
   display: block;
@@ -866,8 +866,8 @@ footer small {
   font-size: 14px;
 }
 .rental-terms {
-  border: 1px solid #e6e7e4;
-  background: #f4f8ff;
+  border: 1px solid #e1e2de;
+  background: #f7f7f4;
   padding: 18px;
   border-radius: 9px;
   margin: 20px 0;
@@ -878,7 +878,7 @@ footer small {
 .rental-terms p {
   font-size: 13px;
   margin: 0;
-  color: #69716e;
+  color: #565e59;
 }
 .contact {
   display: flex;
@@ -894,16 +894,16 @@ footer small {
   justify-content: center;
   gap: 12px;
   padding: 27px 22px;
-  border: 1px dashed #cad9ed;
+  border: 1px dashed #c1c5c2;
   border-radius: 9px;
-  background: #f6f9fe;
+  background: #f7f7f4;
   text-align: center;
-  color: #69716e;
+  color: #565e59;
   font-size: 13px;
   line-height: 1.8;
 }
 .empty button {
-  color: #417bcf;
+  color: #727775;
   text-decoration: underline;
 }
 .modal-secondary {
@@ -911,8 +911,8 @@ footer small {
 }
 .form-hint {
   border: 1px solid #e9dfd2;
-  background: #f0f6ff;
-  color: #69716e;
+  background: #f7f7f4;
+  color: #565e59;
   font-size: 12px;
   line-height: 1.8;
   padding: 14px 16px;
@@ -945,7 +945,7 @@ footer small {
   width: 100%;
   font-size: 15px;
   font-weight: 450;
-  color: #496d9d;
+  color: #565e59;
   margin-bottom: 0;
   padding: 0;
 }
@@ -954,7 +954,7 @@ footer small {
 }
 .fieldset-caption {
   font-size: 12px !important;
-  color: #69716e !important;
+  color: #565e59 !important;
   margin: 0;
   line-height: 1.8 !important;
 }
@@ -963,21 +963,21 @@ footer small {
   gap: 8px;
   font-size: 13px;
   line-height: 1.6;
-  color: #647f9f;
+  color: #727775;
   min-width: 0;
 }
 .listing-form input,
 .listing-form select,
 .listing-form textarea {
-  border: 1px solid #dce5f0;
+  border: 1px solid #e1e2de;
   border-radius: 8px;
   min-height: 46px;
   padding: 12px;
   width: 100%;
   min-width: 0;
   font-size: 14px;
-  background: #fafcff;
-  color: #425e83;
+  background: #f7f7f4;
+  color: #565e59;
 }
 .listing-form textarea {
   resize: vertical;
@@ -985,7 +985,7 @@ footer small {
 }
 .listing-form input::placeholder,
 .listing-form textarea::placeholder {
-  color: #69716e;
+  color: #565e59;
 }
 .form-pair {
   display: grid;
@@ -999,7 +999,7 @@ footer small {
   border: 1px solid var(--line);
   padding: 12px;
   border-radius: 8px;
-  background: #f7faff;
+  background: #f7f7f4;
 }
 .editor-photo img {
   width: 90px;
@@ -1009,7 +1009,7 @@ footer small {
 }
 .editor-photo span {
   font-size: 12px;
-  color: #69716e;
+  color: #565e59;
 }
 .listing-form > .primary {
   min-height: 47px;
@@ -1029,17 +1029,17 @@ footer small {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: #252c32;
-  border: 1px solid #456a9e;
-  box-shadow: 0 10px 35px #183b6720;
-  color: #e7f0ff;
+  background: #202426;
+  border: 1px solid #565e59;
+  box-shadow: 0 10px 35px #20242620;
+  color: #f7f7f4;
   font-size: 12px;
   line-height: 1.8;
   padding: 15px 22px;
   border-radius: 9px;
 }
 .toast svg {
-  color: #69716e;
+  color: #565e59;
 }
 .auth-mode-tabs {
   display: flex;
@@ -1051,11 +1051,11 @@ footer small {
   padding: 11px 0 14px;
   border-bottom: 2px solid transparent;
   font-size: 16px;
-  color: #69716e;
+  color: #565e59;
 }
 .auth-mode-tabs .active {
-  border-color: #156a73;
-  color: #156a73;
+  border-color: #565e59;
+  color: #565e59;
 }
 .email-form {
   display: grid;
@@ -1065,7 +1065,7 @@ footer small {
   display: grid;
   gap: 9px;
   font-size: 13px;
-  color: #597395;
+  color: #565e59;
 }
 .email-form label > span {
   display: flex;
@@ -1073,21 +1073,21 @@ footer small {
   gap: 8px;
 }
 .email-form label > span > svg {
-  color: #69716e;
+  color: #565e59;
 }
 .email-form input {
   width: 100%;
   min-width: 0;
   min-height: 48px;
-  border: 1px solid #dbe5f1;
+  border: 1px solid #e1e2de;
   border-radius: 8px;
   padding: 12px 14px;
   font-size: 15px;
-  background: #fafcff;
-  color: #2d4b74;
+  background: #f7f7f4;
+  color: #565e59;
 }
 .email-form input::placeholder {
-  color: #69716e;
+  color: #565e59;
 }
 .email-form > .primary {
   min-height: 48px;
@@ -1107,17 +1107,17 @@ footer small {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #fff;
-  color: #69716e;
+  color: #565e59;
   font-size: 12px;
 }
 .account-type [aria-pressed="true"] {
   background: #f4f1eb;
-  border-color: #69716e;
-  color: #376cb5;
+  border-color: #565e59;
+  color: #565e59;
 }
 .forgot-link {
   font-size: 13px;
-  color: #427ed7;
+  color: #727775;
   padding: 8px;
   min-height: 36px;
 }
@@ -1126,26 +1126,26 @@ footer small {
   align-items: center;
   gap: 5px;
   font-size: 13px;
-  color: #6d90bf;
+  color: #727775;
   padding: 9px 0;
   margin: 18px 0;
 }
 .auth-footnote {
   font-size: 12px !important;
-  color: #69716e !important;
+  color: #565e59 !important;
   text-align: center;
   line-height: 1.8;
   margin: 20px 0 0;
 }
 .auth-error {
-  color: #69716e !important;
+  color: #565e59 !important;
   font-size: 13px !important;
   margin: 0 !important;
 }
 .service-note {
   font-size: 12px !important;
   line-height: 1.8;
-  background: #f7f9fd;
+  background: #f7f7f4;
   border: 1px solid var(--line);
   padding: 13px;
   border-radius: 7px;
@@ -1161,8 +1161,8 @@ footer small {
   display: inline-flex;
   border: 1px solid #e9dfd2;
   border-radius: 5px;
-  background: #f0f6ff;
-  color: #6c91bf;
+  background: #f7f7f4;
+  color: #727775;
   padding: 7px 10px;
   font-size: 12px;
 }
@@ -1205,12 +1205,12 @@ footer small {
   justify-content: center;
   align-items: center;
   gap: 16px;
-  color: #3566a5;
+  color: #565e59;
   font-size: 23px;
   letter-spacing: 2px;
 }
 .session-loading span {
-  color: #69716e;
+  color: #565e59;
   font-size: 12px;
   letter-spacing: 0;
 }
@@ -1221,7 +1221,7 @@ footer small {
   background: #fff9ec;
   border: 1px solid #eee0c1;
   border-radius: 8px;
-  color: #69716e;
+  color: #565e59;
   font-size: 12px;
   line-height: 1.8;
 }
@@ -1234,7 +1234,7 @@ footer small {
   display: grid;
   gap: 9px;
   font-size: 14px;
-  color: #657f9e;
+  color: #727775;
 }
 .registration-form input {
   width: 100%;
@@ -1243,7 +1243,7 @@ footer small {
   padding: 12px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #fafcff;
+  background: #f7f7f4;
   font-size: 15px;
 }
 .registration-types {
@@ -1260,16 +1260,16 @@ footer small {
   border-radius: 9px;
   padding: 19px;
   font-size: 13px;
-  color: #69716e;
+  color: #565e59;
 }
 .registration-types [aria-pressed="true"] {
   background: #f4f1eb;
-  border-color: #69716e;
-  color: #4376bd;
+  border-color: #565e59;
+  color: #565e59;
 }
 .registration-email {
   font-size: 12px;
-  color: #69716e;
+  color: #565e59;
   line-height: 1.8;
   overflow-wrap: anywhere;
 }
@@ -1303,8 +1303,8 @@ footer small {
   overflow: auto;
   scrollbar-width: none;
   padding: 6px;
-  background: #e7edf6;
-  border: 1px solid #e6e7e4;
+  background: #e1e2de;
+  border: 1px solid #e1e2de;
   border-radius: 10px;
   margin: 0 0 26px;
 }
@@ -1317,17 +1317,17 @@ footer small {
   border: 1px solid transparent;
   padding: 11px 17px;
   font-size: 13px;
-  color: #69716e;
+  color: #565e59;
   min-height: 43px;
 }
 .admin-nav button.active {
   background: #fff;
-  border-color: #dae5f2;
-  color: #3164a8;
-  box-shadow: 0 2px 6px #21456c09;
+  border-color: #e1e2de;
+  color: #565e59;
+  box-shadow: 0 2px 6px #20242609;
 }
 .admin-nav button > span {
-  background: #e5efff;
+  background: #f7f7f4;
   border-radius: 4px;
   padding: 2px 6px;
   font-size: 10px;
@@ -1347,7 +1347,7 @@ footer small {
 }
 .stats span {
   font-size: 12px;
-  color: #69716e;
+  color: #565e59;
   display: block;
   padding-right: 30px;
   line-height: 1.7;
@@ -1356,7 +1356,7 @@ footer small {
   display: block;
   font-size: 32px;
   font-weight: 400;
-  color: #365b89;
+  color: #565e59;
   letter-spacing: -1px;
   margin-top: 23px;
 }
@@ -1365,10 +1365,10 @@ footer small {
   right: 19px;
   top: 21px;
   background: #f4f1eb;
-  color: #69716e;
+  color: #565e59;
   width: 33px;
   height: 33px;
-  border: 1px solid #e1ebfa;
+  border: 1px solid #e1e2de;
   border-radius: 9px;
   display: grid;
   place-items: center;
@@ -1404,30 +1404,30 @@ footer small {
   border-radius: 11px;
 }
 .overview-grid > button > svg:first-child {
-  color: #69716e;
+  color: #565e59;
   margin-bottom: 18px;
 }
 .overview-grid > button > svg:last-child {
   position: absolute;
   right: 22px;
   top: 26px;
-  color: #69716e;
+  color: #565e59;
 }
 .overview-grid h3 {
   font-size: 16px;
   font-weight: 450;
-  color: #5275a1;
+  color: #565e59;
   margin: 0 0 9px;
 }
 .overview-grid p {
   font-size: 12px;
   line-height: 1.8;
-  color: #69716e;
+  color: #565e59;
   margin: 0;
 }
 .overview-grid > button:hover {
-  background: #f7faff;
-  border-color: #69716e;
+  background: #f7f7f4;
+  border-color: #565e59;
 }
 .workspace-notice {
   display: flex;
@@ -1435,19 +1435,19 @@ footer small {
   gap: 15px;
   padding: 22px 24px;
   border-radius: 10px;
-  border: 1px solid #d5e4fb;
+  border: 1px solid #e1e2de;
   background: #f4f1eb;
-  color: #69716e;
+  color: #565e59;
 }
 .workspace-notice h3 {
   font-size: 14px;
   margin: 0 0 8px;
-  color: #668fc7;
+  color: #727775;
 }
 .workspace-notice p {
   font-size: 12px;
   margin: 0;
-  color: #69716e;
+  color: #565e59;
 }
 .admin-listings,
 .owner-management,
@@ -1469,7 +1469,7 @@ footer small {
 .owner-management > p {
   font-size: 13px;
   max-width: 850px;
-  color: #69716e;
+  color: #565e59;
 }
 .owner-search,
 .admin-filters input,
@@ -1478,8 +1478,8 @@ footer small {
   padding: 11px 13px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #fafcff;
-  color: #6f8bad;
+  background: #f7f7f4;
+  color: #727775;
   font-size: 13px;
   min-width: 0;
 }
@@ -1492,7 +1492,7 @@ footer small {
   align-items: center;
   gap: 22px;
   padding: 20px 0;
-  border-top: 1px solid #e7edf5;
+  border-top: 1px solid #e1e2de;
 }
 .owner-row > div:first-child {
   margin-right: auto;
@@ -1501,29 +1501,29 @@ footer small {
 .owner-row b {
   font-size: 14px;
   font-weight: 450;
-  color: #5d7da7;
+  color: #727775;
 }
 .owner-row p {
   font-size: 12px;
   line-height: 1.8;
   margin: 6px 0 0;
-  color: #69716e;
+  color: #565e59;
   overflow-wrap: anywhere;
 }
 .owner-row strong {
   font-size: 23px;
   font-weight: 400;
-  color: #69716e;
+  color: #565e59;
 }
 .owner-row small {
   font-size: 11px;
-  color: #69716e;
+  color: #565e59;
 }
 .claim-status {
   font-size: 10px;
   white-space: nowrap;
-  color: #69716e;
-  background: #f1f5e9;
+  color: #565e59;
+  background: #e1e2de;
   padding: 7px 9px;
   border-radius: 5px;
 }
@@ -1539,14 +1539,14 @@ footer small {
 .admin-filters span {
   font-size: 12px;
   white-space: nowrap;
-  color: #69716e;
+  color: #565e59;
 }
 .admin-row {
   display: flex;
   align-items: center;
   gap: 13px;
   padding: 18px 0;
-  border-top: 1px solid #e7edf5;
+  border-top: 1px solid #e1e2de;
   min-width: 0;
 }
 .admin-thumb {
@@ -1554,7 +1554,7 @@ footer small {
   height: 57px;
   object-fit: cover;
   border-radius: 7px;
-  background: #ecf2fa;
+  background: #f7f7f4;
 }
 .admin-row > div {
   margin-right: auto;
@@ -1563,11 +1563,11 @@ footer small {
 .admin-row b {
   font-size: 13px;
   font-weight: 450;
-  color: #688ab4;
+  color: #727775;
 }
 .admin-row p {
   font-size: 11px;
-  color: #69716e;
+  color: #565e59;
   line-height: 1.8;
   margin: 6px 0 0;
   overflow-wrap: anywhere;
@@ -1575,7 +1575,7 @@ footer small {
 .admin-row > span {
   font-size: 12px;
   white-space: nowrap;
-  color: #69716e;
+  color: #565e59;
 }
 .admin-row .outline {
   font-size: 11px;
@@ -1586,12 +1586,12 @@ footer small {
 .admin-row select {
   border: 1px solid var(--line);
   border-radius: 6px;
-  background: #f7faff;
+  background: #f7f7f4;
   padding: 9px;
   min-height: 36px;
   max-width: 130px;
   font-size: 11px;
-  color: #69716e;
+  color: #565e59;
 }
 .status-pill,
 .sample-pill {
@@ -1603,19 +1603,19 @@ footer small {
   line-height: 1.4;
 }
 .status-pill {
-  color: #69716e;
-  background: #edf7ef;
+  color: #565e59;
+  background: #f7f7f4;
 }
 .status-pill.paused {
-  color: #69716e;
+  color: #565e59;
   background: #faf4e6;
 }
 .sample-pill {
-  color: #69716e;
+  color: #565e59;
   background: #f4f1eb;
 }
 .danger {
-  color: #69716e;
+  color: #565e59;
 }
 .danger:hover {
   background: #fff4f4;
@@ -1623,17 +1623,17 @@ footer small {
 }
 .primary.danger {
   background: #b66363;
-  border-color: #69716e;
+  border-color: #565e59;
   color: white;
 }
 .admin-guide p {
   font-size: 13px;
-  color: #69716e;
+  color: #565e59;
   line-height: 1.9;
 }
 .admin-guide b {
   font-weight: 450;
-  color: #6686ae;
+  color: #727775;
   margin-right: 5px;
 }
 .owner-listing {
@@ -1651,18 +1651,18 @@ footer small {
 }
 .owner-listing b {
   font-size: 14px;
-  color: #6b8cb5;
+  color: #727775;
   font-weight: 450;
 }
 .owner-listing p {
   font-size: 12px;
-  color: #69716e;
+  color: #565e59;
   margin: 6px 0 0;
 }
 .storage-warning {
   border: 1px solid #eadfc7;
   background: #fff9ec;
-  color: #69716e;
+  color: #565e59;
   padding: 14px;
   border-radius: 8px;
   font-size: 12px;
@@ -1882,7 +1882,7 @@ footer small {
     justify-content: center;
     gap: 23px;
     font-size: 11px;
-    color: #69716e;
+    color: #565e59;
     background: white;
     border-bottom: 1px solid var(--line);
   }
@@ -2772,16 +2772,16 @@ footer small {
 }
 
 .hero-tag {
-  color: #a8c8fc;
+  color: #c1c5c2;
 }
 .hero p {
-  color: #b6c6dc;
+  color: #c1c5c2;
 }
 .bottom-banner span {
-  color: #9ec2ff;
+  color: #c1c5c2;
 }
 .bottom-banner p {
-  color: #b7c9e5;
+  color: #c1c5c2;
 }
 .vip {
   color: #806024;
@@ -2790,10 +2790,10 @@ footer small {
   color: #fff;
 }
 .email-form label {
-  color: #526d90;
+  color: #565e59;
 }
 .auth-footnote {
-  color: #6f809a !important;
+  color: #727775 !important;
 }
 @media (min-width: 901px) {
   .hero {

@@ -24,6 +24,13 @@ export function useLanguage() {
   );
 }
 const rows = [
+  ["Azərbaycanda avtomobil kirayəsi", "Car rental in Azerbaijan", "Аренда автомобилей в Азербайджане"],
+  ["Kirayə müddəti", "Rental period", "Срок аренды"],
+  ["Günlük", "Daily", "На день"],
+  ["Avtomobil elanları", "Car listings", "Объявления об аренде"],
+  ["ŞİRKƏTLƏR VƏ ŞƏXSİ SAHİBLƏR ÜÇÜN", "FOR COMPANIES AND PRIVATE OWNERS", "ДЛЯ КОМПАНИЙ И ЧАСТНЫХ ВЛАДЕЛЬЦЕВ"],
+  ["Avtomobillərinizi kataloqa əlavə edin.", "List your cars in the catalog.", "Добавьте свои автомобили в каталог."],
+  ["Avtomobili necə kirayə götürmək olar?", "How to rent a car", "Как арендовать автомобиль"],
   ["Sahibin digər avtomobilləri", "More cars from this owner", "Другие автомобили владельца"],
   ["Dil seçimi", "Language", "Язык"],
   ["Seçilmişlərdən çıxar", "Remove from favorites", "Удалить из избранного"],

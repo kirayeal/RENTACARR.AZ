@@ -1,2111 +1,403 @@
-/* Rental catalog composition: neutral surfaces, a dedicated search column and photography-first listings. */
+/* Shared visual system: graphite, warm white and restrained brass. */
 :root {
-  color: #707070;
-  background: #f5f5f5;
-  --ink: #1c2d3a;
-  --muted: #737373;
-  --line: #e4e4e4;
-  --soft: #f4f1eb;
+  --ink: #202426;
+  --muted: #676c6d;
+  --line: #e0e0e0;
+  --soft: #f2f2f2;
   --paper: #fff;
-  --accent: #156a73;
-  --green: #156a73;
+  --accent: #202426;
+  --green: #202426;
+  --brass: #a48c65;
+  color: var(--ink);
+  background: #f6f6f6;
 }
-header {
-  height: 80px;
-  background: #fff;
-  border-bottom: 1px solid #e5e5e5;
+body { color: var(--ink); }
+h1, h2, h3, b, strong { font-weight: 450; }
+p { color: var(--muted); }
+button:focus-visible, a:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible, .car-card:focus-visible {
+  outline: 2px solid #8b7858;
+  outline-offset: 4px;
+}
+svg { stroke-width: 1.5; }
+.primary, .outline {
+  border-radius: 5px;
+  min-height: 44px;
+  padding: 12px 18px;
+  font-size: 13px;
+  font-weight: 400;
   box-shadow: none;
 }
-header nav {
-  font-size: 13px;
+.primary { color: #fff; background: var(--ink); border: 1px solid var(--ink); }
+.primary:hover { background: #3b4143; border-color: #3b4143; }
+.outline { color: var(--ink); background: #fff; border: 1px solid #d4d4d4; }
+.outline:hover { background: #f2f2f2; border-color: #9a9a9a; }
+.danger { background: #9c3934; border-color: #9c3934; }
+
+/* Wordmark and navigation. */
+header {
+  height: 84px;
+  max-width: none;
+  padding: 0 max(32px, calc((100vw - 1376px) / 2));
   gap: 28px;
-  color: #707070;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+  box-shadow: none;
 }
 .logo {
-  color: #707070;
-  font-size: 26px;
-  font-weight: 450;
-  letter-spacing: -1.2px;
-}
-.logo-mark {
-  background: #2d2d2d;
-  border-radius: 11px;
-  color: white;
-  width: 38px;
-  height: 38px;
-}
-.logo-az {
-  color: #707070;
-}
-.header-right {
-  gap: 17px;
-}
-.primary {
-  background: #156a73;
-  border-color: #707070;
-  box-shadow: none;
-  border-radius: 8px;
+  color: var(--ink);
+  font-size: 25px;
   font-weight: 400;
+  letter-spacing: -.9px;
+  text-transform: uppercase;
 }
-.primary:hover {
-  background: #11565e;
-  border-color: #707070;
-}
-.outline {
-  color: #707070;
-  border-color: #707070;
-  border-radius: 8px;
-  background: white;
-}
-.outline:hover {
-  background: #f2f2f2;
-  border-color: #707070;
-}
-.login {
-  color: #707070;
-  border-left: 1px solid #e5e5e5;
-  padding-left: 18px;
-}
-.heart-top {
-  color: #707070;
-}
-.language {
-  border-color: #707070;
-  color: #707070;
-  background: #fff;
-}
-.add {
-  min-height: 43px;
-  font-size: 12px;
-  padding: 11px 17px;
-}
+.logo-az { color: #928060; }
+header nav { gap: 30px; color: #5f6465; font-size: 13px; }
+header nav a { color: var(--ink); }
+header nav a, header nav button { position: relative; padding: 33px 0; }
+header nav a::after { content: ''; position: absolute; height: 1px; background: var(--ink); inset: auto 0 0; }
+header nav button:hover { color: var(--ink); }
+.header-right { gap: 19px; }
+.language-switch { display: flex; gap: 12px; flex-shrink: 0; }
+.language-switch button { color: #7d7d7d; padding: 7px 0; min-width: 20px; min-height: 36px; font-size: 11px; font-weight: 400; border-bottom: 1px solid transparent; }
+.language-switch [aria-pressed="true"] { color: var(--ink); border-color: var(--ink); }
+.heart-top { display: grid; place-items: center; width: 32px; height: 38px; color: #515758; padding: 0; border: 0; background: transparent; }
+.login { color: #515758; padding: 0; border: 0; font-size: 12px; gap: 8px; }
+.add { font-size: 12px; min-height: 42px; padding: 11px 16px; }
+.mobile-nav { display: none; }
+
+/* Compact introduction, without decorative imagery. */
 .hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 330px;
-  gap: 40px;
+  display: flex;
   align-items: center;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 30px 20px;
-  background: transparent;
+  justify-content: space-between;
+  max-width: none;
+  margin: 0;
+  padding: 31px max(32px, calc((100vw - 1376px) / 2)) 35px;
+  gap: 40px;
+  color: #fff;
+  background: #212729;
   border: 0;
+  border-bottom: 1px solid #353b3c;
   border-radius: 0;
   overflow: visible;
-  color: #707070;
 }
-.hero:before {
-  display: none;
-}
-.hero-content {
-  padding: 0;
-}
-.hero-tag {
-  font-size: 10px;
-  letter-spacing: 1.6px;
-  color: #707070;
-  margin-bottom: 11px;
-}
-.hero h1 {
-  font-size: 34px;
-  line-height: 1.16;
-  letter-spacing: -1.15px;
-  font-weight: 400;
-  color: #707070;
-  margin: 0 0 12px;
-  max-width: 650px;
-}
-.hero p {
-  font-size: 13px;
-  color: #707070;
-  line-height: 1.8;
-  max-width: 570px;
-  margin: 0;
-}
-.hero-visual {
-  height: 133px;
-  border-radius: 13px;
-  border: 0;
-  transform: none;
-  box-shadow: none;
-  background: #d9d9d9;
-}
-.hero-visual img {
-  object-position: center 57%;
-  object-fit: cover;
-}
-.hero-visual:after {
-  background: linear-gradient(90deg, #27372a18, transparent);
-}
-.marketplace-layout {
-  display: grid;
-  grid-template-columns: 255px minmax(0, 1fr);
-  gap: 28px;
-  max-width: 1280px;
-  padding: 0 20px;
-  margin: 0 auto 55px;
-  align-items: start;
-}
-.search-wrap {
-  max-width: none;
-  padding: 0;
-  margin: 0;
-  position: sticky;
-  top: 22px;
-  background: #fff;
-  border: 1px solid #e1e1e1;
-  border-radius: 11px;
-  overflow: hidden;
-  scroll-margin-top: 20px;
-}
-.filter-panel-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 19px;
-  border-bottom: 1px solid #ececec;
-}
-.filter-panel-heading > span {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  font-size: 13px;
-  color: #707070;
-}
-.filter-panel-heading > span > svg {
-  color: #707070;
-}
-.filter-panel-heading > button {
-  width: 30px;
-  height: 30px;
-  display: grid;
-  place-items: center;
-  border-radius: 6px;
-  color: #707070;
-}
-.filter-panel-heading > button:hover {
-  background: #f2f2f2;
-  color: #707070;
-}
-.search-box {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 21px;
-  padding: 22px 19px;
-  background: white;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-}
-.search-box label {
-  border: 0 !important;
-  padding: 0 !important;
-  min-width: 0;
-  width: 100%;
-}
-.search-box label > span {
-  font-size: 11px;
-  color: #707070;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.search-box label > span svg {
-  width: 14px;
-  height: 14px;
-  color: #707070;
-}
-.search-box select,
-.search-box input {
-  width: 100%;
-  height: 44px;
-  min-height: 44px;
-  border: 1px solid #e1e1e1;
-  background: #fafafa;
-  color: #707070;
-  border-radius: 7px;
-  padding: 10px 11px;
-  font-size: 12px;
-  outline: revert;
-}
-.search-box input::placeholder {
-  color: #707070;
-}
-.search-box .budget {
-  position: relative;
-  display: block;
-  max-width: none;
-}
-.search-box .budget input {
-  padding-right: 30px;
-  text-align: left;
-}
-.search-box .budget > b {
-  position: absolute;
-  right: 12px;
-  top: 13px;
-  font-size: 12px;
-  color: #707070;
-  font-weight: 400;
-}
-.search-box .model-search {
-  font-size: 11px;
-  color: #707070;
-  display: grid;
-  gap: 8px;
-  margin: 0;
-}
-.search-box .model-search input {
-  max-width: none;
-  font-size: 11px;
-}
-.search-box .search-submit {
-  font-size: 12px;
-  min-height: 45px;
-  width: 100%;
-  padding: 12px;
-  gap: 8px;
-}
-.filter-panel-note {
-  display: flex;
-  align-items: flex-start;
-  gap: 9px;
-  margin: 0 18px 21px;
-  padding: 15px 0 0;
-  border-top: 1px solid #ececec;
-  color: #707070;
-}
-.filter-panel-note > svg {
-  margin-top: 3px;
-  stroke-width: 1.4;
-}
-.filter-panel-note p {
-  font-size: 10px;
-  line-height: 1.9;
-  color: #707070;
-  margin: 0;
-}
-.marketplace-layout main#cars {
-  max-width: none;
-  margin: 0;
-  padding: 0;
-  min-width: 0;
-  scroll-margin-top: 24px;
-}
-.section-title {
-  align-items: center;
-  min-height: 47px;
-  margin-bottom: 18px;
-  gap: 15px;
-}
-.section-title h2 {
-  font-size: 25px;
-  letter-spacing: -0.7px;
-  font-weight: 400;
-  color: #707070;
-  margin: 0;
-}
-.section-title p {
-  display: none !important;
-}
-.section-title .listing-count {
-  font-size: 11px;
-  background: #ebebeb;
-  border: 1px solid #e1e1e1;
-  color: #707070;
-  min-height: 29px;
-  padding: 7px 10px;
-  border-radius: 20px;
-  white-space: nowrap;
-}
-.filter-bar {
-  display: block;
-  margin: 0 0 13px;
-  border: 0;
-  padding: 0;
-  position: relative;
-}
-.tabs {
-  gap: 6px;
-  display: flex;
-  flex-wrap: nowrap;
-  overflow: auto;
-  scrollbar-width: none;
-  max-width: 100%;
-  padding: 0 0 3px;
-}
-.tabs button {
-  border: 1px solid #dfdfdf;
-  background: #fff;
-  color: #707070;
-  border-radius: 6px;
-  min-height: 36px;
-  padding: 9px 14px;
-  font-size: 11px;
-  flex-shrink: 0;
-}
-.tabs .active {
-  background: #1c2d3a;
-  border-color: #707070;
-  color: #fff;
-}
-.tabs button:hover {
-  background: #e8e8e8;
-}
-.tabs .active:hover {
-  background: #212121;
-}
-.filter-bar > select {
-  position: absolute;
-  right: 0;
-  top: 56px;
-  font-size: 11px;
-  max-width: 190px;
-  min-height: 28px;
-  padding: 4px 0;
-  color: #707070;
-  z-index: 1;
-  cursor: pointer;
-}
-.demo-note {
-  display: none;
-}
-.catalogue-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-top: 1px solid #e0e0e0;
-  padding: 13px 0 17px;
-  margin-top: 11px;
-  min-height: 58px;
-}
-.results-description {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 11px;
-  color: #707070;
-}
-.results-description svg {
-  color: #707070;
-  stroke-width: 1.5;
-}
-.view-switch {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  border: 1px solid #dfdfdf;
-  border-radius: 6px;
-  padding: 3px;
-  background: #fff;
-  margin-right: 195px;
-}
-.view-switch button {
-  display: grid;
-  place-items: center;
-  width: 29px;
-  height: 25px;
-  border-radius: 4px;
-  color: #707070;
-}
-.view-switch button[aria-pressed="true"] {
-  background: #e9e9e9;
-  color: #707070;
-}
-.grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 22px;
-}
-.car-card {
-  background: white;
-  border: 1px solid #dfdfdf;
-  border-radius: 11px;
-  box-shadow: none;
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s,
-    border-color 0.2s;
-}
-.car-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 9px 24px #3546230a;
-  border-color: #707070;
-}
-.car-image {
-  aspect-ratio: 1.5;
-  background: #e7e7e7;
-}
-.car-image img {
-  object-fit: cover;
-  object-position: center;
-  transition: transform 0.4s;
-}
-.car-card:hover img {
-  transform: scale(1.018);
-}
-.badges {
-  left: 13px;
-  top: 13px;
-  gap: 5px;
-}
-.badges .kind {
-  display: none;
-}
-.badges span {
-  box-shadow: none;
-  font-size: 9px;
-  border-radius: 4px;
-  padding: 6px 8px;
-}
-.premium {
-  background: #f3e6bf;
-  color: #707070;
-  border: 1px solid #e8d7a6;
-}
-.vip {
-  background: #fffffff2;
-  color: #707070;
-  border: 1px solid #e8e8e8;
-}
-.like {
-  right: 12px;
-  top: 12px;
-  height: 34px;
-  width: 34px;
-  border: 1px solid #ececec;
-  background: #fff;
-  color: #707070;
-  box-shadow: 0 2px 8px #2639180a;
-}
-.like.liked,
-.like:hover {
-  color: #707070;
-  background: white;
-}
-.card-body {
-  padding: 17px 18px 0;
-}
-.card-location {
-  font-size: 10px;
-  color: #707070;
-  gap: 4px;
-}
-.card-location > span {
-  color: #707070;
-}
-.car-name {
-  font-size: 17px;
-  letter-spacing: -0.5px;
-  font-weight: 450;
-  color: #707070;
-  margin: 11px 0 14px;
-  min-height: 24px;
-  line-height: 1.4;
-}
-.specs {
-  gap: 17px;
-  font-size: 10px;
-  color: #707070;
-}
-.specs svg {
-  width: 14px;
-  height: 14px;
-  stroke-width: 1.4;
-}
-.card-bottom {
-  padding: 19px 0 16px;
-  align-items: center;
-}
-.card-bottom strong {
-  font-size: 26px;
-  font-weight: 400;
-  color: #707070;
-  letter-spacing: -1px;
-}
-.card-bottom strong span {
-  font-size: 17px;
-}
-.card-bottom small {
-  font-size: 10px;
-  color: #707070;
-}
-.card-bottom > button {
-  width: auto;
-  min-width: 35px;
-  height: 33px;
-  border-radius: 6px;
-  border: 1px solid #e0e0e0;
-  background: #f7f7f7;
-  color: #707070;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 10px;
-  font-size: 10px;
-}
-.card-detail-label {
-  font-size: 10px;
-  line-height: 1.4;
-}
-.owner {
-  padding: 12px 0;
-  min-height: 45px;
-  border-top: 1px solid #ececec;
-  font-size: 9px;
-  color: #707070;
-  gap: 6px;
-}
-.owner-icon {
-  width: 21px;
-  height: 21px;
-  border-radius: 50%;
-  background: #efefef;
-  color: #707070;
-}
-.owner > svg {
-  opacity: 0.55;
-  stroke: #9a9a9a;
-}
-.bottom-banner {
-  margin: 35px 0 0;
-  padding: 27px;
-  background: #eaeaea;
-  border: 1px solid #dedede;
-  border-radius: 11px;
-  gap: 18px;
-  color: #707070;
-}
-.bottom-banner h2 {
-  font-size: 22px;
-  letter-spacing: -0.6px;
-  font-weight: 400;
-  margin: 8px 0;
-  color: #707070;
-}
-.bottom-banner span {
-  font-size: 7px;
-  letter-spacing: 1.4px;
-  color: #707070;
-}
-.bottom-banner p {
-  font-size: 10px;
-  color: #707070;
-}
-.bottom-banner > button {
-  padding: 12px 15px;
-  font-size: 10px;
-  min-height: 40px;
-  border: 1px solid #dbdbdb;
-  color: #707070;
-  background: white;
-  gap: 16px;
-}
-.banner-icon {
-  display: none;
-}
-.how {
-  max-width: 1280px;
-  margin: 0 auto 50px;
-  padding: 30px 20px 0;
-  border-top: 1px solid #e0e0e0;
-}
-.how > .eyebrow {
-  font-size: 8px;
-  color: #707070;
-  letter-spacing: 1.7px;
-}
-.how h2 {
-  font-size: 27px;
-  font-weight: 400;
-  color: #707070;
-  margin: 10px 0 29px;
-}
-.how h3 {
-  font-size: 14px;
-  font-weight: 400;
-  color: #707070;
-}
-.how p {
-  font-size: 11px;
-  color: #707070;
-}
-.how article > span {
-  height: 34px;
-  width: 34px;
-  border: 1px solid #e0e0e0;
-  border-radius: 50%;
-  background: #ececec;
-  color: #707070;
-  font-size: 10px;
-}
-.how > div {
-  gap: 30px;
-}
-.mobile-catalogue-tools {
-  display: none;
-}
-footer {
-  background: #fff;
-  border-top: 1px solid #e2e2e2;
-  color: #707070;
-  font-size: 11px;
-}
-footer .logo {
-  color: #707070;
-  font-size: 22px;
-}
-footer .logo-mark {
-  background: #7a7a7a;
-}
-footer button {
-  color: #707070;
-  font-size: 10px;
-}
-footer small {
-  font-size: 9px;
-  color: #707070;
-}
-.modal {
-  border-color: #707070;
-  box-shadow: 0 25px 85px #263b2030;
-}
-.modal h2 {
-  color: #707070;
-  font-weight: 400;
-}
-.modal p {
-  color: #707070;
-}
-.modal h3 {
-  color: #707070;
-  font-weight: 400;
-}
-.modal .close {
-  border-color: #707070;
-  background: #fffffff5;
-  color: #707070;
-}
-.modal-emblem {
-  background: #ededed;
-  color: #707070;
-  border-color: #707070;
-}
-.detail-price {
-  color: #707070 !important;
-  font-weight: 400;
-}
-.detail-price small {
-  color: #707070;
-}
-.detail-specs {
-  color: #707070;
-  border-color: #707070;
-}
-.detail-owner {
-  color: #707070;
-}
-.rental-terms {
-  background: #f4f4f4;
-  border-color: #707070;
-}
-.rental-terms p {
-  color: #707070;
-}
-.account-role {
-  border-color: #707070;
-  background: #f2f2f2;
-  color: #707070;
-}
-.email-form label {
-  color: #707070;
-}
-.email-form label > span > svg {
-  color: #707070;
-}
-.email-form input,
-.registration-form input,
-.listing-form input,
-.listing-form select,
-.listing-form textarea {
-  border-color: #707070;
-  background: #fafafa;
-  color: #707070;
-  box-shadow: none;
-}
-.email-form input::placeholder,
-.listing-form input::placeholder,
-.listing-form textarea::placeholder {
-  color: #707070;
-}
-.auth-mode-tabs {
-  border-color: #707070;
-}
-.auth-mode-tabs button {
-  color: #707070;
-}
-.auth-mode-tabs .active {
-  border-color: #707070;
-  color: #707070;
-}
-.account-type button {
-  border-color: #707070;
-  color: #707070;
-}
-.account-type [aria-pressed="true"] {
-  background: #ededed;
-  border-color: #707070;
-  color: #707070;
-}
-.forgot-link {
-  color: #707070;
-}
-.auth-footnote {
-  color: #707070 !important;
-}
-.auth-back {
-  color: #707070;
-}
-.service-note {
-  border-color: #707070;
-  background: #f7f7f7;
-  color: #707070 !important;
-}
-.empty {
-  background: #f5f5f5;
-  border-color: #707070;
-  color: #707070;
-}
-.form-hint {
-  border-color: #707070;
-  background: #f1f1f1;
-  color: #707070;
-}
-.editor-photo {
-  background: #f5f5f5;
-  border-color: #707070;
-}
-.editor-photo span,
-.fieldset-caption {
-  color: #707070 !important;
-}
-.listing-form legend {
-  color: #707070;
-}
-.listing-form label {
-  color: #707070;
-}
-.admin-nav {
-  background: #ededed;
-  border-color: #707070;
-}
-.admin-nav button {
-  color: #707070;
-}
-.admin-nav button.active {
-  background: #fff;
-  color: #707070;
-  border-color: #707070;
-  box-shadow: none;
-}
-.stats article,
-.admin-listings,
-.owner-management,
-.admin-review,
-.admin-guide,
-.overview-grid > button {
-  border-color: #707070;
-  box-shadow: none;
-}
-.stats span {
-  color: #707070;
-}
-.stats strong {
-  color: #707070;
-  font-weight: 400;
-}
-.stat-icon {
-  background: #f0f0f0;
-  color: #707070;
-  border-color: #707070;
-}
-.overview-grid h3 {
-  color: #707070;
-  font-weight: 400;
-}
-.overview-grid p,
-.overview-heading p {
-  color: #707070;
-}
-.workspace-notice {
-  background: #ededed;
-  border-color: #707070;
-  color: #707070;
-}
-.workspace-notice h3 {
-  color: #707070;
-}
-.workspace-notice p {
-  color: #707070;
-}
-.owner-row,
-.admin-row {
-  border-color: #707070;
-}
-.owner-row b,
-.admin-row b {
-  color: #707070;
-}
-.owner-row p,
-.admin-row p {
-  color: #707070;
-}
-.owner-search,
-.admin-filters input,
-.admin-filters select,
-.admin-row select {
-  border-color: #707070;
-  background: #f9f9f9;
-  color: #707070;
-}
-.status-pill {
-  background: #f0f0f0;
-  color: #707070;
-}
-.sample-pill {
-  background: #f4f4f4;
-  color: #707070;
-}
-.owner-listing {
-  border-color: #707070;
-}
-.owner-listing b {
-  color: #707070;
-}
-.owner-listing p {
-  color: #707070;
-}
-.toast {
-  background: #1c2d3a;
-  border-color: #707070;
-  color: white;
-}
-.toast svg {
-  color: #707070;
-}
-.service-notice {
-  color: #707070;
-  border-color: #707070;
-  background: #fffaf0;
-}
-.catalogue-list {
-  grid-template-columns: minmax(0, 1fr);
-}
-.catalogue-list .car-card {
-  display: grid;
-  grid-template-columns: 260px minmax(0, 1fr);
-  min-height: 223px;
-}
-.catalogue-list .car-image {
-  height: 100%;
-  aspect-ratio: auto;
-  min-height: 223px;
-}
-.catalogue-list .car-image img {
-  object-fit: contain;
-  background: #ececec;
-}
-.catalogue-list .card-body {
-  padding: 19px 23px 0;
-}
-.catalogue-list .car-name {
-  font-size: 19px;
-  margin-top: 11px;
-}
-.catalogue-list .card-bottom {
-  padding: 20px 0 15px;
-}
-.catalogue-list .owner {
-  min-height: 40px;
-}
-.catalogue-list .specs {
-  gap: 23px;
-}
-@media (min-width: 1600px) {
-  .marketplace-layout {
-    grid-template-columns: 270px minmax(0, 1fr);
-    max-width: 1360px;
-    gap: 32px;
-  }
-  .hero {
-    max-width: 1360px;
-    grid-template-columns: 1fr 380px;
-    padding-top: 32px;
-    padding-bottom: 32px;
-  }
-  .hero-visual {
-    height: 135px;
-  }
-  .grid {
-    gap: 25px;
-  }
-  .car-name {
-    font-size: 18px;
-  }
-}
-@media (max-width: 1100px) {
-  .hero {
-    grid-template-columns: 1fr 270px;
-    padding: 25px 25px;
-    margin: 0;
-  }
-  .hero h1 {
-    font-size: 30px;
-  }
-  .hero-visual {
-    height: 125px;
-  }
-  .marketplace-layout {
-    grid-template-columns: 225px minmax(0, 1fr);
-    gap: 21px;
-  }
-  .search-box {
-    padding: 19px 16px;
-    gap: 18px;
-  }
-  .filter-panel-heading {
-    padding: 17px 16px;
-  }
-  .filter-panel-heading > span {
-    font-size: 12px;
-  }
-  .card-body {
-    padding: 15px 15px 0;
-  }
-  .car-name {
-    font-size: 15px;
-  }
-  .specs {
-    gap: 10px;
-    font-size: 9px;
-  }
-  .card-bottom strong {
-    font-size: 24px;
-  }
-  .card-detail-label {
-    display: none;
-  }
-  .owner {
-    font-size: 8px;
-  }
-  .bottom-banner {
-    padding: 23px;
-    flex-wrap: wrap;
-    gap: 17px;
-  }
-  .bottom-banner > button {
-    margin-left: 0;
-  }
-  .catalogue-list .car-card {
-    grid-template-columns: 220px minmax(0, 1fr);
-  }
-  .catalogue-list .card-body {
-    padding: 17px 18px 0;
-  }
-  .catalogue-list .car-name {
-    font-size: 17px;
-  }
-  .catalogue-list .specs {
-    gap: 11px;
-  }
-}
-@media (max-width: 900px) {
-  .marketplace-layout {
-    grid-template-columns: 205px minmax(0, 1fr);
-    gap: 18px;
-    padding: 0 19px;
-  }
-  .grid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 21px;
-  }
-  .car-name {
-    font-size: 19px;
-  }
-  .specs {
-    font-size: 12px;
-    gap: 23px;
-  }
-  .owner {
-    font-size: 10px;
-  }
-  .card-body {
-    padding: 18px 20px 0;
-  }
-  .card-bottom strong {
-    font-size: 27px;
-  }
-  .card-detail-label {
-    display: inline;
-  }
-  .filter-bar > select {
-    position: static;
-    margin-top: 12px;
-    width: 100%;
-    max-width: none;
-    font-size: 11px;
-  }
-  .catalogue-toolbar {
-    margin-top: 0;
-    padding: 12px 0 16px;
-  }
-  .view-switch {
-    display: none;
-  }
-  .section-title h2 {
-    font-size: 24px;
-  }
-  .section-title .listing-count {
-    display: none;
-  }
-  .hero {
-    padding: 23px 25px;
-    grid-template-columns: 1fr 220px;
-    gap: 25px;
-  }
-  .hero h1 {
-    font-size: 28px;
-  }
-  .hero p {
-    font-size: 12px;
-  }
-  .hero-tag {
-    font-size: 9px;
-  }
-  .hero-visual {
-    height: 125px;
-  }
-  .catalogue-list .car-card {
-    display: block;
-  }
-  .catalogue-list .car-image {
-    aspect-ratio: 1.5;
-    height: auto;
-    min-height: 0;
-  }
-  .catalogue-list .car-image img {
-    object-fit: cover;
-  }
-  .bottom-banner h2 {
-    font-size: 23px;
-  }
-  .search-box .search-submit {
-    font-size: 11px;
-    gap: 6px;
-  }
-  .search-box .search-submit svg {
-    width: 15px;
-  }
-  .filter-panel-note {
-    margin-left: 16px;
-    margin-right: 16px;
-    gap: 8px;
-  }
-  .filter-panel-note p {
-    font-size: 9px;
-  }
-}
-@media (max-width: 640px) {
-  header {
-    height: 68px;
-    padding: 0 18px;
-  }
-  .logo {
-    font-size: 22px;
-  }
-  .logo-mark {
-    width: 32px;
-    height: 32px;
-    margin-right: 8px;
-    border-radius: 9px;
-  }
-  .logo-az {
-    color: #707070;
-  }
-  .header-right {
-    gap: 7px;
-  }
-  .login {
-    border: 0;
-    padding: 0;
-    width: 30px;
-  }
-  .add {
-    font-size: 0;
-    width: 35px;
-    min-height: 35px;
-    padding: 8px;
-  }
-  .language {
-    font-size: 11px;
-    min-height: 34px;
-    max-width: 50px;
-    padding: 5px;
-  }
-  .mobile-nav {
-    height: 38px;
-    background: #fff;
-    border-bottom: 1px solid #e3e3e3;
-    color: #707070;
-    font-size: 10px;
-    gap: 23px;
-  }
-  .mobile-nav a,
-  .mobile-nav button {
-    min-height: 38px;
-  }
-  .hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 106px;
-    padding: 22px 19px 24px;
-    gap: 18px;
-    margin: 0;
-  }
-  .hero-tag {
-    font-size: 7px;
-    letter-spacing: 1.4px;
-    margin-bottom: 9px;
-  }
-  .hero h1 {
-    font-size: 25px;
-    line-height: 1.2;
-    letter-spacing: -0.7px;
-    max-width: 300px;
-    margin: 0;
-  }
-  .hero p {
-    display: none;
-  }
-  .hero-visual {
-    height: 95px;
-    border-radius: 9px;
-  }
-  .hero-visual img {
-    object-position: 57% center;
-  }
-  .marketplace-layout {
-    display: flex;
-    flex-direction: column;
-    padding: 0 18px;
-    gap: 0;
-    margin-bottom: 42px;
-  }
-  .search-wrap {
-    display: none;
-    width: 100%;
-    position: static;
-    margin-bottom: 24px;
-    scroll-margin-top: 15px;
-  }
-  .search-wrap.filters-open {
-    display: block;
-  }
-  .search-box {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 19px;
-    gap: 19px 15px;
-  }
-  .search-box label {
-    min-width: 0 !important;
-  }
-  .search-box label > span {
-    font-size: 11px;
-  }
-  .search-box select,
-  .search-box input {
-    font-size: 13px;
-    min-height: 44px;
-  }
-  .search-box .model-search {
-    font-size: 11px;
-    gap: 8px;
-  }
-  .search-box .model-search input {
-    font-size: 12px;
-  }
-  .search-box label:nth-child(3) {
-    grid-column: auto;
-    display: block;
-    border: 0;
-    padding: 0;
-  }
-  .search-box label:nth-child(3) > span {
-    margin-bottom: 8px;
-  }
-  .search-box .budget input {
-    font-size: 13px;
-  }
-  .search-box .search-submit {
-    grid-column: 1/-1;
-    font-size: 13px;
-    min-height: 45px;
-  }
-  .filter-panel-heading {
-    padding: 15px 19px;
-  }
-  .filter-panel-heading > span {
-    font-size: 13px;
-  }
-  .filter-panel-note {
-    margin: 0 19px 19px;
-    padding-top: 13px;
-  }
-  .filter-panel-note p {
-    font-size: 11px;
-  }
-  .marketplace-layout main#cars {
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    scroll-margin-top: 15px;
-  }
-  .section-title {
-    margin-bottom: 14px;
-    min-height: 31px;
-  }
-  .section-title h2 {
-    font-size: 24px;
-    line-height: 1.25;
-    letter-spacing: -0.6px;
-  }
-  .section-title .listing-count {
-    display: none;
-  }
-  .mobile-catalogue-tools {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 13px;
-    margin: 0 0 16px;
-  }
-  .mobile-catalogue-tools .outline {
-    font-size: 12px;
-    min-height: 38px;
-    padding: 9px 13px;
-    gap: 8px;
-    border-color: #707070;
-    color: #707070;
-  }
-  .mobile-catalogue-tools > span {
-    font-size: 10px;
-    color: #707070;
-  }
-  .filter-bar {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-    margin-bottom: 0;
-  }
-  .tabs {
-    gap: 6px;
-    overflow: auto;
-    min-width: 0;
-    padding-bottom: 2px;
-  }
-  .tabs button {
-    font-size: 11px;
-    padding: 9px 13px;
-    min-height: 36px;
-  }
-  .filter-bar > select {
-    position: static;
-    width: auto;
-    max-width: 180px;
-    align-self: flex-end;
-    font-size: 10px;
-    padding: 6px 0;
-    margin: 0;
-    min-height: 27px;
-  }
-  .catalogue-toolbar {
-    min-height: 0;
-    border: 0;
-    padding: 5px 0 13px;
-    margin: 0;
-  }
-  .catalogue-toolbar .results-description {
-    font-size: 9px;
-    color: #707070;
-  }
-  .catalogue-toolbar .results-description svg {
-    height: 14px;
-    width: 14px;
-  }
-  .catalogue-toolbar .view-switch {
-    display: none;
-  }
-  .grid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 24px;
-  }
-  .car-image {
-    aspect-ratio: 1.5;
-  }
-  .card-body {
-    padding: 18px 20px 0;
-  }
-  .card-name,
-  .car-name {
-    font-size: 20px;
-    font-weight: 400;
-    margin: 12px 0 16px;
-    min-height: 0;
-  }
-  .card-location {
-    font-size: 11px;
-  }
-  .specs {
-    font-size: 11px;
-    gap: 22px;
-  }
-  .specs svg {
-    width: 14px;
-    height: 14px;
-  }
-  .card-bottom {
-    padding: 22px 0 18px;
-  }
-  .card-bottom strong {
-    font-size: 29px;
-  }
-  .card-bottom strong span {
-    font-size: 19px;
-  }
-  .card-bottom small {
-    font-size: 11px;
-  }
-  .card-bottom > button {
-    min-height: 36px;
-    gap: 9px;
-    padding: 9px 12px;
-  }
-  .card-detail-label {
-    font-size: 11px;
-  }
-  .owner {
-    font-size: 10px;
-    padding: 14px 0;
-  }
-  .owner-icon {
-    height: 23px;
-    width: 23px;
-  }
-  .badges {
-    top: 14px;
-    left: 14px;
-  }
-  .badges span {
-    font-size: 9px;
-    padding: 6px 8px;
-  }
-  .like {
-    right: 13px;
-    top: 13px;
-    height: 36px;
-    width: 36px;
-  }
-  .bottom-banner {
-    margin: 31px 0 0;
-    padding: 25px;
-    gap: 18px;
-    border-radius: 10px;
-  }
-  .bottom-banner span {
-    font-size: 7px;
-    line-height: 1.8;
-    letter-spacing: 1.2px;
-  }
-  .bottom-banner h2 {
-    font-size: 24px;
-    line-height: 1.3;
-    margin: 8px 0;
-  }
-  .bottom-banner p {
-    font-size: 12px;
-    line-height: 1.9;
-  }
-  .bottom-banner > button {
-    width: 100%;
-    font-size: 12px;
-    padding: 13px 16px;
-    min-height: 44px;
-    margin: 0;
-  }
-  .how {
-    margin: 0 19px 40px;
-    padding: 30px 6px 0;
-  }
-  .how h2 {
-    font-size: 25px;
-    line-height: 1.35;
-    margin: 10px 0 27px;
-  }
-  .how > .eyebrow {
-    font-size: 8px;
-  }
-  .how > div {
-    gap: 27px;
-  }
-  .how h3 {
-    font-size: 15px;
-  }
-  .how p {
-    font-size: 12px;
-    line-height: 1.8;
-  }
-  .how article > span {
-    height: 36px;
-    width: 36px;
-    font-size: 10px;
-  }
-  .catalogue-list .car-card {
-    display: block;
-    min-height: 0;
-  }
-  .catalogue-list .car-image {
-    height: auto;
-    aspect-ratio: 1.5;
-    min-height: 0;
-  }
-  .catalogue-list .card-body {
-    padding: 18px 20px 0;
-  }
-  .catalogue-list .car-name {
-    font-size: 20px;
-  }
-  .catalogue-list .specs {
-    gap: 22px;
-  }
-  .modal h2 {
-    font-size: 25px;
-  }
-  .modal p {
-    font-size: 13px;
-  }
-  .email-form input,
-  .registration-form input,
-  .listing-form input,
-  .listing-form select,
-  .listing-form textarea {
-    font-size: 16px;
-  }
-  .auth-footnote {
-    font-size: 11px !important;
-  }
-  .admin .section-title p {
-    font-size: 12px;
-    display: block !important;
-  }
-  .admin .section-title {
-    margin-bottom: 23px;
-  }
-  .admin-nav button {
-    font-size: 11px;
-  }
-  .owner-row p,
-  .admin-row p,
-  .admin-guide p {
-    font-size: 12px;
-  }
-  footer {
-    padding: 27px 23px;
-    gap: 19px;
-  }
-  footer .logo {
-    font-size: 22px;
-  }
-  footer button {
-    font-size: 11px;
-  }
-  footer small {
-    font-size: 10px;
-  }
-}
-@media (max-width: 360px) {
-  header {
-    padding: 0 12px;
-  }
-  .logo {
-    font-size: 20px;
-  }
-  .logo-mark {
-    width: 29px;
-    height: 29px;
-    margin-right: 7px;
-  }
-  .header-right {
-    gap: 5px;
-  }
-  .language {
-    max-width: 47px;
-  }
-  .login {
-    width: 27px;
-  }
-  .add {
-    width: 33px;
-    min-height: 34px;
-  }
-  .hero {
-    padding: 20px 17px;
-    grid-template-columns: minmax(0, 1fr) 90px;
-    gap: 13px;
-  }
-  .hero h1 {
-    font-size: 22px;
-    letter-spacing: -0.5px;
-  }
-  .hero-tag {
-    font-size: 6px;
-    letter-spacing: 1.1px;
-  }
-  .hero-visual {
-    height: 85px;
-  }
-  .marketplace-layout {
-    padding: 0 16px;
-  }
-  .section-title h2 {
-    font-size: 22px;
-  }
-  .mobile-catalogue-tools > span {
-    font-size: 9px;
-  }
-  .search-box {
-    grid-template-columns: 1fr;
-    padding: 18px;
-    gap: 18px;
-  }
-  .search-box .search-submit {
-    grid-column: 1;
-  }
-  .specs {
-    font-size: 10px;
-    gap: 16px;
-  }
-  .card-body {
-    padding: 17px 17px 0;
-  }
-  .car-name {
-    font-size: 19px;
-  }
-  .owner {
-    font-size: 9px;
-  }
-  .card-detail-label {
-    font-size: 10px;
-  }
-  .card-bottom > button {
-    padding: 8px 9px;
-    gap: 7px;
-  }
-  .catalogue-list .card-body {
-    padding: 17px 17px 0;
-  }
-  .catalogue-list .car-name {
-    font-size: 19px;
-  }
-  .catalogue-list .specs {
-    gap: 16px;
-  }
-  .bottom-banner {
-    padding: 23px;
-  }
-  .bottom-banner h2 {
-    font-size: 22px;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .car-card,
-  .car-image img {
-    transition: none;
-  }
-  .car-card:hover,
-  .car-card:hover img {
-    transform: none;
-  }
-}
+.hero::before { display: none; }
+.hero-content { padding: 0; max-width: 850px; }
+.hero-tag { color: #d0bc98; font-size: 10px; letter-spacing: 1.8px; margin-bottom: 12px; text-transform: uppercase; }
+.hero h1 { color: #fff; font-weight: 400; font-size: 37px; letter-spacing: -1.1px; line-height: 1.25; margin: 0; max-width: none; }
+.hero p { display: block; color: #c3c3c3; margin: 12px 0 0; font-size: 13px; line-height: 1.8; max-width: 710px; }
+.hero-periods { display: flex; flex-direction: column; flex-shrink: 0; gap: 11px; border-left: 1px solid #4d4d4d; padding: 2px 0 2px 30px; font-size: 12px; color: #d7d7d7; }
 
-/* Readable neutral ink across catalog, account and dashboard surfaces. */
-:root {
-  --ink: #1c2d3a;
-  --muted: #707070;
-  --line: #e3e3e3;
-  color: #1c2d3a;
-  background: #f5f5f5;
-}
-.logo,
-.hero h1,
-.section-title h2,
-.car-name,
-.card-bottom strong,
-.modal h2,
-.modal h3,
-.how h2,
-.how h3,
-.bottom-banner h2,
-.admin h1,
-.admin h2,
-.admin h3,
-.stats strong,
-.owner-row b,
-.admin-row b,
-.owner-listing b {
-  color: #1c2d3a;
-}
-.logo-az,
-.auth-mode-tabs .active,
-.forgot-link {
-  color: #156a73;
-}
-.hero-tag {
-  color: #9a795e;
-}
-.primary {
-  background: #156a73;
-  border-color: #156a73;
-  color: #fff;
-}
-.primary:hover {
-  background: #11565e;
-  border-color: #11565e;
-}
-.tabs .active,
-.tabs .active:hover {
-  color: #fff;
-  background: #1c2d3a;
-  border-color: #1c2d3a;
-}
-.premium {
-  color: #806c3f;
-  background: #f4e8c9;
-  border-color: #e6d6b0;
-}
-.vip {
-  color: #707070;
-  background: #fff;
-  border-color: #e4e4e4;
-}
-.like.liked,
-.like:hover {
-  color: #156a73;
-}
-.card-bottom > button {
-  background: #f3f3f3;
-  color: #747474;
-  border-color: #dfdfdf;
-}
-.card-location,
-.owner,
-.specs,
-.card-bottom small {
-  color: #767676;
-  font-size: 12px;
-}
-.card-location > span {
-  color: #767676;
-}
-.car-name {
-  font-size: 19px;
-}
-.card-detail-label {
-  font-size: 11px;
-}
-.owner-icon {
-  background: #f1f1f1;
-  color: #8d8d8d;
-}
-.search-box label > span,
-.search-box .model-search {
-  font-size: 12px;
-  color: #767676;
-}
-.search-box select,
-.search-box input {
-  font-size: 13px;
-  color: #555555;
-  background: #fafafa;
-}
-.search-box input::placeholder {
-  color: #828282;
-}
-.filter-panel-note p {
-  font-size: 11px;
-  color: #858585;
-}
-.filter-panel-heading > span {
-  font-size: 14px;
-  color: #565656;
-}
-.filter-panel-heading svg,
-.filter-panel-note svg {
-  color: #8c8c8c;
-}
-.section-title .listing-count {
-  color: #7a7a7a;
-  font-size: 12px;
-}
-.results-description {
-  font-size: 12px;
-  color: #7d7d7d;
-}
-.filter-bar > select {
-  font-size: 12px;
-  color: #7a7a7a;
-}
-.tabs button {
-  font-size: 12px;
-  color: #7d7d7d;
-}
-.bottom-banner {
-  background: #eeeeee;
-  border-color: #dfdfdf;
-}
-.bottom-banner p {
-  font-size: 12px;
-  color: #8a8a8a;
-}
-.bottom-banner span {
-  font-size: 9px;
-  color: #8a8a8a;
-}
-.bottom-banner > button {
-  font-size: 11px;
-  color: #7f7f7f;
-}
-.how p {
-  font-size: 12px;
-  color: #8c8c8c;
-}
-.how > .eyebrow {
-  font-size: 9px;
-  color: #8c8c8c;
-}
-.modal p,
-.rental-terms p,
-.detail-specs,
-.detail-owner {
-  color: #727272;
-}
-.detail-price {
-  color: #656565 !important;
-}
-.email-form label,
-.listing-form label {
-  color: #6c6c6c;
-}
-.email-form input,
-.registration-form input,
-.listing-form input,
-.listing-form select,
-.listing-form textarea {
-  color: #5b5b5b;
-  background: #fafafa;
-  border-color: #dedede;
-}
-.email-form input::placeholder,
-.listing-form input::placeholder,
-.listing-form textarea::placeholder {
-  color: #939393;
-}
-.auth-footnote {
-  color: #8c8c8c !important;
-}
-.account-type [aria-pressed="true"] {
-  color: #7d7d7d;
-  background: #efefef;
-}
-.stats span,
-.overview-grid p,
-.workspace-notice p,
-.owner-row p,
-.admin-row p,
-.owner-management > p,
-.admin-guide p {
-  color: #808080;
-}
-.admin-nav button.active {
-  color: #757575;
-}
-.stat-icon {
-  color: #9a9a9a;
-}
-.toast {
-  color: white;
-}
-.toast svg {
-  color: #d5d5d5;
-}
-.service-note {
-  color: #888888 !important;
-}
-footer .logo {
-  color: #636363;
-}
-footer button,
-footer small {
-  color: #8d8d8d;
-}
-@media (max-width: 1100px) {
-  .car-name {
-    font-size: 17px;
-  }
-  .specs {
-    gap: 10px;
-    font-size: 11px;
-  }
-  .owner {
-    font-size: 10px;
-  }
-  .card-detail-label {
-    display: none;
-  }
-  .search-box select,
-  .search-box input {
-    font-size: 12px;
-  }
-  .section-title h2 {
-    font-size: 23px;
-  }
-}
-@media (max-width: 900px) {
-  .car-name {
-    font-size: 19px;
-  }
-  .owner {
-    font-size: 11px;
-  }
-  .specs {
-    font-size: 12px;
-    gap: 20px;
-  }
-  .card-detail-label {
-    display: inline;
-  }
-  .filter-bar > select {
-    font-size: 12px;
-  }
-  .hero h1 {
-    font-size: 28px;
-  }
-  .catalogue-list .car-name {
-    font-size: 19px;
-  }
-}
-@media (max-width: 640px) {
-  .hero h1 {
-    font-size: 25px;
-  }
-  .section-title h2 {
-    font-size: 24px;
-  }
-  .mobile-catalogue-tools .outline {
-    color: #7f7f7f;
-    font-size: 13px;
-  }
-  .mobile-catalogue-tools > span {
-    color: #8c8c8c;
-    font-size: 11px;
-  }
-  .tabs button {
-    font-size: 12px;
-  }
-  .filter-bar > select {
-    font-size: 12px;
-  }
-  .catalogue-toolbar .results-description {
-    font-size: 11px;
-    color: #959595;
-  }
-  .car-name,
-  .catalogue-list .car-name {
-    font-size: 20px;
-  }
-  .card-location,
-  .owner,
-  .specs {
-    font-size: 12px;
-  }
-  .card-bottom small {
-    font-size: 12px;
-  }
-  .card-detail-label {
-    font-size: 12px;
-  }
-  .search-box select,
-  .search-box input {
-    font-size: 14px;
-  }
-  .search-box .model-search,
-  .search-box label > span {
-    font-size: 12px;
-  }
-  .search-box .model-search input {
-    font-size: 13px;
-  }
-  .filter-panel-note p {
-    font-size: 12px;
-  }
-  .bottom-banner span {
-    font-size: 9px;
-  }
-  .bottom-banner p {
-    font-size: 13px;
-  }
-  .bottom-banner > button {
-    font-size: 12px;
-  }
-  .how h3 {
-    font-size: 16px;
-  }
-  .how p {
-    font-size: 13px;
-  }
-  footer small {
-    font-size: 11px;
-  }
-}
-@media (max-width: 360px) {
-  .hero h1 {
-    font-size: 22px;
-  }
-  .section-title h2 {
-    font-size: 22px;
-  }
-  .mobile-catalogue-tools > span {
-    font-size: 10px;
-  }
-  .car-name,
-  .catalogue-list .car-name {
-    font-size: 19px;
-  }
-  .specs {
-    font-size: 11px;
-    gap: 15px;
-  }
-  .owner {
-    font-size: 11px;
-  }
-  .card-detail-label {
-    font-size: 11px;
-  }
-}
+/* Catalog structure. */
+.marketplace-layout { display: grid; grid-template-columns: 224px minmax(0, 1fr); gap: 32px; max-width: 1440px; margin: 0 auto; padding: 30px 32px 0; align-items: start; }
+.search-wrap { position: sticky; top: 24px; margin: 0; padding: 0; width: auto; max-width: none; background: #fff; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; box-shadow: none; }
+.filter-panel-heading { display: flex; align-items: center; gap: 9px; border-bottom: 1px solid var(--line); padding: 18px 16px; }
+.filter-panel-heading > span { display: flex; align-items: center; gap: 9px; color: var(--ink); font-size: 13px; line-height: 1.5; }
+.filter-panel-heading > span svg { width: 16px; }
+.filter-panel-heading > button { display: grid; place-items: center; padding: 3px; min-width: 24px; min-height: 30px; margin-left: auto; color: var(--muted); }
+.filter-panel-heading .filter-close { display: none; }
+.search-box { display: grid; grid-template-columns: minmax(0,1fr); gap: 20px; background: #fff; padding: 22px 16px; border: 0; box-shadow: none; border-radius: 0; }
+.search-box label, .search-box .model-search { display: grid; gap: 9px; padding: 0; margin: 0; border: 0; min-width: 0; color: #5b6060; font-size: 12px; }
+.search-box label > span { display: flex; gap: 6px; align-items: center; font-size: 12px; color: #5b6060; margin: 0; }
+.search-box label > span svg { display: none; }
+.search-box select, .search-box input { min-height: 43px; width: 100%; max-width: none; min-width: 0; padding: 11px 10px; border: 1px solid #dedede; border-radius: 4px; background: #f9f9f9; color: var(--ink); font-size: 12px; }
+.search-box input::placeholder { color: #787878; opacity: 1; }
+.search-box select:focus, .search-box input:focus { border-color: #a48c65; outline: 1px solid #a48c65; }
+.budget { position: relative; display: block; }
+.budget input { padding-right: 30px; }
+.budget b { position: absolute; right: 11px; top: 14px; color: #6a6a6a; font-size: 12px; font-weight: 400; }
+.search-submit { width: 100%; min-height: 44px; margin-top: 1px; padding: 12px; font-size: 12px; gap: 8px; }
+.filter-panel-note { display: flex; align-items: flex-start; gap: 10px; padding: 18px 16px; margin: 0; background: #f4f4f4; border-top: 1px solid var(--line); }
+.filter-panel-note svg { color: #948366; width: 16px; margin-top: 3px; }
+.filter-panel-note p { font-size: 11px; line-height: 1.8; color: #646464; margin: 0; }
+main#cars { margin: 0; padding: 0; width: 100%; max-width: none; min-width: 0; scroll-margin-top: 22px; }
+main#cars > .section-title { margin: 0 0 19px; min-height: 27px; }
+.section-title h2 { font-size: 24px; font-weight: 400; letter-spacing: -.6px; margin: 0; line-height: 1.4; color: var(--ink); }
+main#cars > .section-title p, main#cars > .section-title .eyebrow, .section-title .listing-count { display: none; }
+.filter-bar { display: block; margin: 0; padding: 0; border-bottom: 1px solid #d9d9d9; }
+.tabs { display: flex; gap: 25px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tabs button { display: flex; align-items: center; gap: 6px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: #656565; padding: 10px 0 14px; min-height: 43px; font-size: 12px; border-radius: 0; white-space: nowrap; }
+.tabs button svg { display: none; }
+.tabs button:hover { color: var(--ink); background: transparent; }
+.tabs button.active { color: var(--ink); background: transparent; border-color: var(--ink); }
+.demo-note { display: none; }
+.catalogue-toolbar { display: flex; align-items: center; gap: 18px; padding: 15px 0; min-height: 61px; }
+.results-description { display: flex; align-items: center; gap: 7px; color: #696969; font-size: 11px; line-height: 1.6; }
+.results-description svg { display: none; }
+.catalogue-toolbar > select { border: 0; padding: 8px 0; color: #535353; background: transparent; font-size: 11px; max-width: 180px; min-height: 31px; margin-left: auto; }
+.view-switch { display: flex; align-items: center; gap: 2px; padding-left: 15px; border-left: 1px solid #d9d9d9; }
+.view-switch button { display: grid; place-items: center; width: 29px; height: 29px; padding: 0; border-radius: 3px; color: #818181; }
+.view-switch button[aria-pressed="true"] { background: #e8e8e8; color: #363636; }
+.mobile-catalogue-tools { display: none; }
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 22px; }
 
-/* Keep secondary controls readable on both desktop and small screens. */
-.section-title .listing-count { display: none; }
-.results-description, .filter-bar > select, .tabs button,
-.mobile-catalogue-tools .outline, .mobile-catalogue-tools > span,
-.filter-panel-heading > span, .search-box label > span,
-.search-box .model-search, .filter-panel-note p,
-.bottom-banner p, .bottom-banner span, .bottom-banner > button,
-.how p, footer small { color: #5f6b76; }
-.search-box select, .search-box input { color: #1c2d3a; }
-.tabs button.active { color: #fff; }
-@media (max-width: 640px) {
- .catalogue-toolbar { display: none; }
-}
+/* Photographs and rental information lead every card. */
+.car-card { background: #fff; border: 1px solid #dfdfdf; border-radius: 6px; overflow: hidden; box-shadow: none; cursor: pointer; transition: border-color .2s, box-shadow .2s; }
+.car-card:hover { transform: none; border-color: #999999; box-shadow: 0 8px 22px #26262609; }
+.car-image { position: relative; overflow: hidden; aspect-ratio: 1.5; background: #e6e6e6; }
+.image-open { display: block; padding: 0; width: 100%; height: 100%; }
+.car-image img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; transition: transform .4s ease; }
+.car-card:hover img { transform: scale(1.015); }
+.badges { position: absolute; top: 13px; left: 13px; display: flex; gap: 5px; }
+.badges span { display: flex; align-items: center; gap: 6px; border-radius: 3px; padding: 6px 8px; box-shadow: none; font-size: 9px; letter-spacing: .7px; line-height: 1.4; text-transform: uppercase; font-weight: 400; }
+.badges .premium { color: #e5d2af; background: #222829ed; border: 1px solid #85735166; }
+.badges .vip { color: #514835; background: #f4ead5f5; border: 1px solid #ece2d0; }
+.like { position: absolute; top: 12px; right: 12px; display: grid; place-items: center; width: 34px; height: 34px; padding: 0; border-radius: 50%; border: 0; color: #585858; background: #fff; box-shadow: none; }
+.like svg { width: 18px; height: 18px; stroke-width: 1.5; }
+.like:hover, .like.liked { color: #2a2a2a; background: #fff; }
+.card-body { padding: 17px 17px 0; }
+.card-location { display: flex; align-items: center; gap: 4px; color: #6f6f6f; font-size: 11px; }
+.card-location > span { color: #6f6f6f; margin-left: auto; }
+.card-location svg { width: 11px; height: 11px; }
+.car-name { display: block; text-align: left; margin: 10px 0 15px; padding: 0; color: var(--ink); font-size: 19px; line-height: 1.35; font-weight: 450; letter-spacing: -.5px; min-height: 24px; }
+.specs { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; color: #6f6f6f; font-size: 11px; line-height: 1.5; }
+.specs span { display: flex; align-items: center; gap: 4px; }
+.specs svg { width: 12px; height: 12px; stroke-width: 1.3; }
+.card-bottom { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; padding: 23px 0 17px; }
+.card-bottom > div:first-child { display: flex; align-items: baseline; gap: 5px; }
+.card-bottom strong { color: #262626; font-size: 27px; font-weight: 400; letter-spacing: -1.1px; line-height: 1; }
+.card-bottom strong span { font-size: 17px; }
+.card-bottom small { color: #6f6f6f; font-size: 10px; }
+.card-bottom .card-deposit { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; color: #686868; font-size: 10px; line-height: 1.4; }
+.card-deposit span:last-child { color: #555555; font-size: 11px; }
+.owner { display: flex; align-items: center; gap: 7px; border-top: 1px solid #e9e9e9; padding: 13px 0; min-height: 43px; color: #6c6c6c; font-size: 11px; line-height: 1.5; }
+.owner-icon { display: flex; width: auto; height: auto; padding: 0; border: 0; background: none; color: #6c6c6c; }
+.catalogue-list { grid-template-columns: minmax(0,1fr); gap: 16px; }
+.catalogue-list .car-card { display: grid; grid-template-columns: 260px minmax(0,1fr); }
+.catalogue-list .car-image { height: 100%; aspect-ratio: auto; min-height: 220px; background: #ededed; }
+.catalogue-list .car-image img { object-fit: contain; }
+.catalogue-list .card-body { padding: 19px 22px 0; }
+.catalogue-list .car-name { font-size: 21px; margin-bottom: 17px; }
+.catalogue-list .specs { font-size: 12px; gap: 22px; }
+.catalogue-list .card-bottom { padding-top: 23px; }
 
-/* Rental prices and owner-defined requirements. */
-.rental-periods { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 0 0 22px; }
-.rental-periods > span { display: flex; flex-direction: column; gap: 8px; padding: 14px; border: 1px solid #e3e5e6; border-radius: 9px; color: #5f6b76; font-size: 13px; }
-.rental-periods strong { font-weight: 450; color: #1c2d3a; font-size: 16px; }
+/* Secondary content is quieter than the catalog. */
+.bottom-banner { display: flex; align-items: center; gap: 24px; padding: 29px 26px; margin: 36px 0 40px; background: #ececec; color: var(--ink); border: 1px solid #dbdbdb; border-radius: 6px; }
+.banner-icon { display: none; }
+.bottom-banner span { color: #807253; font-size: 9px; letter-spacing: 1.1px; }
+.bottom-banner h2 { color: #2d2d2d; margin: 10px 0 9px; font-size: 23px; line-height: 1.35; font-weight: 400; letter-spacing: -.6px; }
+.bottom-banner p { color: #606060; font-size: 12px; margin: 0; }
+.bottom-banner > button { display: flex; align-items: center; gap: 17px; background: var(--ink); color: #fff; border: 1px solid var(--ink); border-radius: 4px; padding: 12px 15px; min-height: 43px; font-size: 11px; margin-left: auto; white-space: nowrap; }
+.how { max-width: 1440px; margin: 14px auto 62px; padding: 0 32px; text-align: left; }
+.how > .eyebrow { font-size: 9px; letter-spacing: 1.5px; color: #8c7c5d; }
+.how h2 { font-size: 28px; line-height: 1.35; margin: 13px 0 30px; color: var(--ink); font-weight: 400; }
+.how > div { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 35px; }
+.how article { display: grid; grid-template-columns: 45px minmax(0,1fr); gap: 4px 16px; border-top: 1px solid #d8d8d8; padding-top: 23px; }
+.how article > span { display: block; position: static; grid-row: 1/3; padding: 0; width: auto; height: auto; margin: 0; background: transparent; border: 0; border-radius: 0; color: #a79777; font-size: 25px; font-weight: 400; letter-spacing: -1px; }
+.how h3 { color: #3c3c3c; font-size: 15px; font-weight: 400; line-height: 1.5; margin: 0 0 7px; }
+.how p { color: #6d6d6d; font-size: 12px; line-height: 1.8; margin: 0; }
+footer { padding: 30px max(32px, calc((100vw - 1376px) / 2)); border-top: 1px solid #dbdbdb; background: #fff; color: #6c6c6c; gap: 28px; font-size: 12px; }
+footer .logo { font-size: 23px; color: #2f2f2f; font-weight: 400; }
+footer button { color: #5a5a5a; font-size: 12px; }
+footer small { margin-left: auto; font-size: 10px; color: #757575; }
+
+/* One system for detail dialogs, forms, accounts and administration. */
+.overlay { background: #141a1ac9; backdrop-filter: blur(5px); }
+.modal { --modal-pad: 32px; padding: var(--modal-pad); border: 1px solid #e0e0e0; border-radius: 9px; box-shadow: 0 30px 100px #12121238; max-width: 660px; color: var(--ink); }
+.modal h2 { color: #282828; font-size: 29px; font-weight: 400; line-height: 1.3; }
+.modal h3 { color: #3a3a3a; font-size: 16px; font-weight: 450; }
+.modal p { color: #646464; font-size: 13px; line-height: 1.9; }
+.eyebrow, .modal .eyebrow { color: #8e7c5b; font-size: 10px; letter-spacing: 1.1px; }
+.close { background: #fff; border: 1px solid #dedede; color: #575757; box-shadow: none; }
+.modal-emblem { background: #f1f1f1; color: #6d6d6d; border: 1px solid #dbdbdb; border-radius: 6px; }
+.detail-image { width: calc(100% + var(--modal-pad) * 2); margin: calc(var(--modal-pad) * -1) calc(var(--modal-pad) * -1) 26px; aspect-ratio: 1.5; object-fit: contain; background: #ededed; }
+.detail-price { color: #282828 !important; font-size: 31px !important; font-weight: 400; line-height: 1.5 !important; }
+.detail-price small { color: #696969; font-size: 12px; background: none; padding: 0; margin: 0; border-radius: 0; }
+.detail-specs { border-color: #dfdfdf; color: #6c6c6c; font-size: 12px; padding-bottom: 20px; margin-bottom: 20px; }
+.detail-owner { display: flex; align-items: center; gap: 8px; }
+.rental-periods { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; margin-bottom: 22px; }
+.rental-periods > span { display: flex; flex-direction: column; gap: 9px; padding: 16px; border: 1px solid #dedede; border-radius: 5px; background: #f9f9f9; color: #6b6b6b; font-size: 12px; }
+.rental-periods strong { font-size: 16px; font-weight: 400; color: #393939; }
+.rental-terms { background: #f3f3f3; border: 1px solid #dedede; padding: 20px; border-radius: 5px; margin: 22px 0; }
+.rental-terms p { color: #6c6c6c; font-size: 12px; white-space: pre-line; }
+.listing-description { white-space: pre-line; }
 .rental-facts { margin: 0 0 18px; }
-.rental-facts > div { display: flex; justify-content: space-between; gap: 18px; padding: 12px 0; border-bottom: 1px solid #e3e5e6; font-size: 13px; }
-.rental-facts dt { color: #5f6b76; }
-.rental-facts dd { margin: 0; color: #1c2d3a; text-align: right; }
-.session-loading { background: #f5f7f9; color: #1c2d3a; gap: 20px; padding: 24px; text-align: center; }
-.loading-brand { font-size: 32px; font-weight: 400; letter-spacing: -1.4px; }
-.loading-brand span { font-size: inherit; color: #156a73; letter-spacing: inherit; }
-.session-loading p { color: #5f6b76; font-size: 14px; line-height: 1.6; letter-spacing: 0; margin: 0; }
-.loading-progress { width: 110px; height: 2px; background: #e3e5e6; overflow: hidden; }
-.loading-progress::after { content: ''; display: block; width: 40%; height: 100%; background: #156a73; animation: rental-loading 1.4s ease-in-out infinite; }
-@keyframes rental-loading { from { transform: translateX(-100%); } to { transform: translateX(350%); } }
-@media (prefers-reduced-motion: reduce) { .loading-progress::after { animation: none; transform: translateX(75%); } }
-.modal .eyebrow { color: #11565e; }
-
-/* Header, catalog and private account refinements. */
-header { border-color: #e2e7eb; }
-.header-right { gap: 14px; }
-.login { border: 0; padding-left: 0; }
-.language-switch { display: inline-flex; align-items: center; gap: 2px; padding: 3px; background: #f2f5f7; border-radius: 7px; flex-shrink: 0; }
-.language-switch button { display: grid; place-items: center; width: 29px; min-height: 30px; padding: 0; font-size: 11px; font-weight: 400; color: #5f6b76; border: 0; border-radius: 5px; background: transparent; }
-.language-switch button[aria-pressed="true"] { color: #1c2d3a; background: #fff; box-shadow: 0 1px 3px #1c2d3a12; }
-.language-switch button:hover { color: #156a73; }
-.heart-top { display: grid; place-items: center; width: 36px; height: 36px; color: #5f6b76; border: 0; background: transparent; }
-.heart-top svg { stroke-width: 1.6; }
-.hero { display: block; padding: 28px 20px 24px; }
-.hero-content { max-width: 920px; }
-.hero h1 { max-width: none; font-weight: 400; }
-.hero p { color: #5f6b76; line-height: 1.65; font-size: 14px; margin-top: 12px; }
-.hero-tag { font-size: 10px; letter-spacing: 1px; color: #156a73; }
-.car-card { border-color: #e1e6ea; cursor: pointer; }
-.car-card:focus-visible { outline: 2px solid #156a73; outline-offset: 4px; }
-.car-card:hover { border-color: #a5b7c0; box-shadow: 0 6px 22px #1c2d3a09; }
-.like { display: grid; place-items: center; width: 36px; height: 36px; padding: 0; border: 0; background: #fff; box-shadow: none; color: #5f6b76; }
-.like svg { width: 19px; height: 19px; stroke-width: 1.6; }
-.like.liked, .like:hover { color: #156a73; }
-.like.liked svg { fill: currentColor; }
-.owner > svg { margin-left: auto; stroke-width: 1.5; }
-.account-details { margin: 22px 0; border: 1px solid #e1e6ea; border-radius: 10px; padding: 0 18px; }
-.account-details > div { display: grid; grid-template-columns: 150px minmax(0, 1fr); align-items: start; gap: 12px; padding: 15px 0; border-bottom: 1px solid #e8edf0; }
-.account-details > div:last-child { border: 0; }
-.account-details dt { display: flex; align-items: center; gap: 9px; color: #5f6b76; font-size: 13px; }
-.account-details dd { margin: 0; color: #1c2d3a; font-size: 14px; overflow-wrap: anywhere; }
-.account-summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 20px; }
-.account-summary button { display: grid; grid-template-columns: 22px 1fr auto; gap: 8px; align-items: center; text-align: left; padding: 16px 12px; border: 1px solid #e1e6ea; border-radius: 8px; background: #f7f9fa; color: #1c2d3a; font-size: 13px; }
-.account-summary button:hover { background: #eef4f5; border-color: #a5b7c0; }
-.account-summary svg { color: #156a73; stroke-width: 1.6; }
-.account-summary strong { font-size: 20px; font-weight: 400; }
-.contact-call { display: flex; align-items: center; justify-content: center; gap: 10px; }
-.contact-call span { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
-.contact-call small { font-size: 12px; color: inherit; opacity: .9; }
-@media (max-width: 900px) {
- .header-right { gap: 8px; }
- header .heart-top { display: none; }
-}
-@media (max-width: 640px) {
- header { height: 72px; padding: 0 18px; }
- .hero { padding: 24px 18px; }
- .hero h1 { font-size: 27px; max-width: 500px; }
- .hero p { display: block; font-size: 13px; margin: 10px 0 0; }
- .hero-tag { font-size: 9px; margin-bottom: 10px; }
- .account-details { padding: 0 14px; }
- .account-details > div { grid-template-columns: 1fr; gap: 9px; }
- .account-summary button { grid-template-columns: 20px 1fr; gap: 8px; padding: 12px; font-size: 12px; }
- .account-summary strong { grid-column: 2; }
-}
-@media (max-width: 480px) {
- header { padding: 0 12px; }
- header .logo-mark { display: none; }
- header .logo { font-size: 22px; letter-spacing: -1px; }
- .header-right { gap: 7px; }
- .language-switch { gap: 0; padding: 2px; }
- .language-switch button { width: 25px; min-height: 30px; font-size: 10px; }
- header .login { width: 27px; }
-}
-@media (max-width: 360px) {
- header .logo { font-size: 20px; }
- .header-right { gap: 5px; }
- header .add { width: 32px; }
- .hero h1 { font-size: 25px; }
-}
-.detail-save { display: inline-flex; align-items: center; gap: 9px; padding: 11px 14px; margin: 0 0 20px; color: #156a73; border-color: #dce5e9; font-size: 13px; }
-.related-listings { margin-top: 30px; padding-top: 8px; border-top: 1px solid #e1e6ea; }
+.rental-facts > div { display: flex; justify-content: space-between; gap: 20px; padding: 13px 0; border-bottom: 1px solid #e0e0e0; font-size: 12px; line-height: 1.6; }
+.rental-facts dt { color: #6c6c6c; }
+.rental-facts dd { margin: 0; text-align: right; color: #404040; }
+.detail-save { display: inline-flex; align-items: center; gap: 9px; padding: 10px 14px; margin-bottom: 22px; font-size: 12px; }
+.contact { display: flex; gap: 12px; }
+.contact-call { gap: 9px; }
+.contact-call span { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
+.contact-call small { color: inherit; font-size: 12px; }
+.related-listings { border-top: 1px solid #dedede; padding-top: 18px; margin-top: 28px; }
 .related-listings > div { display: grid; gap: 10px; }
-.related-listings button { display: grid; grid-template-columns: 90px minmax(0,1fr) 18px; gap: 14px; align-items: center; padding: 0 12px 0 0; border: 1px solid #e1e6ea; border-radius: 8px; overflow: hidden; background: #fff; color: #1c2d3a; text-align: left; }
-.related-listings button:hover { border-color: #a5b7c0; background: #f7f9fa; }
+.related-listings button { display: grid; grid-template-columns: 90px minmax(0,1fr) 18px; gap: 14px; align-items: center; padding: 0 12px 0 0; background: white; border: 1px solid #dedede; border-radius: 5px; overflow: hidden; text-align: left; color: #404040; }
+.related-listings button:hover { background: #f3f3f3; }
 .related-listings img { width: 90px; height: 75px; object-fit: cover; }
 .related-listings span { font-size: 13px; line-height: 1.5; }
-.related-listings small { display: block; color: #5f6b76; margin-top: 6px; font-size: 12px; }
+.related-listings small { display: block; font-size: 12px; margin-top: 6px; color: #6c6c6c; }
+.empty { color: #6c6c6c; background: #f9f9f9; border: 1px dashed #d1d1d1; border-radius: 5px; }
+.empty button { color: #545454; }
+.account-details { margin: 24px 0; padding: 0 18px; border: 1px solid #dedede; border-radius: 5px; }
+.account-details > div { display: grid; grid-template-columns: 150px minmax(0,1fr); gap: 14px; padding: 16px 0; border-bottom: 1px solid #e5e5e5; }
+.account-details > div:last-child { border: 0; }
+.account-details dt { display: flex; align-items: center; gap: 9px; color: #6c6c6c; font-size: 12px; }
+.account-details dd { color: #404040; font-size: 14px; margin: 0; overflow-wrap: anywhere; }
+.account-summary { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; margin-bottom: 20px; }
+.account-summary button { display: grid; grid-template-columns: 22px 1fr auto; gap: 8px; align-items: center; padding: 16px 12px; background: #f6f6f6; border: 1px solid #dedede; border-radius: 5px; text-align: left; color: #545454; font-size: 12px; }
+.account-summary strong { font-size: 21px; font-weight: 400; }
+.account-role { background: #f1f1f1; color: #6b6b6b; border-color: #dedede; }
+.account-actions { gap: 12px; }
+.listing-form label, .email-form label, .registration-form label { color: #585858; font-size: 13px; }
+.listing-form input, .listing-form select, .listing-form textarea, .email-form input, .registration-form input { border: 1px solid #dadada; border-radius: 5px; background: #fbfbfb; color: #404040; min-height: 46px; }
+.listing-form input::placeholder, .listing-form textarea::placeholder, .email-form input::placeholder { color: #888888; }
+.listing-form legend { color: #545454; }
+.form-hint, .service-note, .editor-photo { color: #6b6b6b; background: #f5f5f5; border-color: #dedede; border-radius: 5px; }
+.fieldset-caption, .auth-footnote { color: #797979 !important; }
+.auth-mode-tabs .active { color: #545454; border-color: #545454; }
+.auth-mode-tabs button, .forgot-link, .auth-back { color: #6b6b6b; }
+.account-type button, .registration-types button { color: #6b6b6b; border-color: #dedede; border-radius: 5px; }
+.account-type [aria-pressed="true"], .registration-types [aria-pressed="true"] { color: #545454; background: #f1f1f1; border-color: #b6b6b6; }
+.auth-error { color: #9c3934 !important; }
+.service-notice { background: #fff9ec; color: #79633f; border-color: #e9dbbe; }
+.toast { background: #272727; color: #f0f0f0; border-color: #535353; border-radius: 5px; }
+.toast svg { color: #bfbfbf; }
+.admin { max-width: 1440px; padding-left: 32px; padding-right: 32px; }
+.admin h1, .admin h2, .admin h3, .stats strong, .overview-grid h3 { color: #404040; font-weight: 400; }
+.admin-nav { background: #eeeeee; border-color: #dedede; border-radius: 5px; }
+.admin-nav button { color: #6b6b6b; border-radius: 3px; }
+.admin-nav button.active { color: #545454; background: white; border-color: #d9d9d9; box-shadow: none; }
+.admin-nav button > span { color: #6b6b6b; background: #f1f1f1; }
+.stats article, .overview-grid > button, .admin-listings, .owner-management, .admin-review, .admin-guide { border-color: #dedede; border-radius: 6px; box-shadow: none; }
+.stat-icon { background: #f1f1f1; color: #797979; border-color: #dedede; border-radius: 5px; }
+.workspace-notice { background: #f5f5f5; border-color: #dedede; }
+.admin-filters input, .admin-filters select, .owner-search { background: #fbfbfb; border-color: #dadada; color: #585858; border-radius: 5px; }
+.claim-status, .owner-row p, .admin-guide p { color: #797979; }
+.session-loading { background: #f6f6f6; color: #272727; gap: 20px; padding: 24px; text-align: center; }
+.loading-brand { font-size: 31px; font-weight: 400; letter-spacing: -.9px; text-transform: uppercase; }
+.loading-brand span { color: #a48c65; font-size: inherit; letter-spacing: inherit; }
+.session-loading p { color: #6b6b6b; font-size: 13px; line-height: 1.8; margin: 0; letter-spacing: 0; }
+.loading-progress { width: 100px; height: 1px; background: #dedede; overflow: hidden; }
+.loading-progress::after { content: ''; display: block; width: 40%; height: 100%; background: #a48c65; animation: rental-loading 1.4s ease-in-out infinite; }
+@keyframes rental-loading { from { transform: translateX(-100%); } to { transform: translateX(350%); } }
+
+@media (max-width: 1279px) {
+  header { padding-left: 24px; padding-right: 24px; gap: 20px; }
+  header nav { gap: 19px; }
+  .header-right { gap: 14px; }
+  .hero { padding-left: 24px; padding-right: 24px; }
+  .hero h1 { font-size: 34px; }
+  .marketplace-layout { padding-left: 24px; padding-right: 24px; grid-template-columns: 216px minmax(0,1fr); gap: 24px; }
+  .grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .catalogue-list { grid-template-columns: minmax(0,1fr); }
+  .catalogue-list .car-card { grid-template-columns: 230px minmax(0,1fr); }
+  .tabs { gap: 22px; }
+  .how { padding-left: 24px; padding-right: 24px; }
+}
+@media (max-width: 1000px) {
+  header nav { display: none; }
+  .hero-periods { display: none; }
+  .catalogue-list .car-card { grid-template-columns: 200px minmax(0,1fr); }
+  .catalogue-list .specs { gap: 13px; font-size: 11px; }
+  .bottom-banner { align-items: flex-start; flex-direction: column; gap: 20px; }
+  .bottom-banner > button { margin-left: 0; }
+}
+@media (max-width: 900px) {
+  .marketplace-layout { grid-template-columns: minmax(0,1fr); }
+  .search-wrap { display: none; position: static; }
+  .search-wrap.filters-open { display: block; margin-bottom: 0; }
+  .filter-panel-heading .filter-close { display: grid; margin-left: 0; }
+  .search-box { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .search-submit { grid-column: 1/-1; }
+  .filter-panel-note { display: none; }
+  main#cars { position: relative; }
+  main#cars > .section-title { padding-right: 115px; min-height: 40px; margin-bottom: 14px; }
+  .mobile-catalogue-tools { display: block; position: absolute; top: 0; right: 0; }
+  .mobile-catalogue-tools > span { display: none; }
+  .mobile-catalogue-tools .outline { display: flex; gap: 8px; align-items: center; min-height: 38px; padding: 9px 13px; font-size: 12px; }
+  .catalogue-list .car-card { grid-template-columns: 260px minmax(0,1fr); }
+  .bottom-banner { flex-direction: row; align-items: center; }
+  .bottom-banner > button { margin-left: auto; }
+}
+@media (max-width: 640px) {
+  header { height: 72px; padding: 0 18px; gap: 10px; }
+  .logo { font-size: 22px; }
+  .header-right { gap: 14px; }
+  .language-switch { gap: 9px; }
+  .language-switch button { font-size: 10px; min-width: 18px; }
+  .login { width: 24px; justify-content: center; }
+  .login span { display: none; }
+  header .heart-top { display: none; }
+  .add { width: 34px; min-height: 35px; padding: 8px; font-size: 0; border-radius: 4px; }
+  .mobile-nav { display: flex; align-items: center; justify-content: center; gap: 25px; height: 38px; border-bottom: 1px solid #dddddd; background: #fff; font-size: 10px; color: #737373; }
+  .mobile-nav a, .mobile-nav button { padding: 0; min-height: 38px; }
+  .hero { padding: 21px 18px 23px; }
+  .hero h1 { font-size: 29px; line-height: 1.25; letter-spacing: -.7px; }
+  .hero-tag { display: none; }
+  .hero p { font-size: 12px; line-height: 1.8; margin-top: 11px; }
+  .marketplace-layout { padding: 23px 18px 0; gap: 20px; }
+  .section-title h2 { font-size: 22px; letter-spacing: -.5px; }
+  main#cars > .section-title { margin-bottom: 11px; }
+  .tabs { gap: 24px; }
+  .tabs button { min-height: 41px; padding: 10px 0 13px; font-size: 12px; }
+  .catalogue-toolbar { min-height: 53px; padding: 11px 0; gap: 10px; }
+  .results-description { font-size: 10px; }
+  .catalogue-toolbar > select { font-size: 10px; max-width: 160px; padding: 7px 0; width: auto; }
+  .view-switch { display: none; }
+  .grid, .catalogue-list { grid-template-columns: minmax(0,1fr); gap: 23px; }
+  .catalogue-list .car-card { display: block; }
+  .catalogue-list .car-image, .car-image { aspect-ratio: 1.5; height: auto; min-height: 0; }
+  .catalogue-list .car-image img { object-fit: cover; }
+  .card-body, .catalogue-list .card-body { padding: 18px 19px 0; }
+  .car-name, .catalogue-list .car-name { font-size: 21px; margin: 11px 0 17px; min-height: 0; }
+  .card-location { font-size: 12px; }
+  .specs, .catalogue-list .specs { font-size: 12px; gap: 19px; }
+  .specs svg { width: 14px; height: 14px; }
+  .card-bottom, .catalogue-list .card-bottom { padding: 25px 0 19px; }
+  .card-bottom strong { font-size: 30px; }
+  .card-bottom strong span { font-size: 20px; }
+  .card-bottom small, .card-bottom .card-deposit { font-size: 11px; }
+  .card-deposit span:last-child { font-size: 12px; }
+  .owner { font-size: 11px; padding: 14px 0; }
+  .like { width: 36px; height: 36px; }
+  .bottom-banner { flex-direction: column; align-items: flex-start; padding: 25px 22px; gap: 20px; margin: 30px 0 36px; }
+  .bottom-banner h2 { font-size: 25px; }
+  .bottom-banner > button { width: 100%; margin: 0; justify-content: space-between; min-height: 44px; font-size: 12px; }
+  .how { padding: 0 18px; margin: 10px 0 40px; }
+  .how h2 { font-size: 26px; margin-bottom: 25px; }
+  .how > div { grid-template-columns: minmax(0,1fr); gap: 24px; }
+  .how article { padding: 21px 0 0; }
+  .how h3 { font-size: 16px; }
+  .how p { font-size: 13px; }
+  footer { padding: 26px 18px; gap: 17px; flex-wrap: wrap; flex-direction: row; align-items: center; }
+  footer > span { width: 100%; font-size: 11px; }
+  footer small { margin: 0; font-size: 10px; }
+  footer button { margin-left: auto; font-size: 11px; }
+  .overlay { padding: 12px; }
+  .modal { --modal-pad: 24px; border-radius: 8px; max-height: calc(100dvh - 24px); }
+  .modal h2 { font-size: 26px; }
+  .modal p { font-size: 13px; }
+  .modal h3 { font-size: 16px; }
+  .rental-terms { padding: 16px; }
+  .rental-facts > div { font-size: 12px; }
+  .account-details { padding: 0 15px; }
+  .account-details > div { grid-template-columns: minmax(0,1fr); gap: 9px; }
+  .account-summary button { grid-template-columns: 20px minmax(0,1fr); padding: 14px; }
+  .account-summary strong { grid-column: 2; }
+  .listing-form input, .listing-form select, .listing-form textarea, .email-form input, .registration-form input { font-size: 16px; }
+  .admin { padding-left: 18px; padding-right: 18px; }
+}
+@media (max-width: 360px) {
+  header { padding: 0 12px; gap: 8px; }
+  .logo { font-size: 20px; }
+  .header-right { gap: 10px; }
+  .language-switch { gap: 7px; }
+  .language-switch button { font-size: 9px; min-width: 17px; }
+  .hero { padding-left: 16px; padding-right: 16px; }
+  .hero h1 { font-size: 26px; }
+  .marketplace-layout { padding-left: 14px; padding-right: 14px; }
+  .search-box { grid-template-columns: minmax(0,1fr); }
+  .section-title h2 { font-size: 20px; }
+  .card-body, .catalogue-list .card-body { padding-left: 16px; padding-right: 16px; }
+  .specs, .catalogue-list .specs { gap: 14px; font-size: 11px; }
+  .car-name, .catalogue-list .car-name { font-size: 20px; }
+  .card-bottom strong { font-size: 28px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .loading-progress::after { animation: none; transform: translateX(75%); }
+  .car-image img, .car-card { transition: none; }
+  .car-card:hover img { transform: none; }
+}

@@ -328,9 +328,6 @@ function App({ user, onAuthenticated, onLogout, authError }) {
             setFavorites(false);
           }}
         >
-          <span className="logo-mark">
-            <Car size={23} />
-          </span>
           {t("rentacarr")}
           <span className="logo-az">{t(".az")}</span>
         </a>
@@ -842,10 +839,13 @@ function App({ user, onAuthenticated, onLogout, authError }) {
             <section className="hero">
               <div className="hero-content">
                 <div className="hero-tag">{t("Avtomobil kirayəsi")}</div>
-                <h1>{t("Azərbaycanda kirayə avtomobil tap")}</h1>
+                <h1>{t("Azərbaycanda avtomobil kirayəsi")}</h1>
                 <p>
                   {t("Rentakar şirkətləri və şəxsi sahiblərdən günlük, həftəlik və aylıq avtomobil kirayəsi.")}
                 </p>
+              </div>
+              <div className="hero-periods" aria-label={t("Kirayə müddəti")}>
+                <span>{t("Günlük")}</span><span>{t("Həftəlik")}</span><span>{t("Aylıq")}</span>
               </div>
             </section>
             <div className="marketplace-layout">
@@ -874,6 +874,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                   >
                     <RotateCcw size={15} />
                   </button>
+                  <button className="filter-close" aria-label={t("Bağla")} onClick={() => setFiltersOpen(false)}><X size={17} /></button>
                 </div>
                 <form
                   className="search-box"
@@ -965,7 +966,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                       {t(
                         favorites
                           ? "Bəyəndiyin avtomobillər"
-                          : "Kirayə avtomobillər",
+                          : "Avtomobil elanları",
                       )}
                     </h2>
                     <p>
@@ -1014,6 +1015,17 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                       )),
                     )}
                   </div>
+
+                </div>
+
+                <div className="demo-note">
+                  {t("Təqdimat kataloqu · Real fotolar, nümunə qiymətlər")}
+                </div>
+                <div className="catalogue-toolbar">
+                  <div className="results-description">
+                    {favorites ? <Heart size={16} /> : <Car size={16} />}
+                    <span>{t(`${filtered.length} avtomobil mövcuddur`)}</span>
+                  </div>
                   <select
                     aria-label={t("Elan sıralaması")}
                     value={sort}
@@ -1031,16 +1043,6 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                       )),
                     )}
                   </select>
-                </div>
-
-                <div className="demo-note">
-                  {t("Təqdimat kataloqu · Real fotolar, nümunə qiymətlər")}
-                </div>
-                <div className="catalogue-toolbar">
-                  <div className="results-description">
-                    {favorites ? <Heart size={16} /> : <Car size={16} />}
-                    <span>{t(`${filtered.length} avtomobil mövcuddur`)}</span>
-                  </div>
                   <div className="view-switch" aria-label={t("Görünüş")}>
                     <button
                       aria-label={t("Kart görünüşü")}
@@ -1090,7 +1092,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                             <img
                               src={c.image}
                               alt={c.name}
-                              loading={index < 2 ? "eager" : "lazy"}
+                              loading={index < 3 ? "eager" : "lazy"}
                               decoding="async"
                             />
                           </button>
@@ -1169,23 +1171,19 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                               </strong>
                               <small>{t("/ gün")}</small>
                             </div>
+                            {c.deposit != null && <div className="card-deposit"><span>{t("Depozit")}</span><span>{c.deposit} ₼</span></div>}
                           </div>
                           <div className="owner">
                             <span className="owner-icon">
                               {t(
                                 c.company ? (
-                                  <Car size={13} />
+                                  <Building2 size={14} />
                                 ) : (
                                   <Users size={13} />
                                 ),
                               )}
                             </span>
                             {t(c.owner)}
-                            {t(
-                              c.company && (
-                                <ShieldCheck size={13} color="#267357" />
-                              ),
-                            )}
                           </div>
                         </div>
                       </article>
@@ -1221,8 +1219,8 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                     <Car size={38} />
                   </div>
                   <div>
-                    <span>{t("SƏNİN AVTOMOBİLİN, SƏNİN QAZANCIN")}</span>
-                    <h2>{t("Avtomobilin boş dayanmasın.")}</h2>
+                    <span>{t("ŞİRKƏTLƏR VƏ ŞƏXSİ SAHİBLƏR ÜÇÜN")}</span>
+                    <h2>{t("Avtomobillərinizi kataloqa əlavə edin.")}</h2>
                     <p>
                       {t(
                         "İlk elanını pulsuz yerləşdir, yeni müştərilər qazan.",
@@ -1248,7 +1246,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
             </div>
             <section className="how">
               <span className="eyebrow">{t("CƏMİ 3 ADDIM")}</span>
-              <h2>{t("Yola çıxmaq bu qədər asandır.")}</h2>
+              <h2>{t("Avtomobili necə kirayə götürmək olar?")}</h2>
               <div>
                 {t(
                   [
@@ -1282,9 +1280,6 @@ function App({ user, onAuthenticated, onLogout, authError }) {
       )}
       <footer>
         <a className="logo" href="#">
-          <span className="logo-mark">
-            <Car size={22} />
-          </span>
           {t("rentacarr")}
           <span className="logo-az">{t(".az")}</span>
         </a>
