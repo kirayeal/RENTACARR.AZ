@@ -10,9 +10,9 @@ import {
 } from "lucide-react";
 import { request } from "./session";
 import { t } from "./i18n";
-export default function EmailAccess({ onAuthenticated }) {
-  const [mode, setMode] = useState("signup"),
-    [email, setEmail] = useState(""),
+export default function EmailAccess({ onAuthenticated, initialEmail = "", initialMode = "signup" }) {
+  const [mode, setMode] = useState(initialMode),
+    [email, setEmail] = useState(initialEmail),
     [kind, setKind] = useState("person"),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false),

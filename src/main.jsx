@@ -107,7 +107,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
     [favorites, setFavorites] = useState(false),
     [selected, updateSelected] = useState(null),
     [modal, setModal] = useState(
-      user && !user.isAdmin && !user.profile?.complete ? "register" : null,
+      user && !user.isAdmin && !user.profile?.complete ? "register" : !user && new URL(location.href).searchParams.get("panel") === "admin" ? "account" : null,
     ),
     [adminMode, updateAdmin] = useState(() => Boolean(user?.isAdmin && new URL(location.href).searchParams.get("panel") === "admin")),
     [pending, setPending] = useState(workspace.pending),
@@ -1557,7 +1557,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                               "Ad, e-poçt və telefon məlumatlarını yaz, şifrə seç və hesabını yarat.",
                             )}
                           </p>
-                          <EmailAccess onAuthenticated={onAuthenticated} />
+                          <EmailAccess onAuthenticated={onAuthenticated} initialEmail={new URL(location.href).searchParams.get("panel") === "admin" ? "rentacarr.az@gmail.com" : ""} initialMode={new URL(location.href).searchParams.get("panel") === "admin" ? "login" : "signup"} />
                           <GoogleLogin onAuthenticated={onAuthenticated} />
                         </>
                       ),
