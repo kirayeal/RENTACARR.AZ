@@ -3,26 +3,22 @@ export default function BrandMark() {
   return (
     <svg
       className="brand-mark"
-      viewBox="0 0 40 40"
+      viewBox="0 0 84 36"
       aria-hidden="true"
       focusable="false"
     >
-      <rect width="40" height="40" rx="12" fill="currentColor" />
-      <path
-        d="M12 29V11h9c5 0 8 2 8 6s-3 6-8 6h-4m5 0 7 6"
+      <g
         fill="none"
-        stroke="#fff"
-        strokeWidth="2.5"
+        stroke="currentColor"
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
-      />
-      <path
-        d="m12 29 5-6"
-        fill="none"
-        stroke="#9ee7d9"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-      />
+      >
+        <path d="M8 24v-5l5-4 12-2 10-8h21l11 9 9 4v6h-8M23 24h35M8 24h5" />
+        <path d="M30 13h31M42 6l-2 7" />
+        <circle cx="18" cy="25" r="5" />
+        <circle cx="63" cy="25" r="5" />
+      </g>
     </svg>
   );
 }

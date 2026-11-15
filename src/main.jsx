@@ -417,31 +417,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
     );
   return (
     <>
-      <header>
-        <a
-          className="logo"
-          href="#"
-          onClick={() => {
-            setAdmin(false);
-            setSelected(null);
-            setFavorites(false);
-          }}
-        >
-          <BrandMark/><span className="wordmark">{t("rentacarr")}</span>
-          <span className="logo-az">{t(".az")}</span>
-        </a>
-        <nav>
-          <a href="#cars" onClick={() => {setAdmin(false);setSelected(null);}}>
-            {t("Avtomobillər")}
-          </a>
-          <button onClick={() => setModal("partners")}>
-            {t("Partnyorlar")}
-          </button>
-          <button onClick={() => setModal("how")}>{t("Necə işləyir?")}</button>
-          {user?.isAdmin && <button className="header-admin" onClick={()=>{setModal(null);setAdmin(true);setSelected(null);window.scrollTo(0,0);}}><LayoutDashboard size={16}/>{t("İdarəetmə paneli")}{pending.length > 0 && <span>{pending.length}</span>}</button>}
-        </nav>
-        <div className="header-right">
-          <div className="language-switch" role="group" aria-label={t("Dil seçimi")}>
+      <div className="utility-bar"><div className="utility-inner"><div className="utility-purpose"><span>{t("Avtomobil kirayəsi")}</span><a href="mailto:rentacarr.az@gmail.com"><Mail size={13}/>rentacarr.az@gmail.com</a></div><div className="utility-controls">          <div className="language-switch" role="group" aria-label={t("Dil seçimi")}>
             {[["az", "Azərbaycan dili"], ["en", "English"], ["ru", "Русский"]].map(([value, label]) => (
               <button key={value} type="button" lang={value} title={label} aria-label={label} aria-pressed={language === value} onClick={() => setLanguage(value)}>
                 {value.toUpperCase()}
@@ -468,6 +444,32 @@ function App({ user, onAuthenticated, onLogout, authError }) {
             <UserRound size={17} />
             <span>{t(user ? "Hesabım / Ayarlar" : "Qeydiyyat / Giriş")}</span>
           </button>
+</div></div></div>
+      <header>
+        <a
+          className="logo"
+          aria-label="RENTACARR.AZ"
+          href="#"
+          onClick={() => {
+            setAdmin(false);
+            setSelected(null);
+            setFavorites(false);
+          }}
+        >
+          <BrandMark/><span className="wordmark">{t("rentacarr")}</span>
+          <span className="logo-az">{t(".az")}</span>
+        </a>
+        <nav>
+          <a href="#cars" onClick={() => {setAdmin(false);setSelected(null);}}>
+            {t("Avtomobillər")}
+          </a>
+          <button onClick={() => setModal("partners")}>
+            {t("Partnyorlar")}
+          </button>
+          <button onClick={() => setModal("how")}>{t("Necə işləyir?")}</button>
+          {user?.isAdmin && <button className="header-admin" onClick={()=>{setModal(null);setAdmin(true);setSelected(null);window.scrollTo(0,0);}}><LayoutDashboard size={16}/>{t("İdarəetmə paneli")}{pending.length > 0 && <span>{pending.length}</span>}</button>}
+        </nav>
+        <div className="header-right">
           <button
             className="primary add"
             onClick={() =>
@@ -494,18 +496,6 @@ function App({ user, onAuthenticated, onLogout, authError }) {
             </button>
             <button onClick={() => setModal("how")}>
               {t("Necə işləyir?")}
-            </button>
-            <button
-              aria-label={t("Seçilmiş elanlar")}
-              onClick={() => {
-                setFavorites(!favorites);setFeed("all");
-                setSelected(null);
-                document.getElementById("cars")?.scrollIntoView({
-                  behavior: "smooth",
-                });
-              }}
-            >
-              <Heart size={16} fill={favorites ? "currentColor" : "none"} />
             </button>
           </nav>
         ),
@@ -944,7 +934,6 @@ function App({ user, onAuthenticated, onLogout, authError }) {
           </main>
         ) : (
           <>
-            <section className="discovery-intro"><div><span className="intro-label">{t("Şirkətlər və şəxsi sahiblər")}</span><h1>{t("Kirayə avtomobillər")}</h1></div><button className="saved-search-entry" onClick={()=>setModal("saved-searches")}><Bookmark size={17}/>{t("Saxlanmış axtarışlar")}<span>{savedSearches.length}</span></button></section>
             <div className="marketplace-layout">
               <aside
                 className={"search-wrap " + (filtersOpen ? "filters-open " : "") + (advancedOpen ? "advanced-open" : "")}
@@ -1034,7 +1023,7 @@ function App({ user, onAuthenticated, onLogout, authError }) {
                 </div>
               </aside>
               <main id="cars">
-                <div className="discovery-tabs" role="group" aria-label={t("Elan görünüşü")}><button aria-pressed={!favorites && feed==="all"} onClick={()=>{setFavorites(false);setFeed("all");}}><Car size={17}/>{t("Bütün elanlar")}</button><button aria-pressed={favorites} onClick={()=>{setFavorites(true);setFeed("all");}}><Heart size={17}/>{t("Seçilmişlər")}<span>{liked.length}</span></button><button aria-pressed={feed==="recent" && !favorites} onClick={()=>{setFeed("recent");setSort("Seçilmiş elanlar");setFavorites(false);}}><History size={17}/>{t("Son baxılanlar")}</button></div>
+                <div className="catalogue-navigation"><div className="discovery-tabs" role="group" aria-label={t("Elan görünüşü")}><button aria-pressed={!favorites && feed==="all"} onClick={()=>{setFavorites(false);setFeed("all");}}><Car size={17}/>{t("Bütün elanlar")}</button><button aria-pressed={favorites} onClick={()=>{setFavorites(true);setFeed("all");}}><Heart size={17}/>{t("Seçilmişlər")}<span>{liked.length}</span></button><button aria-pressed={feed==="recent" && !favorites} onClick={()=>{setFeed("recent");setSort("Seçilmiş elanlar");setFavorites(false);}}><History size={17}/>{t("Son baxılanlar")}</button></div><button className="saved-search-entry" onClick={()=>setModal("saved-searches")}><Bookmark size={17}/>{t("Saxlanmış axtarışlar")}<span>{savedSearches.length}</span></button></div>
                 <div className="mobile-catalogue-tools">
                   <button
                     className="outline"

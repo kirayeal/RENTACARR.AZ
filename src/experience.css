@@ -1,122 +1,122 @@
 /* RENTACARR — one visual system for discovery, vehicle pages and account tools. */
-:root { font-family:'Onest Variable',Onest,Arial,sans-serif; font-size:15px; font-weight:400; color:#202939; background:#f5f6f9; --ink:#202939; --muted:#718096; --line:#e1e6ef; --soft:#f3f5fa; --paper:#fff; --accent:#3454df; --green:#3454df; }
+:root { font-family:'Onest Variable',Onest,Arial,sans-serif; font-size:15px; font-weight:400; color:#172b3b; background:#f5f5f2; --ink:#172b3b; --muted:#68757d; --line:#e3e6e6; --soft:#fbfbfa; --paper:#fff; --accent:#355a6d; --green:#355a6d; }
 body { margin:0; color:var(--ink); min-width:280px; }
 h1,h2,h3,b,strong { font-weight:450; }
 p { color:var(--muted); }
 button,a,input,select,textarea { -webkit-tap-highlight-color:transparent; }
-button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.car-card:focus-visible { outline:2px solid #6b82ee; outline-offset:3px; }
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.car-card:focus-visible { outline:2px solid #68757d; outline-offset:3px; }
 svg { stroke-width:1.6; }
 .primary,.outline { border-radius:9px; min-height:44px; padding:11px 17px; font-size:13px; font-weight:400; box-shadow:none; }
-.primary { color:#fff; background:#3454df; border:1px solid #3454df; }
-.primary:hover { color:#fff; background:#2946c4; border-color:#2946c4; }
-.outline { color:#5c6b82; background:#fff; border:1px solid #dce3ee; }
-.outline:hover { color:#3454df; background:#f6f8ff; border-color:#b6c4f4; }
+.primary { color:#fff; background:#355a6d; border:1px solid #355a6d; }
+.primary:hover { color:#fff; background:#355a6d; border-color:#355a6d; }
+.outline { color:#68757d; background:#fff; border:1px solid #e3e6e6; }
+.outline:hover { color:#355a6d; background:#fbfbfa; border-color:#c6cfd3; }
 .danger { background:#a6404b; border-color:#a6404b; }
-header { height:80px; display:flex; align-items:center; justify-content:space-between; gap:24px; padding:0 max(24px,calc((100vw - 1272px)/2)); border-bottom:1px solid #e2e7f0; background:#fff; box-shadow:none; }
-.logo { display:flex; align-items:center; color:#202939; font-size:25px; font-weight:450; letter-spacing:-1px; text-transform:none; white-space:nowrap; }
+header { height:80px; display:flex; align-items:center; justify-content:space-between; gap:24px; padding:0 max(24px,calc((100vw - 1272px)/2)); border-bottom:1px solid #e3e6e6; background:#fff; box-shadow:none; }
+.logo { display:flex; align-items:center; color:#172b3b; font-size:25px; font-weight:450; letter-spacing:-1px; text-transform:none; white-space:nowrap; }
 .logo::before { display:none; }
-.brand-mark { width:38px; height:38px; margin-right:10px; color:#3454df; flex-shrink:0; }
-.logo-az { color:#65758d; }
-header nav { display:flex; align-items:center; gap:25px; color:#65758d; font-size:13px; }
+.brand-mark { width:38px; height:38px; margin-right:10px; color:#355a6d; flex-shrink:0; }
+.logo-az { color:#68757d; }
+header nav { display:flex; align-items:center; gap:25px; color:#68757d; font-size:13px; }
 header nav a,header nav button { padding:10px 0; color:inherit; }
-header nav a { color:#293b62; }
-header nav a:hover,header nav button:hover { color:#3454df; }
+header nav a { color:#355a6d; }
+header nav a:hover,header nav button:hover { color:#355a6d; }
 header nav a::after { display:none; }
 .header-right { display:flex; align-items:center; gap:16px; }
-.language-switch { display:flex; align-items:center; gap:8px; padding-right:10px; border-right:1px solid #e2e7f0; }
-.language-switch button { font-size:10px; font-weight:400; color:#65758d; padding:10px 0; min-width:18px; }
-.language-switch [aria-pressed=true] { color:#3454df; }
-.heart-top { color:#65758d; width:28px; height:36px; padding:0; border:0; background:none; display:grid; place-items:center; }
-.login { padding:0; border:0; color:#6c7b93; font-size:12px; display:flex; align-items:center; gap:7px; }
+.language-switch { display:flex; align-items:center; gap:8px; padding-right:10px; border-right:1px solid #e3e6e6; }
+.language-switch button { font-size:10px; font-weight:400; color:#68757d; padding:10px 0; min-width:18px; }
+.language-switch [aria-pressed=true] { color:#355a6d; }
+.heart-top { color:#68757d; width:28px; height:36px; padding:0; border:0; background:none; display:grid; place-items:center; }
+.login { padding:0; border:0; color:#68757d; font-size:12px; display:flex; align-items:center; gap:7px; }
 header .add { min-height:42px; font-size:12px; padding:11px 15px; border-radius:9px; }
 .header-admin { display:flex; align-items:center; gap:7px; }
-.header-admin > span { color:#3454df; background:#edf1ff; padding:2px 6px; border-radius:5px; }
+.header-admin > span { color:#355a6d; background:#fbfbfa; padding:2px 6px; border-radius:5px; }
 .mobile-nav { display:none; }
 .discovery-intro { max-width:1320px; margin:auto; padding:27px 24px 22px; display:flex; align-items:center; justify-content:space-between; gap:20px; }
-.intro-label { color:#65758d; font-size:11px; letter-spacing:.3px; }
-.discovery-intro h1 { color:#202939; font-size:34px; line-height:1.2; letter-spacing:-1.2px; font-weight:450; margin:9px 0 0; }
-.saved-search-entry { display:flex; align-items:center; gap:8px; color:#65758d; font-size:12px; min-height:38px; }
-.saved-search-entry > span { color:#3454df; background:#e9eefd; padding:3px 7px; border-radius:5px; font-size:10px; }
+.intro-label { color:#68757d; font-size:11px; letter-spacing:.3px; }
+.discovery-intro h1 { color:#172b3b; font-size:34px; line-height:1.2; letter-spacing:-1.2px; font-weight:450; margin:9px 0 0; }
+.saved-search-entry { display:flex; align-items:center; gap:8px; color:#68757d; font-size:12px; min-height:38px; }
+.saved-search-entry > span { color:#355a6d; background:#e3e6e6; padding:3px 7px; border-radius:5px; font-size:10px; }
 .marketplace-layout { display:block; max-width:1320px; padding:0 24px; margin:0 auto; }
-.search-wrap { position:relative; max-width:none; width:100%; top:auto; padding:20px; margin:0; background:#fff; border:1px solid #e0e6f1; border-radius:14px; box-shadow:0 8px 30px #263a6005; overflow:visible; }
+.search-wrap { position:relative; max-width:none; width:100%; top:auto; padding:20px; margin:0; background:#fff; border:1px solid #e3e6e6; border-radius:8px; box-shadow:0 8px 30px #355a6d05; overflow:visible; }
 .filter-panel-heading,.filter-panel-note { display:none; }
 .search-box { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)) 155px; gap:12px 15px; align-items:end; padding:0; border:0; background:none; box-shadow:none; border-radius:0; }
-.search-box > label,.search-box .model-search { display:grid; gap:8px; margin:0; padding:0; border:0; color:#65758d; font-size:12px; min-width:0; }
-.search-box label > span { display:flex; align-items:center; gap:7px; font-size:12px; color:#65758d; margin:0; }
+.search-box > label,.search-box .model-search { display:grid; gap:8px; margin:0; padding:0; border:0; color:#68757d; font-size:12px; min-width:0; }
+.search-box label > span { display:flex; align-items:center; gap:7px; font-size:12px; color:#68757d; margin:0; }
 .search-box label > span svg { display:none; }
-.search-box input,.search-box select,.criteria-panel select { width:100%; min-width:0; max-width:none; padding:12px; min-height:46px; border:1px solid #e0e7f1; background:#f9faff; border-radius:8px; color:#445a7c; font-size:13px; }
-.search-box input::placeholder { color:#65758d; }
-.search-box input:focus,.search-box select:focus { outline:1px solid #8b9fef; border-color:#8b9fef; }
+.search-box input,.search-box select,.criteria-panel select { width:100%; min-width:0; max-width:none; padding:12px; min-height:46px; border:1px solid #e3e6e6; background:#fbfbfa; border-radius:8px; color:#355a6d; font-size:13px; }
+.search-box input::placeholder { color:#68757d; }
+.search-box input:focus,.search-box select:focus { outline:1px solid #a9b6bd; border-color:#a9b6bd; }
 .search-box .model-search { grid-column:3; grid-row:1; }
 .search-box > label:has(.budget) { grid-column:4; grid-row:1; }
 .budget { display:block; position:relative; }
 .budget input { padding-right:29px; }
-.budget b { position:absolute; right:12px; top:14px; color:#65758d; font-size:12px; font-weight:400; }
+.budget b { position:absolute; right:12px; top:14px; color:#68757d; font-size:12px; font-weight:400; }
 .search-submit { grid-column:5; grid-row:1; min-height:46px; width:100%; padding:12px 14px; font-size:12px; }
-.search-reset { grid-column:1/3; grid-row:2; justify-self:start; color:#65758d; padding:2px 0; min-height:23px; font-size:11px; }
-.advanced-toggle { grid-column:4/6; grid-row:2; display:flex; align-items:center; gap:7px; justify-self:end; color:#6b7fa0; padding:2px 0; min-height:23px; font-size:11px; }
-.criteria-panel { display:none; grid-template-columns:repeat(3,minmax(0,1fr)); gap:17px; border-top:1px solid #e4e9f3; margin-top:18px; padding-top:20px; }
+.search-reset { grid-column:1/3; grid-row:2; justify-self:start; color:#68757d; padding:2px 0; min-height:23px; font-size:11px; }
+.advanced-toggle { grid-column:4/6; grid-row:2; display:flex; align-items:center; gap:7px; justify-self:end; color:#68757d; padding:2px 0; min-height:23px; font-size:11px; }
+.criteria-panel { display:none; grid-template-columns:repeat(3,minmax(0,1fr)); gap:17px; border-top:1px solid #e3e6e6; margin-top:18px; padding-top:20px; }
 .criteria-panel.is-open { display:grid; }
-.criteria-panel h3 { grid-column:1/-1; font-size:14px; color:#4d6384; font-weight:400; margin:0; }
-.criteria-panel label { display:grid; gap:9px; color:#65758d; font-size:12px; }
+.criteria-panel h3 { grid-column:1/-1; font-size:14px; color:#355a6d; font-weight:400; margin:0; }
+.criteria-panel label { display:grid; gap:9px; color:#68757d; font-size:12px; }
 .criteria-panel .criteria-check { display:flex; align-items:center; gap:8px; font-size:12px; }
-.criteria-check input { width:16px; height:16px; accent-color:#3454df; }
-.criteria-reset { display:flex; align-items:center; gap:7px; color:#65758d; font-size:11px; padding:4px 0; }
+.criteria-check input { width:16px; height:16px; accent-color:#355a6d; }
+.criteria-reset { display:flex; align-items:center; gap:7px; color:#68757d; font-size:11px; padding:4px 0; }
 main#cars { width:100%; max-width:none; min-width:0; padding:25px 0 0; margin:0; scroll-margin-top:20px; }
-.discovery-tabs { display:flex; gap:25px; border-bottom:1px solid #dce3ef; overflow-x:auto; scrollbar-width:none; margin-bottom:17px; }
-.discovery-tabs button { display:flex; align-items:center; gap:8px; min-height:43px; padding:0 0 15px; font-size:13px; color:#65758d; border-bottom:2px solid transparent; white-space:nowrap; }
-.discovery-tabs button[aria-pressed=true] { color:#3454df; border-bottom-color:#3454df; }
-.discovery-tabs button > span { color:#65758d; background:#eaf0fa; padding:2px 6px; font-size:10px; border-radius:4px; }
+.discovery-tabs { display:flex; gap:25px; border-bottom:1px solid #e3e6e6; overflow-x:auto; scrollbar-width:none; margin-bottom:17px; }
+.discovery-tabs button { display:flex; align-items:center; gap:8px; min-height:43px; padding:0 0 15px; font-size:13px; color:#68757d; border-bottom:2px solid transparent; white-space:nowrap; }
+.discovery-tabs button[aria-pressed=true] { color:#355a6d; border-bottom-color:#355a6d; }
+.discovery-tabs button > span { color:#68757d; background:#e3e6e6; padding:2px 6px; font-size:10px; border-radius:4px; }
 .mobile-catalogue-tools { display:none; }
 .popular-brands { display:flex; gap:8px; align-items:center; overflow-x:auto; scrollbar-width:none; margin:0 0 13px; }
-.popular-brands > span { color:#65758d; font-size:11px; white-space:nowrap; margin-right:3px; }
-.popular-brands button { border:1px solid #dfe6f0; background:#fff; color:#65758d; font-size:11px; padding:7px 11px; border-radius:6px; white-space:nowrap; }
-.popular-brands button:hover,.popular-brands [aria-pressed=true] { color:#3454df; background:#edf1ff; border-color:#c3cef5; }
-.catalogue-demo-note { font-size:10px; color:#65758d; margin:0; line-height:1.7; }
+.popular-brands > span { color:#68757d; font-size:11px; white-space:nowrap; margin-right:3px; }
+.popular-brands button { border:1px solid #e3e6e6; background:#fff; color:#68757d; font-size:11px; padding:7px 11px; border-radius:6px; white-space:nowrap; }
+.popular-brands button:hover,.popular-brands [aria-pressed=true] { color:#355a6d; background:#fbfbfa; border-color:#c6cfd3; }
+.catalogue-demo-note { font-size:10px; color:#68757d; margin:0; line-height:1.7; }
 .catalogue-toolbar { display:flex; align-items:center; gap:14px; padding:10px 0 17px; }
-.results-description { display:flex; gap:7px; align-items:center; font-size:11px; color:#65758d; }
+.results-description { display:flex; gap:7px; align-items:center; font-size:11px; color:#68757d; }
 .results-description svg { display:none; }
-.catalogue-toolbar > select { margin-left:auto; max-width:180px; padding:8px 0; border:0; background:transparent; color:#65758d; font-size:11px; }
-.save-search-btn { display:flex; align-items:center; gap:6px; color:#65758d; font-size:11px; padding:7px 0; white-space:nowrap; }
-.view-switch { display:flex; gap:3px; padding-left:10px; border-left:1px solid #dce3ef; }
-.view-switch button { display:grid; place-items:center; width:28px; height:28px; padding:0; border-radius:5px; color:#65758d; }
-.view-switch [aria-pressed=true] { color:#3454df; background:#e7edfd; }
+.catalogue-toolbar > select { margin-left:auto; max-width:180px; padding:8px 0; border:0; background:transparent; color:#68757d; font-size:11px; }
+.save-search-btn { display:flex; align-items:center; gap:6px; color:#68757d; font-size:11px; padding:7px 0; white-space:nowrap; }
+.view-switch { display:flex; gap:3px; padding-left:10px; border-left:1px solid #e3e6e6; }
+.view-switch button { display:grid; place-items:center; width:28px; height:28px; padding:0; border-radius:5px; color:#68757d; }
+.view-switch [aria-pressed=true] { color:#355a6d; background:#e3e6e6; }
 .grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:21px; }
-.car-card { background:#fff; border:1px solid #e0e6ef; border-radius:13px; box-shadow:0 3px 12px #263f6505; overflow:hidden; cursor:pointer; transition:transform .2s,border-color .2s,box-shadow .2s; }
-.car-card:hover { transform:translateY(-3px); border-color:#bac9e7; box-shadow:0 10px 28px #263f6512; }
-.car-image { position:relative; aspect-ratio:1.45; overflow:hidden; background:#e9edf5; }
+.car-card { background:#fff; border:1px solid #e3e6e6; border-radius:8px; box-shadow:0 3px 12px #355a6d05; overflow:hidden; cursor:pointer; transition:transform .2s,border-color .2s,box-shadow .2s; }
+.car-card:hover { transform:translateY(-3px); border-color:#c6cfd3; box-shadow:0 10px 28px #355a6d12; }
+.car-image { position:relative; aspect-ratio:1.45; overflow:hidden; background:#e3e6e6; }
 .image-open { display:block; width:100%; height:100%; padding:0; }
 .car-image img { display:block; width:100%; height:100%; object-fit:cover; object-position:center; transition:transform .4s; }
 .car-card:hover img { transform:scale(1.025); }
 .badges { position:absolute; top:auto; bottom:11px; right:11px; left:auto; display:flex; gap:5px; pointer-events:none; }
 .badges span { display:flex; align-items:center; gap:5px; padding:5px 7px; border-radius:5px; font-weight:400; line-height:1.4; font-size:8px; letter-spacing:.1px; box-shadow:none; }
-.badges .premium { color:#65758d; background:#4a4794e8; border:1px solid #b1a4ed55; }
+.badges .premium { color:#68757d; background:#355a6de8; border:1px solid #a9b6bd55; }
 .badges .vip { color:#877046; background:#fff9e9ed; border:1px solid #f7ebca; }
-.like { position:absolute; right:11px; top:11px; width:32px; height:32px; padding:0; border:0; background:#fff; color:#65758d; border-radius:50%; box-shadow:0 2px 8px #263f6512; display:grid; place-items:center; }
+.like { position:absolute; right:11px; top:11px; width:32px; height:32px; padding:0; border:0; background:#fff; color:#68757d; border-radius:50%; box-shadow:0 2px 8px #355a6d12; display:grid; place-items:center; }
 .like svg { width:17px; height:17px; }
-.like:hover,.like.liked { background:#fff; color:#3454df; }
-.sample-ribbon { position:absolute; bottom:11px; left:11px; background:#fffffff0; color:#65758d; font-size:8px; padding:4px 6px; border-radius:4px; pointer-events:none; }
+.like:hover,.like.liked { background:#fff; color:#355a6d; }
+.sample-ribbon { position:absolute; bottom:11px; left:11px; background:#fffffff0; color:#68757d; font-size:8px; padding:4px 6px; border-radius:4px; pointer-events:none; }
 .card-body { display:flex; flex-direction:column; padding:13px 14px 0; }
 .card-bottom { order:0; display:flex; justify-content:space-between; align-items:center; gap:8px; padding:0 0 10px; }
 .card-bottom > div:first-child { display:flex; align-items:baseline; gap:5px; }
-.card-bottom strong { color:#243753; font-size:25px; line-height:1; letter-spacing:-1px; font-weight:450; }
+.card-bottom strong { color:#172b3b; font-size:26px; line-height:1; letter-spacing:-.8px; font-weight:450; }
 .card-bottom strong span { font-size:16px; }
-.card-bottom small { color:#65758d; font-size:10px; }
-.card-deposit { display:flex; flex-direction:column; gap:3px; color:#65758d; font-size:9px; text-align:right; }
-.card-deposit span:last-child { color:#65758d; font-size:11px; }
-.car-name { order:1; padding:0; margin:0 0 9px; min-height:24px; font-size:17px; font-weight:450; line-height:1.4; letter-spacing:-.5px; color:#334d70; text-align:left; }
-.specs { order:2; display:flex; align-items:center; flex-wrap:wrap; gap:10px; color:#65758d; font-size:11px; line-height:1.5; }
+.card-bottom small { color:#68757d; font-size:10px; }
+.card-deposit { display:flex; flex-direction:column; gap:3px; color:#68757d; font-size:9px; text-align:right; }
+.card-deposit span:last-child { color:#68757d; font-size:11px; }
+.car-name { order:1; padding:0; margin:0 0 9px; min-height:24px; font-size:17px; font-weight:450; line-height:1.4; letter-spacing:-.5px; color:#355a6d; text-align:left; }
+.specs { order:2; display:flex; align-items:center; flex-wrap:wrap; gap:10px; color:#68757d; font-size:11px; line-height:1.5; }
 .specs span { display:flex; gap:4px; align-items:center; }
 .specs svg { display:none; }
-.card-location { order:3; display:flex; align-items:center; gap:4px; color:#65758d; font-size:10px; padding:9px 0; }
+.card-location { order:3; display:flex; align-items:center; gap:4px; color:#68757d; font-size:10px; padding:9px 0; }
 .card-location > span { margin-left:auto; color:inherit; }
 .card-location svg { width:11px; height:11px; }
-.owner { order:4; display:flex; align-items:center; gap:7px; padding:8px 0; min-height:38px; border-top:1px solid #edf0f6; font-size:10px; color:#65758d; }
+.owner { order:4; display:flex; align-items:center; gap:7px; padding:8px 0; min-height:38px; border-top:1px solid #e3e6e6; font-size:10px; color:#68757d; }
 .owner-icon { display:flex; width:auto; height:auto; border:0; padding:0; border-radius:0; background:transparent; color:inherit; }
 .owner-name { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.compare-select { display:grid; place-items:center; width:27px; height:27px; flex-shrink:0; padding:4px; border:1px solid #e2e8f2; color:#65758d; border-radius:6px; background:#fff; }
+.compare-select { display:grid; place-items:center; width:27px; height:27px; flex-shrink:0; padding:4px; border:1px solid #e3e6e6; color:#68757d; border-radius:6px; background:#fff; }
 .compare-select span { display:none; }
-.compare-select[aria-pressed=true] { color:#3454df; background:#eef2ff; border-color:#c4cff5; }
+.compare-select[aria-pressed=true] { color:#355a6d; background:#fbfbfa; border-color:#c6cfd3; }
 .catalogue-list { grid-template-columns:minmax(0,1fr); gap:16px; }
 .catalogue-list .car-card { display:grid; grid-template-columns:260px minmax(0,1fr); }
 .catalogue-list .car-image { height:100%; aspect-ratio:auto; min-height:195px; }
@@ -126,179 +126,179 @@ main#cars { width:100%; max-width:none; min-width:0; padding:25px 0 0; margin:0;
 .catalogue-list .specs { font-size:12px; }
 .catalogue-list .card-bottom { padding-bottom:15px; }
 .pagination { display:flex; align-items:center; justify-content:center; gap:8px; margin:25px 0; }
-.pagination button { width:37px; height:37px; padding:7px; display:grid; place-items:center; border:1px solid #dfe6f0; border-radius:7px; background:#fff; color:#65758d; font-size:12px; }
-.pagination [aria-current=page] { background:#3454df; border-color:#3454df; color:#fff; }
+.pagination button { width:37px; height:37px; padding:7px; display:grid; place-items:center; border:1px solid #e3e6e6; border-radius:7px; background:#fff; color:#68757d; font-size:12px; }
+.pagination [aria-current=page] { background:#355a6d; border-color:#355a6d; color:#fff; }
 .pagination button:disabled { opacity:.4; cursor:default; }
-.catalogue-service-note { display:flex; justify-content:space-between; align-items:center; gap:18px; border-top:1px solid #dde5f0; margin-top:23px; padding:19px 0; color:#65758d; font-size:11px; }
-.catalogue-service-note button { display:flex; align-items:center; gap:6px; color:#65758d; font-size:11px; padding:8px 0; white-space:nowrap; }
-footer { padding:26px max(24px,calc((100vw - 1272px)/2)); margin-top:10px; background:#fff; border-top:1px solid #e0e6f0; display:flex; align-items:center; gap:25px; }
-footer .logo { color:#3b506e; font-size:22px; font-weight:450; letter-spacing:-.8px; }
+.catalogue-service-note { display:flex; justify-content:space-between; align-items:center; gap:18px; border-top:1px solid #e3e6e6; margin-top:23px; padding:19px 0; color:#68757d; font-size:11px; }
+.catalogue-service-note button { display:flex; align-items:center; gap:6px; color:#68757d; font-size:11px; padding:8px 0; white-space:nowrap; }
+footer { padding:26px max(24px,calc((100vw - 1272px)/2)); margin-top:10px; background:#fff; border-top:1px solid #e3e6e6; display:flex; align-items:center; gap:25px; }
+footer .logo { color:#355a6d; font-size:22px; font-weight:450; letter-spacing:-.8px; }
 footer .brand-mark { width:30px; height:30px; margin-right:8px; }
-footer small { color:#65758d; font-size:10px; margin-left:auto; }
+footer small { color:#68757d; font-size:10px; margin-left:auto; }
 .footer-links { display:flex; align-items:center; gap:22px; flex-wrap:wrap; }
-.footer-links button,.footer-links a { min-height:36px; padding:0; margin:0; display:flex; align-items:center; color:#65758d; font-size:11px; }
+.footer-links button,.footer-links a { min-height:36px; padding:0; margin:0; display:flex; align-items:center; color:#68757d; font-size:11px; }
 /* Searchable selects. */
 .catalog-select { position:relative; display:grid; gap:8px; min-width:0; }
-.catalog-select-label { color:#65758d; font-size:12px; line-height:1.6; }
-.catalog-select-trigger { width:100%; min-width:0; display:flex; align-items:center; justify-content:space-between; gap:9px; min-height:46px; padding:12px; background:#f9faff; border:1px solid #e0e7f1; border-radius:8px; color:#445a7c; font-size:13px; text-align:left; }
+.catalog-select-label { color:#68757d; font-size:12px; line-height:1.6; }
+.catalog-select-trigger { width:100%; min-width:0; display:flex; align-items:center; justify-content:space-between; gap:9px; min-height:46px; padding:12px; background:#fbfbfa; border:1px solid #e3e6e6; border-radius:8px; color:#355a6d; font-size:13px; text-align:left; }
 .catalog-select-trigger > span { white-space:nowrap; text-overflow:ellipsis; overflow:hidden; }
-.catalog-select-trigger[aria-expanded=true] { border-color:#9cacec; box-shadow:0 0 0 3px #3454df0b; }
-.catalog-select-popup { position:absolute; top:calc(100% + 6px); left:0; right:0; z-index:45; padding:7px; background:#fff; border:1px solid #d9e1ef; border-radius:9px; box-shadow:0 12px 35px #273e6328; }
-.catalog-select-search { display:flex; align-items:center; gap:8px; padding:0 8px; border:1px solid #e0e7f1; background:#f6f8fc; border-radius:6px; color:#65758d; }
-.catalog-select-search input,.search-box .catalog-select-search input { width:100%; min-width:0; border:0; background:none; padding:9px 0; min-height:37px; color:#5e7597; font-size:12px; outline:0; }
+.catalog-select-trigger[aria-expanded=true] { border-color:#a9b6bd; box-shadow:0 0 0 3px #355a6d0b; }
+.catalog-select-popup { position:absolute; top:calc(100% + 6px); left:0; right:0; z-index:45; padding:7px; background:#fff; border:1px solid #e3e6e6; border-radius:9px; box-shadow:0 12px 35px #355a6d28; }
+.catalog-select-search { display:flex; align-items:center; gap:8px; padding:0 8px; border:1px solid #e3e6e6; background:#fbfbfa; border-radius:6px; color:#68757d; }
+.catalog-select-search input,.search-box .catalog-select-search input { width:100%; min-width:0; border:0; background:none; padding:9px 0; min-height:37px; color:#355a6d; font-size:12px; outline:0; }
 .search-box .catalog-select-search input:focus { outline:0; border:0; }
 .catalog-select-list { max-height:250px; overflow-y:auto; overscroll-behavior:contain; scrollbar-width:thin; padding-top:5px; }
-.catalog-select-list button { display:flex; justify-content:space-between; align-items:center; gap:9px; width:100%; padding:10px 9px; text-align:left; border-radius:5px; color:#65758d; font-size:12px; line-height:1.5; }
-.catalog-select-list button.is-active { background:#f3f6fc; color:#526f9e; }
-.catalog-select-list button[aria-selected=true] { background:#edf1ff; color:#3454df; }
-.catalog-select-empty { font-size:12px; color:#65758d; padding:15px 9px; margin:0; line-height:1.7; }
+.catalog-select-list button { display:flex; justify-content:space-between; align-items:center; gap:9px; width:100%; padding:10px 9px; text-align:left; border-radius:5px; color:#68757d; font-size:12px; line-height:1.5; }
+.catalog-select-list button.is-active { background:#fbfbfa; color:#355a6d; }
+.catalog-select-list button[aria-selected=true] { background:#fbfbfa; color:#355a6d; }
+.catalog-select-empty { font-size:12px; color:#68757d; padding:15px 9px; margin:0; line-height:1.7; }
 /* Vehicle detail pages. */
 .rental-page { max-width:1320px; padding:24px 24px 50px; margin:0 auto; }
-.rental-breadcrumb { display:flex; align-items:center; gap:13px; font-size:12px; color:#65758d; margin-bottom:20px; }
-.rental-breadcrumb button { display:flex; align-items:center; gap:8px; color:#65758d; padding:8px 0; }
+.rental-breadcrumb { display:flex; align-items:center; gap:13px; font-size:12px; color:#68757d; margin-bottom:20px; }
+.rental-breadcrumb button { display:flex; align-items:center; gap:8px; color:#68757d; padding:8px 0; }
 .rental-heading { display:flex; align-items:center; justify-content:space-between; gap:20px; margin-bottom:20px; }
-.rental-heading h1 { font-size:35px; line-height:1.2; font-weight:450; letter-spacing:-1px; margin:9px 0 12px; color:#2d4263; }
-.rental-heading p { display:flex; align-items:center; gap:8px; color:#65758d; font-size:12px; margin:0; }
+.rental-heading h1 { font-size:35px; line-height:1.2; font-weight:450; letter-spacing:-1px; margin:9px 0 12px; color:#355a6d; }
+.rental-heading p { display:flex; align-items:center; gap:8px; color:#68757d; font-size:12px; margin:0; }
 .rental-heading-actions { display:flex; align-items:center; gap:10px; }
-.rental-heading-actions button { display:flex; align-items:center; gap:8px; font-size:12px; color:#65758d; }
-.vehicle-section-nav { display:flex; gap:25px; border-bottom:1px solid #dce5f1; margin-bottom:23px; overflow-x:auto; }
-.vehicle-section-nav a { white-space:nowrap; padding:12px 0; color:#65758d; font-size:12px; }
-.vehicle-section-nav a:hover { color:#3454df; }
+.rental-heading-actions button { display:flex; align-items:center; gap:8px; font-size:12px; color:#68757d; }
+.vehicle-section-nav { display:flex; gap:25px; border-bottom:1px solid #e3e6e6; margin-bottom:23px; overflow-x:auto; }
+.vehicle-section-nav a { white-space:nowrap; padding:12px 0; color:#68757d; font-size:12px; }
+.vehicle-section-nav a:hover { color:#355a6d; }
 .rental-page-grid { display:grid; grid-template-columns:minmax(0,1fr) 350px; gap:28px; align-items:start; }
 .rental-main { min-width:0; }
-.rental-photo { position:relative; overflow:hidden; border:1px solid #dde5f1; border-radius:14px; background:#edf1f8; }
+.rental-photo { position:relative; overflow:hidden; border:1px solid #e3e6e6; border-radius:8px; background:#e3e6e6; }
 .rental-photo img { display:block; width:100%; aspect-ratio:1.5; max-height:440px; object-fit:contain; }
-.rental-photo > span { position:absolute; top:17px; left:17px; color:#fff; background:#4a4794ed; border-radius:6px; padding:8px 11px; font-size:11px; }
-.rental-features { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:15px; padding:24px 0; border-bottom:1px solid #dfe6f1; }
-.rental-features > div { display:flex; align-items:center; gap:12px; color:#65758d; }
-.rental-features span { display:flex; flex-direction:column; gap:8px; color:#65758d; font-size:11px; }
-.rental-features strong { color:#5a7399; font-size:14px; font-weight:400; }
-.rental-section { padding:25px 0; border-bottom:1px solid #dfe6f1; scroll-margin-top:20px; }
-.rental-section h2 { color:#426089; font-size:22px; font-weight:450; margin-bottom:17px; letter-spacing:-.5px; }
-.rental-section p { color:#65758d; font-size:13px; line-height:1.9; margin-bottom:0; white-space:pre-line; }
+.rental-photo > span { position:absolute; top:17px; left:17px; color:#fff; background:#355a6ded; border-radius:6px; padding:8px 11px; font-size:11px; }
+.rental-features { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:15px; padding:24px 0; border-bottom:1px solid #e3e6e6; }
+.rental-features > div { display:flex; align-items:center; gap:12px; color:#68757d; }
+.rental-features span { display:flex; flex-direction:column; gap:8px; color:#68757d; font-size:11px; }
+.rental-features strong { color:#355a6d; font-size:14px; font-weight:400; }
+.rental-section { padding:25px 0; border-bottom:1px solid #e3e6e6; scroll-margin-top:20px; }
+.rental-section h2 { color:#355a6d; font-size:22px; font-weight:450; margin-bottom:17px; letter-spacing:-.5px; }
+.rental-section p { color:#68757d; font-size:13px; line-height:1.9; margin-bottom:0; white-space:pre-line; }
 .rental-page .rental-facts { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 25px; margin:0; }
-.rental-facts > div { display:flex; justify-content:space-between; gap:20px; padding:14px 0; border-bottom:1px solid #e2e9f3; font-size:12px; line-height:1.7; }
-.rental-facts dt { color:#65758d; }
-.rental-facts dd { color:#627da4; margin:0; text-align:right; }
-.rental-enquiry { position:sticky; top:24px; padding:25px; border:1px solid #dce5f3; border-radius:14px; background:#fff; box-shadow:0 7px 25px #293f6a09; scroll-margin-top:20px; }
-.rental-price > span { font-size:12px; color:#65758d; }
-.rental-price > div { font-size:41px; color:#304a70; font-weight:450; letter-spacing:-1.5px; margin-top:12px; }
-.rental-price small { font-size:12px; letter-spacing:0; color:#65758d; }
-.enquiry-deposit { display:flex; align-items:center; justify-content:space-between; gap:15px; color:#65758d; font-size:12px; margin-top:18px; }
-.enquiry-deposit strong { font-size:13px; font-weight:400; color:#627da4; }
-.rental-rate-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; border-bottom:1px solid #e2e9f3; padding:20px 0; }
-.rental-rate-options > span { display:flex; flex-direction:column; gap:8px; font-size:11px; color:#65758d; }
-.rental-rate-options strong { font-size:13px; font-weight:400; color:#65758d; }
-.rental-seller { display:flex; align-items:center; gap:12px; padding:22px 0; color:#65758d; }
-.rental-seller strong { display:block; color:#65758d; font-weight:400; font-size:13px; line-height:1.5; }
-.rental-seller span { display:block; margin-top:6px; color:#65758d; font-size:11px; }
+.rental-facts > div { display:flex; justify-content:space-between; gap:20px; padding:14px 0; border-bottom:1px solid #e3e6e6; font-size:12px; line-height:1.7; }
+.rental-facts dt { color:#68757d; }
+.rental-facts dd { color:#355a6d; margin:0; text-align:right; }
+.rental-enquiry { position:sticky; top:24px; padding:25px; border:1px solid #e3e6e6; border-radius:8px; background:#fff; box-shadow:0 7px 25px #355a6d09; scroll-margin-top:20px; }
+.rental-price > span { font-size:12px; color:#68757d; }
+.rental-price > div { font-size:41px; color:#355a6d; font-weight:450; letter-spacing:-1.5px; margin-top:12px; }
+.rental-price small { font-size:12px; letter-spacing:0; color:#68757d; }
+.enquiry-deposit { display:flex; align-items:center; justify-content:space-between; gap:15px; color:#68757d; font-size:12px; margin-top:18px; }
+.enquiry-deposit strong { font-size:13px; font-weight:400; color:#355a6d; }
+.rental-rate-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; border-bottom:1px solid #e3e6e6; padding:20px 0; }
+.rental-rate-options > span { display:flex; flex-direction:column; gap:8px; font-size:11px; color:#68757d; }
+.rental-rate-options strong { font-size:13px; font-weight:400; color:#68757d; }
+.rental-seller { display:flex; align-items:center; gap:12px; padding:22px 0; color:#68757d; }
+.rental-seller strong { display:block; color:#68757d; font-weight:400; font-size:13px; line-height:1.5; }
+.rental-seller span { display:block; margin-top:6px; color:#68757d; font-size:11px; }
 .rental-contact { display:grid; gap:10px; }
 .rental-contact .primary,.rental-contact .outline { display:flex; align-items:center; justify-content:center; gap:8px; }
-.rental-contact .outline { color:#65758d; }
-.sample-contact { color:#65758d; background:#f5f8fe; padding:14px; border-radius:7px; font-size:11px; line-height:1.8; }
-.rental-calculator { border-top:1px solid #e2e9f3; margin-top:20px; }
-.rental-calculator summary { display:flex; align-items:center; gap:8px; list-style:none; color:#65758d; min-height:49px; font-size:12px; cursor:pointer; }
+.rental-contact .outline { color:#68757d; }
+.sample-contact { color:#68757d; background:#fbfbfa; padding:14px; border-radius:7px; font-size:11px; line-height:1.8; }
+.rental-calculator { border-top:1px solid #e3e6e6; margin-top:20px; }
+.rental-calculator summary { display:flex; align-items:center; gap:8px; list-style:none; color:#68757d; min-height:49px; font-size:12px; cursor:pointer; }
 .rental-calculator summary::-webkit-details-marker { display:none; }
 .rental-calculator summary::after { content:'+'; font-size:20px; font-weight:400; margin-left:auto; }
 .rental-calculator[open] summary::after { content:'−'; }
 .rental-dates { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
-.rental-dates label { display:grid; gap:9px; font-size:10px; color:#65758d; min-width:0; }
-.rental-dates input { width:100%; min-width:0; min-height:41px; padding:10px 6px; border:1px solid #dfe7f5; background:#f8faff; color:#65758d; border-radius:6px; font-size:11px; }
-.rental-estimate { display:flex; justify-content:space-between; align-items:center; gap:15px; padding:15px 12px; margin-top:16px; background:#f0f4ff; border-radius:7px; color:#65758d; font-size:11px; }
-.rental-estimate small { display:block; font-size:10px; color:#65758d; margin-top:7px; }
-.rental-estimate strong { color:#3454df; font-size:21px; font-weight:400; white-space:nowrap; }
-.estimate-note { font-size:10px; line-height:1.9; color:#65758d; margin:12px 0 0; }
+.rental-dates label { display:grid; gap:9px; font-size:10px; color:#68757d; min-width:0; }
+.rental-dates input { width:100%; min-width:0; min-height:41px; padding:10px 6px; border:1px solid #e3e6e6; background:#fbfbfa; color:#68757d; border-radius:6px; font-size:11px; }
+.rental-estimate { display:flex; justify-content:space-between; align-items:center; gap:15px; padding:15px 12px; margin-top:16px; background:#fbfbfa; border-radius:7px; color:#68757d; font-size:11px; }
+.rental-estimate small { display:block; font-size:10px; color:#68757d; margin-top:7px; }
+.rental-estimate strong { color:#355a6d; font-size:21px; font-weight:400; white-space:nowrap; }
+.estimate-note { font-size:10px; line-height:1.9; color:#68757d; margin:12px 0 0; }
 .rental-related { display:grid; gap:11px; }
-.rental-related button { display:grid; grid-template-columns:100px minmax(0,1fr) 20px; align-items:center; gap:15px; border:1px solid #dce5f3; background:#fff; border-radius:9px; overflow:hidden; padding:0 14px 0 0; text-align:left; color:#65758d; }
+.rental-related button { display:grid; grid-template-columns:100px minmax(0,1fr) 20px; align-items:center; gap:15px; border:1px solid #e3e6e6; background:#fff; border-radius:9px; overflow:hidden; padding:0 14px 0 0; text-align:left; color:#68757d; }
 .rental-related img { width:100px; height:78px; object-fit:cover; }
 .rental-related span { font-size:14px; }
-.rental-related small { display:block; color:#65758d; font-size:11px; margin-top:8px; }
+.rental-related small { display:block; color:#68757d; font-size:11px; margin-top:8px; }
 /* Dialogs, account editing and moderation. */
-.overlay { background:#132038a8; backdrop-filter:blur(6px); padding:24px; }
-.modal { --modal-pad:32px; width:100%; max-width:670px; max-height:92dvh; overflow:auto; padding:var(--modal-pad); border:1px solid #dfe7f3; border-radius:16px; background:#fff; box-shadow:0 30px 100px #0e224338; }
-.modal h2 { color:#334e76; font-weight:450; font-size:29px; line-height:1.3; letter-spacing:-.8px; }
-.modal h3 { color:#5c79a4; font-size:16px; font-weight:400; }
-.modal p { color:#65758d; font-size:13px; line-height:1.9; }
-.eyebrow,.modal .eyebrow { color:#65758d; font-size:10px; letter-spacing:1.1px; }
-.close { border:1px solid #e0e8f4; background:#fff; color:#65758d; box-shadow:none; }
-.modal-emblem { border:1px solid #e0e8f4; background:#f3f7fe; color:#65758d; border-radius:11px; }
+.overlay { background:#172b3ba8; backdrop-filter:blur(6px); padding:24px; }
+.modal { --modal-pad:32px; width:100%; max-width:670px; max-height:92dvh; overflow:auto; padding:var(--modal-pad); border:1px solid #e3e6e6; border-radius:16px; background:#fff; box-shadow:0 30px 100px #172b3b38; }
+.modal h2 { color:#355a6d; font-weight:450; font-size:29px; line-height:1.3; letter-spacing:-.8px; }
+.modal h3 { color:#355a6d; font-size:16px; font-weight:400; }
+.modal p { color:#68757d; font-size:13px; line-height:1.9; }
+.eyebrow,.modal .eyebrow { color:#68757d; font-size:10px; letter-spacing:1.1px; }
+.close { border:1px solid #e3e6e6; background:#fff; color:#68757d; box-shadow:none; }
+.modal-emblem { border:1px solid #e3e6e6; background:#fbfbfa; color:#68757d; border-radius:11px; }
 .listing-description { white-space:pre-line; }
-.account-details { margin:23px 0; padding:0 18px; border:1px solid #dfe7f3; border-radius:10px; }
-.account-details > div { display:grid; grid-template-columns:150px minmax(0,1fr); gap:14px; padding:16px 0; border-bottom:1px solid #e9eef6; }
+.account-details { margin:23px 0; padding:0 18px; border:1px solid #e3e6e6; border-radius:10px; }
+.account-details > div { display:grid; grid-template-columns:150px minmax(0,1fr); gap:14px; padding:16px 0; border-bottom:1px solid #e3e6e6; }
 .account-details > div:last-child { border:0; }
-.account-details dt { display:flex; align-items:center; gap:9px; color:#65758d; font-size:12px; }
-.account-details dd { color:#65758d; font-size:14px; margin:0; overflow-wrap:anywhere; }
+.account-details dt { display:flex; align-items:center; gap:9px; color:#68757d; font-size:12px; }
+.account-details dd { color:#68757d; font-size:14px; margin:0; overflow-wrap:anywhere; }
 .account-summary { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-bottom:20px; }
-.account-summary button { display:grid; grid-template-columns:22px 1fr auto; gap:8px; align-items:center; padding:16px 12px; border:1px solid #dfe7f3; border-radius:9px; text-align:left; background:#f8faff; color:#65758d; font-size:12px; }
+.account-summary button { display:grid; grid-template-columns:22px 1fr auto; gap:8px; align-items:center; padding:16px 12px; border:1px solid #e3e6e6; border-radius:9px; text-align:left; background:#fbfbfa; color:#68757d; font-size:12px; }
 .account-summary strong { font-size:22px; font-weight:400; }
-.account-role { background:#edf3ff; border-color:#dce7fa; color:#65758d; border-radius:6px; }
+.account-role { background:#fbfbfa; border-color:#e3e6e6; color:#68757d; border-radius:6px; }
 .account-actions { gap:12px; }
-.listing-form label,.email-form label,.registration-form label { color:#65758d; font-size:13px; }
-.listing-form input,.listing-form select,.listing-form textarea,.email-form input,.email-form select,.registration-form input { width:100%; min-width:0; border:1px solid #dce7f8; background:#fafcff; border-radius:8px; color:#65758d; min-height:46px; padding:12px; }
-.listing-form input::placeholder,.listing-form textarea::placeholder,.email-form input::placeholder { color:#65758d; }
-.listing-form legend { color:#65758d; }
+.listing-form label,.email-form label,.registration-form label { color:#68757d; font-size:13px; }
+.listing-form input,.listing-form select,.listing-form textarea,.email-form input,.email-form select,.registration-form input { width:100%; min-width:0; border:1px solid #e3e6e6; background:#fbfbfa; border-radius:8px; color:#68757d; min-height:46px; padding:12px; }
+.listing-form input::placeholder,.listing-form textarea::placeholder,.email-form input::placeholder { color:#68757d; }
+.listing-form legend { color:#68757d; }
 .listing-form .catalog-select-label { font-size:13px; }
 .listing-form .catalog-select-trigger { min-height:46px; font-size:14px; }
-.form-hint,.service-note,.editor-photo { background:#f5f8ff; border-color:#dce7fa; color:#65758d; border-radius:9px; }
-.fieldset-caption,.auth-footnote { color:#65758d !important; }
-.auth-mode-tabs .active { border-color:#3454df; color:#3454df; }
-.auth-mode-tabs button,.forgot-link,.auth-back { color:#65758d; }
-.account-type button,.registration-types button { border-color:#dce7fa; color:#65758d; border-radius:8px; }
-.account-type [aria-pressed=true],.registration-types [aria-pressed=true] { color:#65758d; background:#f0f5ff; border-color:#a6c1e9; }
+.form-hint,.service-note,.editor-photo { background:#fbfbfa; border-color:#e3e6e6; color:#68757d; border-radius:9px; }
+.fieldset-caption,.auth-footnote { color:#68757d !important; }
+.auth-mode-tabs .active { border-color:#355a6d; color:#355a6d; }
+.auth-mode-tabs button,.forgot-link,.auth-back { color:#68757d; }
+.account-type button,.registration-types button { border-color:#e3e6e6; color:#68757d; border-radius:8px; }
+.account-type [aria-pressed=true],.registration-types [aria-pressed=true] { color:#68757d; background:#fbfbfa; border-color:#a9b6bd; }
 .auth-error { color:#a6404b !important; }
-.profile-edit-note { font-size:12px; line-height:1.8; color:#65758d; margin:0; }
+.profile-edit-note { font-size:12px; line-height:1.8; color:#68757d; margin:0; }
 .service-notice,.admin-access-note { background:#fff9ed; border:1px solid #ebd9b7; color:#8b7654 !important; border-radius:8px; font-size:12px !important; line-height:1.8; padding:13px 16px; }
-.toast { background:#253d61; color:#65758d; border-color:#668ec9; border-radius:10px; }
-.toast svg { color:#65758d; }
-.empty { border:1px dashed #cfddf2; background:#fafcff; border-radius:10px; color:#65758d; }
-.empty button { color:#65758d; }
+.toast { background:#355a6d; color:#68757d; border-color:#355a6d; border-radius:10px; }
+.toast svg { color:#68757d; }
+.empty { border:1px dashed #c6cfd3; background:#fbfbfa; border-radius:10px; color:#68757d; }
+.empty button { color:#68757d; }
 .contact { display:flex; gap:12px; }
 .admin { max-width:1320px; padding-left:24px; padding-right:24px; }
-.admin h1,.admin h2,.admin h3,.stats strong,.overview-grid h3 { color:#65758d; font-weight:400; }
-.admin-nav { background:#eaf1fc; border-color:#dae6f8; border-radius:10px; }
-.admin-nav button { color:#65758d; border-radius:7px; }
-.admin-nav button.active { color:#65758d; background:#fff; border-color:#ccdff7; box-shadow:0 2px 6px #7291bf08; }
-.admin-nav button > span { background:#edf4ff; color:#65758d; }
-.stats article,.overview-grid > button,.admin-listings,.owner-management,.admin-review,.admin-guide { border-color:#dce7f8; border-radius:12px; box-shadow:none; }
-.stat-icon { border-color:#dce7fa; background:#f2f7ff; color:#65758d; border-radius:8px; }
-.workspace-notice { border-color:#dce7fa; background:#f4f8ff; }
-.admin-filters input,.admin-filters select,.owner-search { border-color:#dce7f8; background:#fafcff; color:#65758d; border-radius:8px; }
-.claim-status,.owner-row p,.admin-guide p { color:#65758d; }
-.review-photo { width:100%; max-height:290px; object-fit:contain; background:#f2f6fd; border:1px solid #dce7f8; border-radius:10px; }
+.admin h1,.admin h2,.admin h3,.stats strong,.overview-grid h3 { color:#68757d; font-weight:400; }
+.admin-nav { background:#fbfbfa; border-color:#e3e6e6; border-radius:10px; }
+.admin-nav button { color:#68757d; border-radius:7px; }
+.admin-nav button.active { color:#68757d; background:#fff; border-color:#e3e6e6; box-shadow:0 2px 6px #355a6d08; }
+.admin-nav button > span { background:#fbfbfa; color:#68757d; }
+.stats article,.overview-grid > button,.admin-listings,.owner-management,.admin-review,.admin-guide { border-color:#e3e6e6; border-radius:12px; box-shadow:none; }
+.stat-icon { border-color:#e3e6e6; background:#fbfbfa; color:#68757d; border-radius:8px; }
+.workspace-notice { border-color:#e3e6e6; background:#fbfbfa; }
+.admin-filters input,.admin-filters select,.owner-search { border-color:#e3e6e6; background:#fbfbfa; color:#68757d; border-radius:8px; }
+.claim-status,.owner-row p,.admin-guide p { color:#68757d; }
+.review-photo { width:100%; max-height:290px; object-fit:contain; background:#fbfbfa; border:1px solid #e3e6e6; border-radius:10px; }
 .review-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
-.compare-tray { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:25; width:min(690px,calc(100% - 32px)); display:flex; align-items:center; gap:16px; padding:13px 16px; border:1px solid #c4d6f0; border-radius:13px; background:#fff; box-shadow:0 8px 40px #253f6c2b; }
-.compare-tray > div:first-child { display:flex; align-items:center; gap:9px; font-size:12px; color:#65758d; white-space:nowrap; }
+.compare-tray { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:25; width:min(690px,calc(100% - 32px)); display:flex; align-items:center; gap:16px; padding:13px 16px; border:1px solid #c6cfd3; border-radius:8px; background:#fff; box-shadow:0 8px 40px #355a6d2b; }
+.compare-tray > div:first-child { display:flex; align-items:center; gap:9px; font-size:12px; color:#68757d; white-space:nowrap; }
 .compare-thumbs { display:flex; gap:7px; margin-right:auto; }
 .compare-thumbs img { width:44px; height:34px; object-fit:cover; border-radius:5px; }
 .compare-tray .primary { min-height:37px; padding:10px 14px; font-size:12px; white-space:nowrap; }
-.tray-clear { color:#65758d; padding:4px; }
+.tray-clear { color:#68757d; padding:4px; }
 body:has(.compare-tray) footer { padding-bottom:110px; }
 .modal:has(.comparison-table) { max-width:1020px; }
-.compare-difference { display:flex; align-items:center; gap:8px; color:#65758d; font-size:13px; margin:20px 0; }
-.compare-difference input { width:16px; height:16px; accent-color:#3454df; }
+.compare-difference { display:flex; align-items:center; gap:8px; color:#68757d; font-size:13px; margin:20px 0; }
+.compare-difference input { width:16px; height:16px; accent-color:#355a6d; }
 .comparison-scroll { overflow-x:auto; }
 .comparison-table { width:100%; min-width:620px; border-collapse:collapse; }
-.comparison-table th,.comparison-table td { padding:14px; border-bottom:1px solid #e6eefb; color:#65758d; font-size:12px; font-weight:400; text-align:left; vertical-align:middle; }
-.comparison-table tbody th { width:170px; color:#65758d; }
-.comparison-table tbody tr:nth-child(odd) { background:#fafcff; }
-.comparison-car { display:grid; gap:10px; min-width:150px; position:relative; color:#65758d; }
+.comparison-table th,.comparison-table td { padding:14px; border-bottom:1px solid #e3e6e6; color:#68757d; font-size:12px; font-weight:400; text-align:left; vertical-align:middle; }
+.comparison-table tbody th { width:170px; color:#68757d; }
+.comparison-table tbody tr:nth-child(odd) { background:#fbfbfa; }
+.comparison-car { display:grid; gap:10px; min-width:150px; position:relative; color:#68757d; }
 .comparison-car img { width:100%; height:110px; object-fit:cover; border-radius:8px; }
 .comparison-car > span { font-size:15px; }
 .comparison-car .outline { display:flex; align-items:center; gap:6px; padding:8px; min-height:35px; font-size:11px; }
-.comparison-remove { display:grid; place-items:center; position:absolute; top:6px; right:6px; padding:5px; border-radius:50%; background:#fff; color:#65758d; }
+.comparison-remove { display:grid; place-items:center; position:absolute; top:6px; right:6px; padding:5px; border-radius:50%; background:#fff; color:#68757d; }
 .saved-search-list { display:grid; gap:12px; margin-top:23px; }
-.saved-search-list article { display:flex; align-items:center; gap:15px; border:1px solid #dce7f8; padding:17px; border-radius:10px; color:#65758d; }
+.saved-search-list article { display:flex; align-items:center; gap:15px; border:1px solid #e3e6e6; padding:17px; border-radius:10px; color:#68757d; }
 .saved-search-list article > div { flex:1; min-width:0; }
 .saved-search-list h3 { font-size:15px; font-weight:400; margin:0 0 7px; }
 .saved-search-list p { font-size:11px; line-height:1.6; margin:0; }
 .saved-search-list .outline { display:flex; align-items:center; gap:7px; font-size:11px; min-height:37px; padding:9px 11px; white-space:nowrap; }
-.saved-search-delete { color:#65758d; padding:5px; }
-.session-loading { background:#f5f6f9; color:#577eb7; gap:20px; padding:24px; text-align:center; }
+.saved-search-delete { color:#68757d; padding:5px; }
+.session-loading { background:#fbfbfa; color:#355a6d; gap:20px; padding:24px; text-align:center; }
 .loading-brand { font-size:31px; font-weight:450; letter-spacing:-1px; }
-.loading-brand span { font-size:inherit; color:#3454df; letter-spacing:inherit; }
-.session-loading p { color:#65758d; font-size:13px; line-height:1.8; letter-spacing:0; margin:0; }
-.loading-progress { width:100px; height:2px; background:#dce7fa; overflow:hidden; border-radius:2px; }
-.loading-progress::after { content:''; display:block; width:40%; height:100%; background:#3454df; animation:rental-loading 1.4s ease-in-out infinite; }
+.loading-brand span { font-size:inherit; color:#355a6d; letter-spacing:inherit; }
+.session-loading p { color:#68757d; font-size:13px; line-height:1.8; letter-spacing:0; margin:0; }
+.loading-progress { width:100px; height:2px; background:#e3e6e6; overflow:hidden; border-radius:2px; }
+.loading-progress::after { content:''; display:block; width:40%; height:100%; background:#355a6d; animation:rental-loading 1.4s ease-in-out infinite; }
 @keyframes rental-loading { from { transform:translateX(-100%); } to { transform:translateX(350%); } }
 @media(max-width:1150px) {
  header { gap:20px; }
@@ -348,7 +348,7 @@ body:has(.compare-tray) footer { padding-bottom:110px; }
  .login { width:24px; justify-content:center; }
  .login > span,header .heart-top { display:none; }
  header .add { width:33px; min-width:33px; min-height:34px; padding:8px; border-radius:8px; font-size:0; }
- .mobile-nav { display:flex; align-items:center; justify-content:center; gap:24px; height:35px; color:#65758d; font-size:10px; border-bottom:1px solid #e0e7f1; background:#fff; }
+ .mobile-nav { display:flex; align-items:center; justify-content:center; gap:24px; height:35px; color:#68757d; font-size:10px; border-bottom:1px solid #e3e6e6; background:#fff; }
  .mobile-nav a,.mobile-nav button { min-height:35px; padding:0; }
  .discovery-intro { padding:22px 15px 18px; gap:14px; }
  .intro-label { font-size:10px; }
@@ -437,7 +437,7 @@ body:has(.compare-tray) footer { padding-bottom:110px; }
  .rental-page .rental-facts { grid-template-columns:minmax(0,1fr); }
  .rental-facts > div { padding:12px 0; }
  .overlay { padding:12px; }
- .modal { --modal-pad:24px; max-height:calc(100dvh - 24px); border-radius:13px; }
+ .modal { --modal-pad:24px; max-height:calc(100dvh - 24px); border-radius:8px; }
  .modal h2 { font-size:26px; }
  .account-details { padding:0 15px; }
  .account-details > div { grid-template-columns:minmax(0,1fr); gap:9px; }
@@ -483,13 +483,13 @@ body:has(.compare-tray) footer { padding-bottom:110px; }
  .loading-progress::after { animation:none; transform:translateX(75%); }
 }
 
-.admin h1,.admin h2,.admin h3,.stats strong,.overview-grid h3 { color:#2d4263; }
+.admin h1,.admin h2,.admin h3,.stats strong,.overview-grid h3 { color:#355a6d; }
 .badges .premium { color:#fff; }
 .toast { color:#fff; }
-.toast svg { color:#c6d9f6; }
+.toast svg { color:#c6cfd3; }
 .search-reset[hidden] { display:none; }
-.extra-filter-count { background:#e7edfd; color:#3454df; padding:2px 5px; border-radius:4px; font-size:9px; }
-.clear-recent-btn { display:grid; place-items:center; color:#8092af; width:27px; height:30px; padding:0; }
+.extra-filter-count { background:#e3e6e6; color:#355a6d; padding:2px 5px; border-radius:4px; font-size:9px; }
+.clear-recent-btn { display:grid; place-items:center; color:#68757d; width:27px; height:30px; padding:0; }
 @media(max-width:640px) {
  .discovery-intro { padding-top:19px; padding-bottom:17px; }
  .intro-label { display:none; }
@@ -500,3 +500,198 @@ body:has(.compare-tray) footer { padding-bottom:110px; }
  .search-wrap:not(.advanced-open) .search-reset { grid-row:3; }
 }
 @media(hover:none) { .car-card:hover { transform:none; } }
+/* Automotive wordmark and restrained, high-contrast navigation. */
+:root { --ink:#172b3b; --accent:#244b61; --green:#244b61; --muted:#6f797e; background:#f5f5f2; }
+body { color:#263840; }
+.utility-bar { background:#fbfbfa; border-bottom:1px solid #e2e6e5; }
+.utility-inner { max-width:1320px; padding:0 24px; margin:auto; min-height:35px; display:flex; align-items:center; justify-content:space-between; gap:18px; }
+.utility-purpose { display:flex; align-items:center; gap:20px; font-size:11px; color:#78848a; }
+.utility-purpose a { display:flex; align-items:center; gap:6px; color:#87939a; font-size:10px; }
+.utility-controls { display:flex; align-items:center; gap:17px; }
+.utility-controls .language-switch { border-color:#dfe5e6; padding-right:12px; }
+.utility-controls .language-switch button { color:#89969c; padding:7px 0; min-height:33px; font-size:10px; }
+.utility-controls .language-switch [aria-pressed=true] { color:#244b61; }
+.utility-controls .heart-top { width:24px; height:30px; color:#87969e; }
+.utility-controls .heart-top svg { width:16px; height:16px; }
+.utility-controls .login { min-height:32px; color:#778992; font-size:11px; }
+.utility-controls .login svg { width:15px; height:15px; }
+header { height:67px; padding:0 max(24px,calc((100vw - 1272px)/2)); background:#172b3b; border:0; box-shadow:none; gap:26px; }
+header .logo { font-size:23px; font-weight:450; letter-spacing:.1px; color:#fff; text-transform:uppercase; }
+header .brand-mark { width:65px; height:28px; margin-right:10px; color:#fff; }
+header .logo-az { color:#fff; }
+header nav { color:#c8d2d7; font-size:13px; gap:26px; }
+header nav a,header nav button { color:inherit; }
+header nav a { color:#fff; }
+header nav a:hover,header nav button:hover { color:#ead6b9; }
+header .add { min-height:40px; padding:11px 17px; border-radius:5px; background:#eee4d5; border-color:#eee4d5; color:#384c57; font-size:12px; font-weight:400; }
+header .add:hover { background:#fff5e5; border-color:#fff5e5; }
+.header-right { gap:0; }
+header .header-admin { color:#fff; }
+header .header-admin > span { background:#fff; color:#244b61; }
+.mobile-nav { background:#fff; border-color:#e2e7e6; color:#7b8c94; }
+.marketplace-layout { max-width:1320px; margin:0 auto; padding:0 24px; }
+.search-wrap { margin-top:25px; padding:22px; border-radius:7px; border-color:#dfe5e5; box-shadow:0 3px 14px #19334404; background:#fff; }
+.catalog-select-trigger,.search-box input,.search-box select,.criteria-panel select { border-color:#d9e1e3; background:#fff; border-radius:5px; color:#425b69; font-size:13px; }
+.catalog-select-label,.search-box label,.search-box label > span { color:#75858e; font-size:12px; }
+.catalog-select-trigger[aria-expanded=true] { border-color:#91a7b4; box-shadow:0 0 0 3px #244b6108; }
+.catalog-select-popup { border-color:#d2dde2; background:#fff; box-shadow:0 10px 30px #172b3b1c; border-radius:6px; }
+.catalog-select-search { border-color:#dde5e7; background:#f8faf9; color:#8aa0ac; border-radius:4px; }
+.catalog-select-list button { color:#718691; }
+.catalog-select-list button.is-active { background:#f1f5f5; color:#244b61; }
+.catalog-select-list button[aria-selected=true] { background:#eaf0f1; color:#244b61; }
+.search-submit,.primary { border-radius:5px; background:#244b61; border-color:#244b61; color:#fff; }
+.search-submit:hover,.primary:hover { background:#173c52; border-color:#173c52; color:#fff; }
+.search-reset,.advanced-toggle { color:#80929c; }
+.extra-filter-count { color:#244b61; background:#eaf0f1; }
+main#cars { padding-top:23px; }
+.catalogue-navigation { display:flex; align-items:center; justify-content:space-between; gap:20px; border-bottom:1px solid #d8e0e1; margin-bottom:17px; }
+.discovery-tabs { border-bottom:0; margin-bottom:0; gap:28px; }
+.discovery-tabs button { padding-bottom:15px; font-size:13px; color:#86979f; min-height:42px; }
+.discovery-tabs button[aria-pressed=true] { border-bottom-color:#b29060; color:#244b61; }
+.discovery-tabs button > span { background:#e9eeef; color:#7f949f; }
+.saved-search-entry { color:#82959e; font-size:11px; white-space:nowrap; }
+.saved-search-entry > span { color:#7f949f; background:#e9eeef; }
+.popular-brands { margin-bottom:12px; }
+.popular-brands button { padding:6px 11px; background:#fff; border-color:#dce3e3; border-radius:4px; color:#7c939e; }
+.popular-brands button:hover,.popular-brands [aria-pressed=true] { color:#244b61; border-color:#9fb5bd; background:#f0f5f5; }
+.popular-brands > span { color:#9aa9af; }
+.catalogue-demo-note { color:#88999f; font-size:10px; }
+.catalogue-toolbar { padding:9px 0 16px; }
+.catalogue-toolbar > select,.results-description,.save-search-btn { color:#899ca5; font-size:11px; }
+.view-switch { border-color:#dce3e3; }
+.view-switch [aria-pressed=true] { color:#244b61; background:#e6edee; }
+.grid { gap:21px; }
+.car-card { border:1px solid #dfe5e4; border-radius:7px; background:#fff; box-shadow:none; }
+.car-card:hover { border-color:#aebfc5; box-shadow:0 6px 20px #1837470b; transform:translateY(-2px); }
+.car-image { aspect-ratio:1.4; background:#e9eeee; }
+.card-body { padding:14px 15px 0; }
+.card-bottom { padding-bottom:11px; }
+.card-bottom strong { font-size:26px; color:#233e4c; font-weight:450; letter-spacing:-.7px; }
+.card-bottom strong span { font-size:16px; }
+.card-bottom small { font-size:10px; color:#8d9fa6; }
+.card-deposit { font-size:9px; color:#8fa2ab; }
+.card-deposit span:last-child { color:#708c99; font-size:11px; }
+.car-name { color:#304f5e; font-size:17px; line-height:1.4; font-weight:400; letter-spacing:-.3px; margin-bottom:10px; }
+.specs { color:#8097a2; font-size:11px; }
+.card-location,.card-location > span { color:#90a3ab; font-size:11px; }
+.owner { border-color:#e9efee; color:#91a3aa; font-size:10px; }
+.owner-name { color:inherit; }
+.compare-select { border-radius:4px; border-color:#e0e7e7; color:#9bb0b9; }
+.compare-select[aria-pressed=true] { border-color:#8fa9b5; background:#edf3f3; color:#244b61; }
+.like { box-shadow:0 1px 5px #193a4a10; color:#8ea2ab; }
+.like:hover,.like.liked { color:#244b61; }
+.badges .premium { background:#243b47e8; color:#f1d9b4; border-color:#ac957151; border-radius:4px; }
+.badges .vip { background:#faf4e7ed; color:#8e784f; border-color:#eadfc9; border-radius:4px; }
+.sample-ribbon { color:#7f959f; background:#fffffff0; }
+.pagination [aria-current=page] { background:#244b61; border-color:#244b61; }
+.catalogue-service-note { border-color:#dce3e3; color:#90a1a8; }
+.catalogue-service-note button { color:#6e8b99; }
+footer { background:#fff; border-color:#dce3e3; padding-top:26px; padding-bottom:26px; }
+footer .logo { text-transform:uppercase; color:#314f5e; font-size:21px; letter-spacing:.1px; font-weight:400; }
+footer .brand-mark { width:56px; height:25px; color:#314f5e; }
+footer .logo-az { color:inherit; }
+.footer-links button,.footer-links a { color:#88a0ab; }
+footer small { color:#9aacb3; }
+.rental-heading h1 { color:#2a4959; font-weight:400; }
+.rental-section h2,.rental-features strong { color:#5e7f90; }
+.rental-photo,.rental-enquiry,.modal { border-color:#dce4e5; border-radius:8px; }
+.rental-photo { background:#eaf0f1; }
+.rental-photo > span { background:#263e49ed; color:#efd9b7; border-radius:4px; }
+.rental-price > div { color:#355968; font-weight:400; }
+.rental-estimate { background:#eef3f3; }
+.rental-estimate strong { color:#486f80; }
+.rental-seller strong,.rental-facts dd { color:#7393a2; }
+.rental-calculator summary,.rental-contact .outline { color:#7b9baa; }
+.rental-contact .primary { color:#fff; }
+.rental-calculator,.rental-rate-options,.rental-features,.rental-section,.vehicle-section-nav { border-color:#e0e9e9; }
+.rental-rate-options strong,.rental-seller span,.rental-section p { color:#8a9fa7; }
+.compare-tray { border-color:#bdd0d5; border-radius:8px; }
+.comparison-table tbody tr:nth-child(odd) { background:#f8faf9; }
+.account-role { background:#eef3f3; border-color:#dce7e8; color:#7896a3; }
+.account-summary button { border-color:#dde7e8; background:#f9fbfa; color:#88a2ad; }
+.admin-nav button.active { color:#577e90; }
+@media(max-width:1100px) {
+ header nav { gap:17px; font-size:12px; }
+ header .logo { font-size:21px; }
+ header .brand-mark { width:56px; margin-right:8px; }
+}
+@media(max-width:1000px) {
+ header nav { display:none; }
+}
+@media(max-width:800px) {
+ .utility-purpose a { display:none; }
+ .catalogue-navigation { gap:15px; }
+ .saved-search-entry { font-size:0; gap:7px; }
+ .saved-search-entry > span { font-size:10px; }
+}
+@media(max-width:640px) {
+ .utility-inner { min-height:33px; padding:0 14px; gap:10px; }
+ .utility-purpose { font-size:10px; }
+ .utility-controls { gap:12px; }
+ .utility-controls .language-switch { gap:6px; border:0; padding-right:0; }
+ .utility-controls .language-switch button { font-size:9px; min-width:14px; padding:7px 0; min-height:31px; }
+ .utility-controls .heart-top { display:grid; width:21px; height:29px; }
+ .utility-controls .heart-top svg { width:15px; height:15px; }
+ .utility-controls .login { width:21px; min-height:29px; }
+ .utility-controls .login > span { display:none; }
+ header { height:61px; padding:0 14px; gap:12px; }
+ header .logo { font-size:20px; letter-spacing:0; }
+ header .brand-mark { width:48px; height:25px; margin-right:8px; }
+ header .add { font-size:11px; min-width:0; width:auto; min-height:36px; padding:9px 12px; border-radius:5px; }
+ header .add svg { width:15px; height:15px; }
+ .mobile-nav { height:33px; gap:33px; font-size:10px; }
+ .mobile-nav a,.mobile-nav button { min-height:33px; }
+ .marketplace-layout { padding:0 13px; }
+ .search-wrap { margin-top:16px; padding:14px; border-radius:7px; }
+ main#cars { padding-top:20px; }
+ .catalogue-navigation { gap:9px; margin-bottom:13px; }
+ .discovery-tabs { gap:19px; }
+ .discovery-tabs button { font-size:11px; min-height:39px; padding-bottom:12px; gap:6px; }
+ .discovery-tabs button svg { width:14px; height:14px; }
+ .saved-search-entry { min-height:37px; padding:0; }
+ .saved-search-entry > span { display:none; }
+ .popular-brands { gap:6px; }
+ .popular-brands button { padding:6px 9px; font-size:10px; }
+ .catalogue-toolbar { padding-bottom:14px; gap:9px; }
+ .catalogue-toolbar > select,.results-description { font-size:10px; }
+ .grid { gap:12px; }
+ .car-image { aspect-ratio:1.3; }
+ .card-body { padding:11px 10px 0; }
+ .card-bottom strong { font-size:23px; }
+ .car-name { font-size:15px; min-height:42px; }
+ .specs { font-size:10px; }
+ .card-location,.card-location > span { font-size:9px; }
+ .owner { font-size:9px; }
+ .catalogue-list .car-name { font-size:17px; min-height:0; }
+ footer .logo { font-size:20px; }
+ footer .brand-mark { width:48px; height:23px; }
+ .rental-heading h1 { font-size:28px; }
+}
+@media(max-width:360px) {
+ .utility-inner { padding:0 11px; }
+ .utility-purpose { font-size:9px; }
+ .utility-controls { gap:10px; }
+ header { padding:0 12px; }
+ header .logo { font-size:19px; }
+ header .brand-mark { width:44px; margin-right:6px; }
+ header .add { font-size:0; width:33px; min-width:33px; padding:8px; }
+ .marketplace-layout { padding:0 11px; }
+ .discovery-tabs { gap:13px; }
+ .discovery-tabs button { font-size:10px; }
+ .discovery-tabs button svg { display:none; }
+ .car-name { font-size:14px; }
+ .card-bottom strong { font-size:22px; }
+}
+/* Secondary information remains readable at compact catalog sizes. */
+.catalogue-demo-note,.results-description,.catalogue-toolbar > select,.save-search-btn,.popular-brands > span,.card-location,.card-location > span,.specs,.owner,.sample-ribbon,.card-deposit,.card-bottom small,.catalogue-service-note,footer small,.footer-links button,.footer-links a,.utility-purpose,.utility-purpose a { color:#6c797f; }
+.catalog-select-label,.search-box label,.search-box label > span { color:#64747e; }
+.rental-heading p,.rental-section p,.rental-facts dt,.rental-rate-options > span,.rental-seller span,.estimate-note,.sample-contact { color:#6c797f; }
+.rental-facts dd,.rental-rate-options strong,.rental-seller strong { color:#59717d; }
+.utility-controls .login,.utility-controls .language-switch button { color:#71838c; }
+.utility-controls .language-switch [aria-pressed=true] { color:#244b61; }
+@media(max-width:640px) { .owner { font-size:10px; } }
+@media(max-width:640px) {
+ .catalogue-toolbar .save-search-btn { font-size:0; flex:0 0 28px; width:28px; min-width:28px; padding:6px 0; }
+ .catalogue-toolbar .save-search-btn svg { width:16px; height:16px; }
+ .catalogue-toolbar > select { min-width:0; max-width:137px; }
+}
